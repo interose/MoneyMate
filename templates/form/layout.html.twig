@@ -1,0 +1,13 @@
+{% use '@TalesFromADevFlowbite/form/default.html.twig' %}
+
+{% block class_input_error -%}
+    bg-red-50 border-red-300 text-red-800 placeholder-red-800 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 dark:placeholder-red-400 focus:z-10 focus:ring-red-500 focus:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500
+{%- endblock class_input_error %}
+
+{% block class_text_error -%}
+    mt-2 text-sm text-red-800 dark:text-red-400
+{%- endblock class_text_error %}
+
+{% block class_label_error -%}
+    block mb-2 text-sm font-medium text-red-800 dark:text-red-400
+{%- endblock class_label_error %}
