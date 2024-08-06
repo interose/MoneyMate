@@ -1,0 +1,17 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+
+    {% if app.request.headers.get('turbo-frame') is not empty %}
+        <div class="bottom-0 left-0 flex justify-start w-full pb-4 space-x-4 md:px-4 md:absolute">
+            <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
+                <i class="fa-solid fa-floppy-disk me-2.5"></i>{{ button_label|default('Save') }}
+            </button>
+        </div>
+    {% else %}
+        <div class="d-flex justify-content-end">
+            <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
+                <i class="fa-solid fa-floppy-disk me-2.5"></i>{{ button_label|default('Save') }}
+            </button>
+        </div>
+    {% endif %}
+{{ form_end(form) }}

@@ -1,0 +1,7 @@
+{% for message in app.flashes('success') %}
+    <twig:Flash type="success">{{ message|raw }}</twig:Flash>
+{% endfor %}
+
+{% for message in app.flashes('error') %}
+    <twig:Flash type="error">{{ message }}</twig:Flash>
+{% endfor %}

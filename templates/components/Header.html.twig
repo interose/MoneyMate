@@ -1,0 +1,18 @@
+{%  props title = '', currentPage = null %}
+<div {{ attributes }} class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
+    <div class="w-full">
+        <div class="mb-1">
+            <nav class="flex {% if title is not empty %}mb-5{% endif %}" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 text-sm font-medium md:space-x-2">
+                {% block breadcrumb %}{% endblock %}
+                </ol>
+            </nav>
+
+            {% if title is not empty %}
+            <h1 class="text-l font-semibold text-gray-900 sm:text-2xl dark:text-white">{{ title }}</h1>
+            {% endif %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+</div>

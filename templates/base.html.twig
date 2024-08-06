@@ -2,8 +2,8 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <title>{% block title %}{% endblock %}</title>
+        <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon" />
         {% block stylesheets %}
         {% endblock %}
 
@@ -11,7 +11,56 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body class="bg-gray-50 dark:bg-gray-800">
+        <div class="flex overflow-hidden bg-gray-50 dark:bg-gray-900">
+
+            {% include '_navigation.html.twig' %}
+
+            <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-52 dark:bg-gray-900">
+
+                {% include '_header.html.twig' %}
+
+                <main class="pt-14">
+                    {% block body %}{% endblock %}
+                </main>
+            </div>
+        </div>
+
+        <twig:FormDrawer :closeButton="true">
+            <turbo-frame
+                id="form-drawer"
+                data-form-drawer-target="dynamicContent"
+                data-action="turbo:before-fetch-request->form-drawer#showLoading"
+                class="aria-busy:opacity-50 transition-opacity"
+                data-turbo-form-redirect="true"
+            >
+                <turbo-stream action="append" target="flash-container">
+                    <template>{{ include('_flashes.html.twig') }}</template>
+                </turbo-stream>
+                {% for stream in app.flashes('stream') %}
+                    {{ stream|raw }}
+                {% endfor %}
+            </turbo-frame>
+            <twig:block name="loading_template">
+                <div class="bg-space-pattern bg-cover rounded-lg p-8">
+                    <div class="space-y-2">
+                        <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
+                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
+                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
+                        <div class="h-4"></div>
+                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
+                        <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
+                        <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
+                        <div class="h-4"></div>
+                        <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
+                    </div>
+                </div>
+            </twig:block>
+        </twig:FormDrawer>
+
+        <div id="flash-container">
+            {% include '_flashes.html.twig' %}
+        </div>
+
     </body>
 </html>

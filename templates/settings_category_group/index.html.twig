@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <twig:Header title="Category Groups">
+        <twig:block name="breadcrumb">
+            <twig:BreadcrumbHome ></twig:BreadcrumbHome>
+            <twig:BreadcrumbItem text="Settings"></twig:BreadcrumbItem>
+            <twig:BreadcrumbItem text="Category Groups"></twig:BreadcrumbItem>
+        </twig:block>
+
+        <div class="sm:flex">
+            <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
+                <a
+                    class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-[#112D4E] rounded-lg hover:bg-[#112D4E]/90 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    data-turbo-frame="form-drawer"
+                    href="{{ path('app_settings_category_group_new') }}"
+                >
+                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>
+                    </svg>
+                    Add Category Group
+                </a>
+            </div>
+        </div>
+    </twig:Header>
+
+    <twig:Content>
+        <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
+            <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">#</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Name</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Color</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Amount of Categories</th>
+                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+            {% for group in categoryGroups %}
+                <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ group.id }}</td>
+                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ group.name }}</td>
+                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ group.color }}</td>
+                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ group.categories|length }}</td>
+                    <td class="p-3 space-x-2 text-gray-500 whitespace-nowrap text-center">
+                        <a
+                                href="{{ path('app_settings_category_group_edit', {'id': group.id}) }}"
+                                data-turbo-frame="form-drawer"
+                        >
+                            <i class="fa-solid fa-square-pen text-lg hover:text-gray-900"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">No records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </twig:Content>
+{% endblock %}
