@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/settings/category-group')]
 class SettingsCategoryGroupController extends AbstractController
 {
-    #[Route('/', name: 'app_settings_category_group_index', methods: ['GET'])]
+    #[Route('/', name: 'app_settings_categorygroup_index', methods: ['GET'])]
     public function index(CategoryGroupRepository $repository): Response
     {
         return $this->render('settings_category_group/index.html.twig', [
@@ -22,12 +22,12 @@ class SettingsCategoryGroupController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_settings_category_group_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_settings_categorygroup_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $categoryGroup = new CategoryGroup();
         $form = $this->createForm(CategoryGroupType::class, $categoryGroup, [
-            'action' => $this->generateUrl('app_settings_category_group_new'),
+            'action' => $this->generateUrl('app_settings_categorygroup_new'),
         ]);
         $form->handleRequest($request);
 
@@ -37,7 +37,7 @@ class SettingsCategoryGroupController extends AbstractController
 
             $this->addFlash('success', 'Category Group created');
 
-            return $this->redirectToRoute('app_settings_category_group_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_settings_categorygroup_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('settings_category_group/new.html.twig', [
@@ -46,11 +46,11 @@ class SettingsCategoryGroupController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_settings_category_group_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_settings_categorygroup_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, CategoryGroup $categoryGroup, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CategoryGroupType::class, $categoryGroup, [
-            'action' => $this->generateUrl('app_settings_category_group_edit', ['id' => $categoryGroup->getId()]),
+            'action' => $this->generateUrl('app_settings_categorygroup_edit', ['id' => $categoryGroup->getId()]),
         ]);
         $form->handleRequest($request);
 
@@ -59,7 +59,7 @@ class SettingsCategoryGroupController extends AbstractController
 
             $this->addFlash('success', 'Category Group updated');
 
-            return $this->redirectToRoute('app_settings_category_group_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_settings_categorygroup_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('settings_category_group/edit.html.twig', [

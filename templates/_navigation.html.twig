@@ -1,3 +1,13 @@
+{% macro linkCssClass(route, prefix) %}
+    {% if route starts with prefix %}
+        class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 bg-gray-100 dark:bg-gray-700"
+    {% else %}
+        class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+    {% endif %}
+{% endmacro %}
+
+
+
 <aside id="sidebar" class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-52 h-full font-normal duration-75 lg:flex transition-width" aria-label="Sidebar">
     <div class="relative flex flex-col flex-1 min-h-0 pt-2 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="flex flex-col flex-1 pt-2 pb-4 overflow-y-auto">
@@ -19,7 +29,7 @@
                         </button>
                         <ul
                             id="dropdown-settings"
-                            {% if app.request.get('_route') in ['app_settings_category_group_index', 'app_settings_category_group_new', 'app_settings_category_group_edit', 'app_settings_category_index', 'app_settings_category_new', 'app_settings_category_edit'] %}
+                            {% if app.request.get('_route') starts with 'app_settings_'  %}
                                 class="py-2 space-y-0"
                             {% else %}
                                 class="hidden py-2 space-y-0"
@@ -27,20 +37,26 @@
                         >
                             <li>
                                 <a
-                                    href="{{ path('app_settings_category_group_index') }}"
-                                    {% if app.request.get('_route') in ['app_settings_category_group_index', 'app_settings_category_group_new', 'app_settings_category_edit'] %}
-                                    class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 bg-gray-100 dark:bg-gray-700"
-                                    {% else %}
-                                    class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-                                    {% endif %}
+                                    href="{{ path('app_settings_categorygroup_index') }}"
+                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_categorygroup_') }}
                                 >
                                     Category Groups</a>
                             </li>
                             <li>
-                                <a href="{{ path('app_settings_category_index') }}" class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 {% if app.request.get('_route') == 'app_settings_category_index' %}bg-gray-100 dark:bg-gray-700{% endif %}">Categories</a>
+                                <a
+                                    href="{{ path('app_settings_category_index') }}"
+                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_category_') }}
+                                >
+                                    Categories
+                                </a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Rules</a>
+                                <a
+                                    href="{{ path('app_settings_rule_index') }}"
+                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_rule_') }}
+                                >
+                                    Rules
+                                </a>
                             </li>
                             <li>
                                 <a href="#" class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Accounts</a>
