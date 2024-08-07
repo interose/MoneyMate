@@ -66,6 +66,5 @@ class SettingsCategoryGroupController extends AbstractController
             'categoryGroup' => $categoryGroup,
             'form' => $form,
         ]);
-
     }
 }
