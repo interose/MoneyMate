@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <twig:Header title="New Category">
+        <twig:block name="breadcrumb">
+            <twig:BreadcrumbHome ></twig:BreadcrumbHome>
+            <twig:BreadcrumbItem text="Settings"></twig:BreadcrumbItem>
+            <twig:BreadcrumbItem text="Categories"></twig:BreadcrumbItem>
+        </twig:block>
+    </twig:Header>
+
+<div class="flex flex-col">
+    <div class="overflow-x-auto">
+        <div class="inline-block min-w-full align-middle">
+            <div class="overflow-hidden shadow">
+                <turbo-frame id="form-drawer">
+                    {% if app.request.headers.get('turbo-frame') is not empty %}
+                        <h5 id="drawer-right-label" class="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400">
+                            <i class="fa-solid fa-tag me-2.5"></i>Edit Category
+                        </h5>
+                    {% endif %}
+
+                    {{ include('settings_category/_form.html.twig') }}
+                </turbo-frame>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
