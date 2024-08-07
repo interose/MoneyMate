@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CategoryAssignmentRuleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryAssignmentRuleRepository::class)]
 class CategoryAssignmentRule
@@ -36,16 +37,20 @@ class CategoryAssignmentRule
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $rule = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?int $type = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?int $transactionField = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank]
     private ?Category $category = null;
 
     public function getId(): ?int
