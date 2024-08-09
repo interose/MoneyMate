@@ -39,8 +39,8 @@
             {% for rule in rules %}
                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ rule.rule }}</td>
-                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ rule.type }}</td>
-                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ rule.transactionField }}</td>
+                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ rule.typeName }}</td>
+                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ rule.transactionFieldName }}</td>
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ rule.category.name }}</td>
                     <td class="p-3 space-x-2 text-gray-500 whitespace-nowrap text-center">
                         <a
