@@ -41,7 +41,7 @@ class SettingsCategoryController extends AbstractController
         }
 
         return $this->render('settings_category/new.html.twig', [
-            'categoryGroup' => $category,
+            'category' => $category,
             'form' => $form,
         ]);
     }
