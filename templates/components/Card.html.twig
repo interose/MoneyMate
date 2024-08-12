@@ -1,5 +1,5 @@
-{%  props title = '', grid = '' %}
-<div class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm {{ grid }} dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+{%  props title = '', grid = '', padding = 'p-4 sm:p-6' %}
+<div class="{{ padding }} mb-4 bg-white border border-gray-200 rounded-lg shadow-sm {{ grid }} dark:border-gray-700 dark:bg-gray-800">
     {% if title is not empty %}
         <h3 class="mb-4 text-xl font-semibold dark:text-white">{{ title }}</h3>
     {% endif %}
