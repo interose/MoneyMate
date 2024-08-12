@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ form_start(form) }}
+
+    <twig:Header title="">
+        <twig:block name="breadcrumb">
+            <twig:BreadcrumbHome ></twig:BreadcrumbHome>
+            <twig:BreadcrumbItem text="Settings"></twig:BreadcrumbItem>
+            <twig:BreadcrumbLinkItem link="{{ path('app_settings_account_index') }}" text="Accounts"></twig:BreadcrumbLinkItem>
+            <twig:BreadcrumbItem text="New Account"></twig:BreadcrumbItem>
+        </twig:block>
+
+        <div class="sm:flex">
+            <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
+                <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
+                    <i class="fa-solid fa-floppy-disk me-2.5"></i>{{ button_label|default('Save') }}
+                </button>
+            </div>
+        </div>
+    </twig:Header>
+
+    <div class="grid grid-cols-4 gap-4 px-4 pt-6 dark:bg-gray-900">
+        <div class="col-span-2">
+            <twig:Card title="Bank" grid="">
+                {{ form_row(form.name) }}
+                {{ form_row(form.bic) }}
+                {{ form_row(form.bankCode) }}
+                {{ form_row(form.url) }}
+            </twig:Card>
+
+            <twig:Card title="Account Holder" grid="">
+                {{ form_row(form.accountHolder) }}
+                {{ form_row(form.iban) }}
+            </twig:Card>
+        </div>
+
+        <div class="col-span-2">
+            <twig:Card title="Online banking" grid="">
+                {{ form_row(form.username) }}
+                {{ form_row(form.password) }}
+                {{ form_row(form.tanMediaName) }}
+                {{ form_row(form.tanMechanism) }}
+            </twig:Card>
+
+
+            <twig:Card title="Media" grid="">
+                {{ form_row(form.logo) }}
+                {{ form_row(form.backgroundColor) }}
+                {{ form_row(form.foregroundColor) }}
+            </twig:Card>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

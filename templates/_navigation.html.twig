@@ -59,7 +59,12 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Accounts</a>
+                                <a
+                                        href="{{ path('app_settings_account_index') }}"
+                                        {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_account_') }}
+                                >
+                                    Accounts
+                                </a>
                             </li>
                             <li>
                                 <a href="#" class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">App Settings</a>

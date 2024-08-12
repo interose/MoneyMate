@@ -50,7 +50,7 @@ class Account
 
     #[ORM\Column(nullable: true)]
     #[Assert\NotBlank(groups: ['new', 'edit_credentials'])]
-    #[Assert\Positive(groups: ['new', 'edit_credentials'])]
+    #[Assert\Positive(groups: ['new', 'edit_credentials'], message: 'Please choose a valid number.')]
     private ?int $tanMechanism = null;
 
     #[ORM\Column(type: Types::BINARY, nullable: true)]
@@ -62,6 +62,7 @@ class Account
     private $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Image(groups: ['new', 'edit'], maxSize: '2048K')]
     private ?string $logo = null;
 
     #[ORM\Column(length: 255, nullable: true)]
