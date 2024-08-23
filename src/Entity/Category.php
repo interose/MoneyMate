@@ -21,7 +21,7 @@ class Category
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Assert\NotBlank]
     private ?CategoryGroup $categoryGroup = null;
 
