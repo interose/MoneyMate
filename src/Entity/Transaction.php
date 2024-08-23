@@ -122,6 +122,11 @@ class Transaction
         return $this;
     }
 
+    public function isCredit(): bool
+    {
+        return $this->getCreditDebit() === 'credit';
+    }
+
     public function getBookingText(): ?string
     {
         return $this->bookingText;
