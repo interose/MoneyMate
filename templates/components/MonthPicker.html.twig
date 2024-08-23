@@ -1,0 +1,72 @@
+<div
+        data-controller="monthpicker"
+        data-monthpicker-month-value="{{ month }}"
+        data-monthpicker-year-value="{{ year }}"
+        data-monthpicker-dropdown-month-value="{{ month }}"
+        data-monthpicker-dropdown-year-value="{{ year }}"
+        class="p-2 bg-white block sm:flex items-center justify-between border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+>
+    <form
+        action="{{ path('app_grid_monthly') }}"
+        data-turbo-frame="transaction-list"
+        data-monthpicker-target="form"
+    >
+        <button data-action="click->monthpicker#prev" class="btn-monthpicker-navigate p-1 px-2 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">prev</button>
+        <div class="inline-flex relative max-w-sm">
+            <div class="absolute inset-y-0 end-1 flex items-center ps-3.5 pointer-events-none">
+                <svg class="w-6 h-6 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/>
+                </svg>
+            </div>
+            <input type="text" data-monthpicker-target="output" class="p-1 px-2 w-36 text-xs font-medium text-gray-600 rounded bg-gray-50 border border-gray-300 focus:outline-none cursor-pointer" readonly value="" />
+            <input name="month" type="hidden" data-monthpicker-target="mrOutputMonth" />
+            <input name="year" type="hidden" data-monthpicker-target="mrOutputYear" />
+        </div>
+
+        <div data-monthpicker-target="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-50 dark:bg-gray-700">
+            <div class="grid grid-cols-2 p-2 text-xs text-gray-600">
+                <div class="grid grid-cols-2" data-monthpicker-target="monthOverviewCol">
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="1">Jan</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="7">Jul</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="2">Feb</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="8">Aug</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="3">Mar</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="9">Sep</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="4">Apr</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="10">Oct</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="5">May</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="11">Nov</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="6">Jun</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectMonth" data-value="12">Dec</div>
+                </div>
+                <div class="grid grid-cols-2" data-monthpicker-target="yearOverviewCol">
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer">
+                        <svg class="w-4 h-4 mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m17 16-4-4 4-4m-6 8-4-4 4-4"/>
+                        </svg>
+                    </div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer">
+                        <svg class="w-4 h-4 mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 16 4-4-4-4m6 8 4-4-4-4"/>
+                        </svg>
+                    </div>
+
+                    {% set crossSum = 5 %}
+                    {% set currentYear = "now"|date('Y') %}
+
+                    {% for i in 1..5 %}
+                        <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectYear" data-value="{{ currentYear - ( crossSum - i) }}">{{ currentYear - ( crossSum - i) }}</div>
+                        <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->monthpicker#selectYear" data-value="{{ currentYear + i }}">{{ currentYear + i }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-span-2 flex justify-center space-x-2 mt-2">
+                    <button data-action="click->monthpicker#accept" class="p-1 px-2 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">OK</button>
+                    <button data-action="click->monthpicker#cancel" class="p-1 px-2 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <button data-action="click->monthpicker#next" class="btn-monthpicker-navigate p-1 px-2 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">next</button>
+    </form>
+</div>
