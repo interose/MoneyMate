@@ -24,16 +24,9 @@
 {% endmacro %}
 
 {% block body %}
-<twig:Header title="">
-    <twig:block name="breadcrumb">
-        <twig:BreadcrumbHome ></twig:BreadcrumbHome>
-        <twig:BreadcrumbItem text="Monthly Overview"></twig:BreadcrumbItem>
-    </twig:block>
-</twig:Header>
-
 <twig:MonthPicker></twig:MonthPicker>
 
-<turbo-frame id="transaction-list">
+<turbo-frame id="transaction-list" class="aria-busy:opacity-50 aria-busy:blur-sm transition-all">
 <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
     <thead>
     <tr>

@@ -2,12 +2,6 @@
 
 {% block body %}
     <twig:Header title="Categories">
-        <twig:block name="breadcrumb">
-            <twig:BreadcrumbHome ></twig:BreadcrumbHome>
-            <twig:BreadcrumbItem text="Settings"></twig:BreadcrumbItem>
-            <twig:BreadcrumbItem text="Categories"></twig:BreadcrumbItem>
-        </twig:block>
-
         <div class="sm:flex">
             <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
                 <a
@@ -40,7 +34,11 @@
             {% for category in categories %}
                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ category.id }}</td>
-                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ category.categoryGroup.name }}</td>
+                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                        {% if category.categoryGroup %}
+                        {{ category.categoryGroup.name }}
+                        {% endif %}
+                    </td>
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ category.name }}</td>
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 text-center">
                         {% if category.treeIgnore == 1 %}
