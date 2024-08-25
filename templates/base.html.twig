@@ -12,15 +12,15 @@
         {% endblock %}
     </head>
     <body class="bg-gray-50 dark:bg-gray-800">
-        <div class="flex overflow-hidden bg-gray-50 dark:bg-gray-900">
+        <div class="flex bg-gray-50 dark:bg-gray-900">
 
             {% include '_navigation.html.twig' %}
 
-            <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-52 dark:bg-gray-900">
+            <div id="main-content" class="relative w-full h-full bg-gray-50 lg:ml-52 dark:bg-gray-900">
 
                 {% include '_header.html.twig' %}
 
-                <main class="pt-14">
+                <main class="pt-16">
                     {% block body %}{% endblock %}
                 </main>
             </div>
