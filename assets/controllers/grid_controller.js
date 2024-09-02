@@ -42,7 +42,6 @@ export default class extends Controller {
         let url = this.dropdownFormTarget.getAttribute('action');
         let formData = new FormData(this.dropdownFormTarget);
 
-
         let result = await fetch(url, {
             method: 'POST',
             body: formData
