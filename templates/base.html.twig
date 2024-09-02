@@ -18,9 +18,9 @@
 
             <div id="main-content" class="relative w-full h-full bg-gray-50 lg:ml-52 dark:bg-gray-900">
 
-                {% include '_header.html.twig' %}
+                {% block header %}{% endblock %}
 
-                <main class="pt-16">
+                <main {% if block("header") is not empty %}class="pt-16"{% endif %}>
                     {% block body %}{% endblock %}
                 </main>
             </div>
