@@ -35,4 +35,16 @@ return [
     'stimulus-use' => [
         'version' => '0.52.2',
     ],
+    '@floating-ui/dom' => [
+        'version' => '1.6.10',
+    ],
+    '@floating-ui/core' => [
+        'version' => '1.6.7',
+    ],
+    '@floating-ui/utils' => [
+        'version' => '0.2.7',
+    ],
+    '@floating-ui/utils/dom' => [
+        'version' => '0.2.7',
+    ],
 ];

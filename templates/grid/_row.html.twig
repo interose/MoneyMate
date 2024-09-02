@@ -1,0 +1,32 @@
+<td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400"></td>
+<td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400">{{ transaction.valutaDate|date('d.m.Y') }}</td>
+<td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400">
+    <span data-popover-target="popover-transaction-{{ transaction.id }}">{{ transaction.name }}</span>
+    <div
+        data-popover id="popover-transaction-{{ transaction.id }}"
+        role="tooltip"
+        class="absolute z-30 invisible inline-block text-xs text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-80 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400"
+    >
+        <div class="px-3 py-2 text-wrap text-ellipsis overflow-hidden ...">
+            <p>{{ transaction.descriptionRaw|replace({'/': ' ', '+' : ' '}) }}</p>
+        </div>
+        <div data-popper-arrow></div>
+    </div>
+</td>
+<td
+        class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400"
+        data-action="click->grid#showDropdown"
+        data-transaction-id="{{ transaction.id }}"
+        data-transaction-category-id="{% if transaction.category %}{{ transaction.category.id }}{% endif %}"
+>
+    {% if transaction.category %}
+        {{ transaction.category.name }}
+    {% endif %}
+</td>
+<td class="p-1 px-2 pe-4 text-xs font-normal text-right text-gray-600 whitespace-nowrap dark:text-gray-400">
+    {% if transaction.isCredit %}
+        <span class="font-semibold text-green-500">{{ transaction.amountAsCurrency|format_currency('EUR', {}) }}</span>
+    {% else %}
+        <span class="font-semibold text-red-600">-{{ transaction.amountAsCurrency|format_currency('EUR', {}) }}</span>
+    {% endif %}
+</td>
