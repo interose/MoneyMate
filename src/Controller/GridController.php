@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Transaction;
 use App\Repository\CategoryGroupRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\TransactionRepository;
@@ -24,13 +23,14 @@ class GridController extends AbstractController
         #[MapQueryParameter] int $year = null,
         #[MapQueryParameter] string $sort = 'valutaDate',
         #[MapQueryParameter] string $sortDirection = 'ASC',
+        #[MapQueryParameter] string $query = null,
     ): Response
     {
-        if ($month === null) {
+        if (null === $month) {
             $month = date('m');
         }
 
-        if ($year === null) {
+        if (null === $year) {
             $year = date('Y');
         }
 
@@ -38,12 +38,13 @@ class GridController extends AbstractController
         $sort = in_array($sort, $validSorts) ? $sort : 'valutaDate';
 
         return $this->render('grid/list.html.twig', [
-            'transactions' => $repository->findBySearch($month, $year, $sort, $sortDirection),
+            'transactions' => $repository->findBySearch($month, $year, $sort, $sortDirection, $query),
             'month' => $month,
             'year' => $year,
             'sort' => $sort,
             'sortDirection' => $sortDirection,
             'categoryGroups' => $groupRepository->findBy([], ['name' => 'ASC']),
+            'query' => $query
         ]);
     }
 

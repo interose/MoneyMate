@@ -16,15 +16,19 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
-    public function findBySearch(int $month, int $year, ?string $sort = null, string $direction = 'DESC'): array
+    public function findBySearch(int $month, int $year, ?string $sort = null, string $direction = 'DESC', ?string $query = null): array
     {
         $qb = $this->createQueryBuilder('t');
 
-        $qb->andWhere('MONTH(t.valutaDate) = :month')->setParameter('month', $month);
-        $qb->andWhere('YEAR(t.valutaDate) = :year')->setParameter('year', $year);
+        if (null !== $query && strlen($query) > 0) {
+            $qb->orWhere($qb->expr()->like('t.name', ':name'))->setParameter('name', '%'.$query.'%');
+            $qb->orWhere($qb->expr()->like('t.descriptionRaw', ':name'))->setParameter('name', '%'.$query.'%');
+        } else {
+            $qb->andWhere('MONTH(t.valutaDate) = :month')->setParameter('month', $month);
+            $qb->andWhere('YEAR(t.valutaDate) = :year')->setParameter('year', $year);
+        }
 
         if ($sort) {
-
             if ('category' === $sort) {
                 $qb
                     ->leftJoin('t.category', 'c')
