@@ -55,7 +55,7 @@ class Transaction
     /**
      * @var Collection<int, SplitTransaction>
      */
-    #[ORM\OneToMany(targetEntity: SplitTransaction::class, mappedBy: 'transactionNew', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: SplitTransaction::class, mappedBy: 'transaction', orphanRemoval: true)]
     private Collection $splitTransactions;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
