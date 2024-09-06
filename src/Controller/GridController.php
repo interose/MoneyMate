@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\CategoryGroupRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\SplitTransactionRepository;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,19 +50,36 @@ class GridController extends AbstractController
     }
 
     #[Route('/grid/transaction/set-category', name: 'app_grid_transaction_set_category', methods: ['POST'])]
-    public function editCategory(TransactionRepository $transactionRepository, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, Request $request): Response
+    public function editCategory(TransactionRepository $transactionRepository, SplitTransactionRepository $splitTransactionRepository, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, Request $request): Response
     {
-        $transaction = $transactionRepository->findOneById($request->get('transactionId'));
-        $catgory = $categoryRepository->findOneById($request->get('categoryId'));
-
-        $transaction->setCategory($catgory);
-        $entityManager->persist($transaction);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Transaction updated!');
+        $transaction = $transactionRepository->findOneById($request->request->getInt('transactionId'));
+        $catgory = $categoryRepository->findOneById($request->request->getInt('categoryId'));
 
         $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
 
-        return $this->render('grid/row.stream.html.twig', ['transaction' => $transaction]);
+        if ($request->request->has('splitTransactionId') && 0 !== $request->request->get('splitTransactionId')) {
+            $splitTransaction = $splitTransactionRepository->findOneById($request->request->getInt('splitTransactionId'));
+
+            $splitTransaction->setCategory($catgory);
+            $entityManager->persist($transaction);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Transaction updated!');
+
+            return $this->render('grid/row.stream.html.twig', [
+                'transaction' => $transaction,
+                'splitTransaction' => $splitTransaction,
+            ]);
+        } else {
+            $transaction->setCategory($catgory);
+            $entityManager->persist($transaction);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Transaction updated!');
+
+            return $this->render('grid/row.stream.html.twig', [
+                'transaction' => $transaction,
+            ]);
+        }
     }
 }

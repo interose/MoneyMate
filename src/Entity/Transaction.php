@@ -258,6 +258,11 @@ class Transaction
         return $this;
     }
 
+    public function hasSplitTransactions(): bool
+    {
+        return count($this->splitTransactions) > 0;
+    }
+
     public function getSubAccount(): ?SubAccount
     {
         return $this->subAccount;

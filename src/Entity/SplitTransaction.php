@@ -41,6 +41,11 @@ class SplitTransaction
         return $this->amount;
     }
 
+    public function getAmountAsCurrency(): ?float
+    {
+        return $this->amount / 100;
+    }
+
     public function setAmount(int $amount): static
     {
         $this->amount = $amount;

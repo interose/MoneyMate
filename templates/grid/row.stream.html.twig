@@ -1,6 +1,15 @@
-<turbo-stream action="update" target="transaction-list-item-{{ transaction.id }}">
+{% if splitTransaction is defined %}
+    {% set target = "split-transaction-list-item-" ~ splitTransaction.id  %}
+{% else %}
+    {% set target = "transaction-list-item-" ~ transaction.id  %}
+{% endif %}
+<turbo-stream action="update" target="{{ target }}">
     <template>
-        {% include 'grid/_row.html.twig' %}
+        {% if splitTransaction is defined %}
+            {% include 'grid/_row.html.twig' with { 'transaction': transaction, 'splitTransaction': splitTransaction } %}
+        {% else %}
+            {% include 'grid/_row.html.twig' with { 'transaction': transaction } %}
+        {% endif %}
     </template>
 </turbo-stream>
 

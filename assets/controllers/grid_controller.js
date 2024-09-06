@@ -4,12 +4,13 @@ import { renderStreamMessage } from "@hotwired/turbo";
 
 export default class extends Controller {
 
-    static targets = ['dropdown', 'dropdownTransactionValue', 'dropdownForm', 'dropdownSelect'];
+    static targets = ['dropdown', 'dropdownTransactionValue', 'dropdownSplitTransactionValue', 'dropdownForm', 'dropdownSelect'];
 
     showDropdown(event) {
         const tooltip = this.dropdownTarget;
-        this.dropdownTransactionValueTarget.value = event.target.dataset.transactionId;
 
+        this.dropdownTransactionValueTarget.value = event.target.dataset.transactionId;
+        this.dropdownSplitTransactionValueTarget.value = event.target.dataset.splitTransactionId;
         this.dropdownSelectTarget.value = event.target.dataset.transactionCategoryId;
 
         tooltip.classList.remove('hidden');
