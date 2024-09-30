@@ -1,0 +1,55 @@
+<div
+    {{ attributes.defaults(stimulus_controller('split-transaction-form', { 'transaction-amount': transaction.amount }  )) }}
+>
+    {% form_theme form 'form/split_transaction_form_theme.html.twig' %}
+
+    {{ form_start(form) }}
+
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-3 py-2 pl-0">Description</th>
+                <th scope="col" class="px-3 py-2">Category</th>
+                <th scope="col" class="px-3 py-2">Amount</th>
+                <th scope="col" class="px-3 py-2 pr-0"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for splitTransaction in form.splitTransactions %}
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <td class="px-3 py-2 pl-0">
+                    {{ form_row(splitTransaction.description, {
+                        label: false,
+                        attr: {
+                            class: 'block w-full p-1 text-gray-900 border border-gray-300 rounded focus:outline-none bg-gray-50 text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
+                        }
+                    }) }}
+                </td>
+                <td class="px-3 py-2 w-60">
+                    {{ form_row(splitTransaction.category, {
+                        label: false
+                    }) }}
+                </td>
+                <td class="px-3 py-2 w-28">
+                    {{ form_row(splitTransaction.amount, {
+                        label: false,
+                        attr: {
+                            class: 'block w-full p-1 text-gray-900 border border-r-0 border-gray-300 rounded-l focus:outline-none bg-gray-50 text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white',
+                        }
+                    }) }}
+                </td>
+                <td class="px-3 py-2 pr-0 w-9">
+                    {{ form_row(splitTransaction.vars.button_delete, {label: 'X', attr: {class: 'focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium p-1 px-2 text-xs rounded dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'}}) }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="flex mt-4">
+        <div class="grow flex justify-start">{{ form_widget(form.splitTransactions.vars.button_add, {label: '+ Add Item', attr: {class: 'text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded text-xs px-4 py-1 text-center inline-flex items-center'}}) }}</div>
+        <div class="grow flex justify-end"><button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded text-xs px-4 py-1 text-center inline-flex items-center" formnovalidate>Save</button></div>
+    </div>
+
+    {{ form_end(form) }}
+</div>

@@ -17,12 +17,7 @@
             {% include '_navigation.html.twig' %}
 
             <div id="main-content" class="relative w-full h-full bg-gray-50 lg:ml-52 dark:bg-gray-900">
-
-                {% block header %}{% endblock %}
-
-                <main {% if block("header") is not empty %}class="pt-16"{% endif %}>
-                    {% block body %}{% endblock %}
-                </main>
+                <main>{% block body %}{% endblock %}</main>
             </div>
         </div>
 
@@ -58,9 +53,24 @@
             </twig:block>
         </twig:FormDrawer>
 
+        <twig:Modal>
+            <turbo-frame
+                id="mdl"
+                data-mdl-target="dynamicContent"
+                class="aria-busy:opacity-50 transition-opacity"
+                data-turbo-form-redirect="true"
+            >
+                <turbo-stream action="append" target="flash-container">
+                    <template>{{ include('_flashes.html.twig') }}</template>
+                </turbo-stream>
+                {% for stream in app.flashes('stream') %}
+                    {{ stream|raw }}
+                {% endfor %}
+            </turbo-frame>
+        </twig:Modal>
+
         <div id="flash-container">
             {% include '_flashes.html.twig' %}
         </div>
-
     </body>
 </html>

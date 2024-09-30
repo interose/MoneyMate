@@ -55,7 +55,7 @@ class Transaction
     /**
      * @var Collection<int, SplitTransaction>
      */
-    #[ORM\OneToMany(targetEntity: SplitTransaction::class, mappedBy: 'transaction', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: SplitTransaction::class, mappedBy: 'transaction', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $splitTransactions;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
@@ -113,6 +113,20 @@ class Transaction
         $this->amount = $amount;
 
         return $this;
+    }
+
+    public function getAmountDifferenceAsCurrency(): ?float
+    {
+        if (!$this->hasSplitTransactions()) {
+            return $this->getAmountAsCurrency();
+        }
+
+        $amount = $this->getAmount();
+        foreach($this->getSplitTransactions() as $splitTransaction) {
+            $amount -= $splitTransaction->getAmount();
+        }
+
+        return $amount / 100;
     }
 
     public function getCreditDebit(): ?string
@@ -240,7 +254,7 @@ class Transaction
     {
         if (!$this->splitTransactions->contains($splitTransaction)) {
             $this->splitTransactions->add($splitTransaction);
-            $splitTransaction->setTransactionNew($this);
+            $splitTransaction->setTransaction($this);
         }
 
         return $this;
@@ -250,8 +264,8 @@ class Transaction
     {
         if ($this->splitTransactions->removeElement($splitTransaction)) {
             // set the owning side to null (unless already changed)
-            if ($splitTransaction->getTransactionNew() === $this) {
-                $splitTransaction->setTransactionNew(null);
+            if ($splitTransaction->getTransaction() === $this) {
+                $splitTransaction->setTransaction(null);
             }
         }
 

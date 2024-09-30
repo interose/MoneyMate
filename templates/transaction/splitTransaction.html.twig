@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <turbo-frame id="mdl">
+        <div class="flex justify-between items-center pb-2 mb-2 rounded-t border-b sm:mb-2 dark:border-gray-600">
+            <h3 class="text font-semibold text-gray-900 dark:text-white">Split transaction</h3>
+        </div>
+
+        <div
+            data-controller="transaction-amount"
+            data-action="test:render:finished@window->transaction-amount#renderFinished"
+        >
+            <table class="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-400 mb-2 border-b">
+                <tbody>
+                    <tr class="bg-white dark:bg-gray-800">
+                        <td class="px-6 pl-0 pb-2 text-xs">
+                            {{ transaction.descriptionRaw|replace({'/': ' ', '+' : ' '}) }}
+                        </td>
+                        <td class="pl-6 pb-2 w-28">
+                            <div class="flex justify-end font-bold" data-transaction-amount-target="differenceAmount">
+                                {{ transaction.getAmountDifferenceAsCurrency|format_currency('EUR', {}) }}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <twig:SplitTransactionForm :form="form" :transaction="transaction" />
+    </turbo-frame>
+{% endblock %}

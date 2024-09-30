@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SplitTransactionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SplitTransactionRepository::class)]
 class SplitTransaction
@@ -15,6 +16,8 @@ class SplitTransaction
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\GreaterThan(0)]
     private ?int $amount = null;
 
     #[ORM\ManyToOne(inversedBy: 'splitTransactions')]
@@ -22,14 +25,13 @@ class SplitTransaction
     private ?Transaction $transaction = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $description = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank]
     private ?Category $category = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $valutaDate = null;
 
     public function getId(): ?int
     {
@@ -73,18 +75,6 @@ class SplitTransaction
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
-
-        return $this;
-    }
-
-    public function getValutaDate(): ?\DateTimeInterface
-    {
-        return $this->valutaDate;
-    }
-
-    public function setValutaDate(\DateTimeInterface $valutaDate): static
-    {
-        $this->valutaDate = $valutaDate;
 
         return $this;
     }

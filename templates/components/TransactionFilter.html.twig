@@ -1,0 +1,87 @@
+<div
+    data-controller="transaction-filter"
+    data-transaction-filter-month-value="{{ month }}"
+    data-transaction-filter-year-value="{{ year }}"
+    data-transaction-filter-dropdown-month-value="{{ month }}"
+    data-transaction-filter-dropdown-year-value="{{ year }}"
+    data-action="keydown.meta+k@window->transaction-filter#focusSearch keydown.ctrl+k@window->transaction-filter#focusSearch"
+    class="p-2 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+>
+    <form
+        action="{{ path('app_transaction_index') }}"
+        data-turbo-frame="transaction-list"
+        data-transaction-filter-target="form"
+        class="flex flex-row"
+    >
+        <button data-action="click->transaction-filter#prev" class="btn-monthpicker-navigate p-1 px-2 me-1 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">prev</button>
+        <div class="inline-flex relative max-w-sm me-1">
+            <div class="absolute inset-y-0 end-1 flex items-center ps-3.5 pointer-events-none">
+                <svg class="w-6 h-6 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/>
+                </svg>
+            </div>
+            <input type="text" data-transaction-filter-target="output" class="p-1 px-2 w-36 text-xs font-medium text-gray-600 rounded bg-gray-50 border border-gray-300 focus:outline-none cursor-pointer" readonly value="" />
+            <input name="month" type="hidden" data-transaction-filter-target="mrOutputMonth" />
+            <input name="year" type="hidden" data-transaction-filter-target="mrOutputYear" />
+        </div>
+
+        <div data-transaction-filter-target="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-50 dark:bg-gray-700">
+            <div class="grid grid-cols-2 p-2 text-xs text-gray-600">
+                <div class="grid grid-cols-2" data-transaction-filter-target="monthOverviewCol">
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="1">Jan</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="7">Jul</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="2">Feb</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="8">Aug</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="3">Mar</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="9">Sep</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="4">Apr</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="10">Oct</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="5">May</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="11">Nov</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="6">Jun</div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectMonth" data-value="12">Dec</div>
+                </div>
+                <div class="grid grid-cols-2" data-transaction-filter-target="yearOverviewCol">
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer">
+                        <svg class="w-4 h-4 mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m17 16-4-4 4-4m-6 8-4-4 4-4"/>
+                        </svg>
+                    </div>
+                    <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer">
+                        <svg class="w-4 h-4 mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 16 4-4-4-4m6 8 4-4-4-4"/>
+                        </svg>
+                    </div>
+
+                    {% set crossSum = 5 %}
+                    {% set currentYear = "now"|date('Y') %}
+
+                    {% for i in 1..5 %}
+                        <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectYear" data-value="{{ currentYear - ( crossSum - i) }}">{{ currentYear - ( crossSum - i) }}</div>
+                        <div class="py-2 px-3 text-center hover:bg-gray-100 cursor-pointer" data-action="click->transaction-filter#selectYear" data-value="{{ currentYear + i }}">{{ currentYear + i }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="col-span-2 flex justify-center space-x-2 mt-2">
+                    <button data-action="click->transaction-filter#accept" class="p-1 px-2 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">OK</button>
+                    <button data-action="click->transaction-filter#cancel" class="p-1 px-2 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <button data-action="click->transaction-filter#next" class="btn-transaction-filter-navigate p-1 px-2 me-4 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">next</button>
+
+        <div class="border-s border-gray-300 ps-4 relative">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+            </div>
+            <input type="search" data-transaction-filter-target="searchQuery" name="query" data-action="transaction-filter#debouncedSubmit" class="p-1 pl-6 pr-8 w-50 text-xs font-medium text-gray-600 rounded bg-gray-50 border border-gray-300 focus:outline-none cursor-pointer" placeholder="Search" />
+            <button data-action="click->transaction-filter#clearSearchQuery" data-transaction-filter-target="searchQueryReset" type="button" class="hidden absolute inset-y-0 end-0 flex items-center pe-3 text-xs font-medium text-gray-600">
+                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                </svg>
+            </button>
+            <div data-transaction-filter-target="searchQueryShortcut" class="absolute inset-y-0 end-0 flex items-center pe-3 text-xs font-medium text-gray-600">&#8984;K</div>
+        </div>
+    </form>
+</div>

@@ -23,25 +23,21 @@
     {% endif %}
 {% endmacro %}
 
-{% block header %}
-    {% include '_header.html.twig' %}
-{% endblock %}
-
 {% block body %}
-<twig:MonthPicker></twig:MonthPicker>
+<twig:TransactionFilter></twig:TransactionFilter>
 
 <turbo-frame
     id="transaction-list"
     class="aria-busy:opacity-50 aria-busy:blur-sm transition-all"
-    data-controller="grid"
-    data-action="click@window->grid#hide"
+    data-controller="transaction"
+    data-action="click@window->transaction#hide"
 >
     <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
     <thead>
     <tr>
-        <th scope="col" class="sticky top-16 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700"></th>
-        <th scope="col" class="sticky top-16 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">
-            <a href="{{ path('app_grid_monthly', {
+        <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700"></th>
+        <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">
+            <a href="{{ path('app_transaction_index', {
                 ...app.request.query.all(),
                 sort: 'valutaDate',
                 sortDirection: sort == 'valutaDate' and sortDirection == 'asc' ? 'desc' : 'asc',
@@ -49,9 +45,9 @@
                 Valuta date {{ _self.sortArrow('valutaDate', sort, sortDirection) }}
             </a>
         </th>
-        <th scope="col" class="sticky top-16 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">Recipient</th>
-        <th scope="col" class="sticky top-16 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">
-            <a href="{{ path('app_grid_monthly', {
+        <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">Recipient</th>
+        <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">
+            <a href="{{ path('app_transaction_index', {
                 ...app.request.query.all(),
                 sort: 'category',
                 sortDirection: sort == 'category' and sortDirection == 'asc' ? 'desc' : 'asc',
@@ -59,7 +55,7 @@
                 Category {{ _self.sortArrow('category', sort, sortDirection) }}
             </a>
         </th>
-        <th scope="col" class="sticky top-16 p-2 pe-4 text-xs font-medium text-right text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">Amount</th>
+        <th scope="col" class="sticky top-0 p-2 pe-4 text-xs font-medium text-right text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">Amount</th>
     </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
@@ -68,10 +64,10 @@
 
             {% for splitTransaction in transaction.splitTransactions %}
                 <tr
-                    class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-yellow-100 dark:hover:bg-gray-600"
+                    class="bg-blue-50 border-b dark:border-gray-700 hover:bg-yellow-100 dark:hover:bg-gray-600"
                     id="split-transaction-list-item-{{ splitTransaction.id }}"
                 >
-                    {% include 'grid/_row.html.twig' with { 'transaction': transaction, 'splitTransaction': splitTransaction } %}
+                    {% include 'transaction/_row.html.twig' with { 'transaction': transaction, 'splitTransaction': splitTransaction } %}
                 </tr>
             {% endfor %}
 
@@ -80,7 +76,7 @@
                 class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-yellow-100 dark:hover:bg-gray-600"
                 id="transaction-list-item-{{ transaction.id }}"
             >
-                {% include 'grid/_row.html.twig' with { 'transaction': transaction } %}
+                {% include 'transaction/_row.html.twig' with { 'transaction': transaction } %}
             </tr>
         {% endif %}
     {% else %}
@@ -91,6 +87,6 @@
     </tbody>
 </table>
 
-    {% include 'grid/_categoryDropdown.html.twig' %}
+    {% include 'transaction/_categoryDropdown.html.twig' %}
 </turbo-frame>
 {% endblock %}

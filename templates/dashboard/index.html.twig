@@ -4,5 +4,12 @@
     <div class="grid grid-cols-1 gap-4 px-4 pt-6 dark:bg-gray-900">
         <twig:Card title="Dashboard" grid="">
         </twig:Card>
+
+        <ul>
+        {% for item in categories %}
+            <li>{{ item.categoryGroupName }}  -  {{ item.categoryName }}</li>
+        {% endfor %}
+        </ul>
+
     </div>
 {% endblock %}

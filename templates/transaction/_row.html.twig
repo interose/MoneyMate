@@ -1,8 +1,18 @@
-<td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400">
-    {% if splitTransaction is defined %}{% endif%}
+<td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400 w-4">
+    {% if splitTransaction is defined %}
+        <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 3a3 3 0 0 0-1 5.83v6.34a3.001 3.001 0 1 0 2 0V15a2 2 0 0 1 2-2h1a5.002 5.002 0 0 0 4.927-4.146A3.001 3.001 0 0 0 16 3a3 3 0 0 0-1.105 5.79A3.001 3.001 0 0 1 12 11h-1c-.729 0-1.412.195-2 .535V8.83A3.001 3.001 0 0 0 8 3Z"/>
+        </svg>
+    {% endif%}
 </td>
 <td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400">
-    {{ transaction.valutaDate|date('d.m.Y') }}
+    <a
+        href="{{ path('app_transaction_update', {'id': transaction.id}) }}"
+        class=""
+        data-turbo-frame="mdl"
+    >
+        {{ transaction.valutaDate|date('d.m.Y') }}
+    </a>
 </td>
 <td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400">
     {% if splitTransaction is defined %}
@@ -25,7 +35,7 @@
 </td>
 <td
     class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400"
-    data-action="click->grid#showDropdown"
+    data-action="click->transaction#showCategoryDropdown"
     data-transaction-id="{{ transaction.id }}"
     data-split-transaction-id="{% if splitTransaction is defined %}{{ splitTransaction.id }}{% else %}0{% endif %}"
     data-transaction-category-id="{% if splitTransaction is defined and splitTransaction.category %}{{ splitTransaction.category.id }}{% elseif transaction.category %}{{ transaction.category.id }}{% endif %}"
@@ -38,9 +48,9 @@
 </td>
 <td class="p-1 px-2 pe-4 text-xs font-normal text-right text-gray-600 whitespace-nowrap dark:text-gray-400">
     {% if transaction.isCredit %}
-        {% set fontClass = 'text-green-500' %}
+        {% set fontClass = 'text-green-800' %}
     {% else %}
-        {% set fontClass = 'text-red-600' %}
+        {% set fontClass = 'text-red-800' %}
     {% endif %}
 
     {% if splitTransaction is defined %}

@@ -4,7 +4,7 @@
             <div class="flex items-center justify-start">
 
                 <form
-                    action="{{ path('app_grid_monthly') }}"
+                    action="{{ path('app_transaction_index') }}"
                     method="GET"
                     class="block"
                     data-controller="autosubmit"
@@ -20,11 +20,12 @@
                             name="query"
                             value="{{ app.request.query.get('query') }}"
                             aria-label="Search transactions"
-                            placeholder="Search transactions"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-{#                                placeholder="&#8984; + T"#}
+                            placeholder="&#8984;K"
                             data-action="autosubmit#debouncedSubmit"
                         >
+                        <input type="hidden" name="sort" value="valutaDate" />
+                        <input type="hidden" name="sortDirection" value="DESC" />
                     </div>
                 </form>
             </div>

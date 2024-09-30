@@ -16,28 +16,30 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-    //    /**
-    //     * @return Category[] Returns an array of Category objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getCategoriesForDropdown(): array
+    {
+//        $qb = $this->createQueryBuilder('c');
+//        $qb->addSelect('g');
+//        $qb->leftJoin('c.categoryGroup', 'g');
+//        $qb->addOrderBy('ISNULL(g.name)');
+//        $qb->addOrderBy('g.name', 'asc');
+//        $qb->addOrderBy('c.name', 'asc');
 
-    //    public function findOneBySomeField($value): ?Category
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+
+
+        $sql = <<<SQL
+SELECT c.id, c.name AS categoryName, cg.name AS categoryGroupName
+FROM category c
+LEFT JOIN category_group cg on c.category_group_id = cg.id
+ORDER BY ISNULL(cg.name), cg.name ASC, c.name ASC
+;
+SQL;
+
+        $entityManager = $this->getEntityManager();
+        $stmt = $entityManager->getConnection()->prepare($sql);
+
+        $result = $stmt->executeQuery();
+
+        return $result->fetchAllAssociative();
+    }
 }

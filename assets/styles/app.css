@@ -16,3 +16,71 @@ body {
     -webkit-font-smoothing: antialiased;
     text-shadow: rgba(0, 0, 0, .01) 0 0 1px;
 }
+
+.tooltip-arrow {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: inherit;
+    transform: rotate(45deg);
+}
+
+/* tom-select custom styling */
+/* Base Styles for Dark Mode */
+.ts-wrapper .ts-control,
+.ts-wrapper.single .ts-control,
+.ts-wrapper.single.input-active .ts-control,
+.full .ts-control,
+.ts-dropdown {
+    @apply bg-gray-50 dark:bg-gray-800 text-gray-900 !important;
+    box-shadow: none !important;
+    background-image: none !important;
+    /*border: none !important;*/
+}
+.ts-wrapper .ts-control {
+    @apply border border-gray-300 rounded p-1 !important;
+}
+.ts-wrapper {
+    min-height: 26px !important;
+    width: 100%;
+}
+
+.ts-control {
+    @apply flex !important;
+}
+/* Specific Style for the Input Field */
+.ts-wrapper .ts-control > input,
+.ts-wrapper.single .ts-control > input {
+    @apply bg-transparent text-gray-900;
+}
+.ts-wrapper .ts-dropdown .option {
+    /*@apply bg-gray-800 text-white;*/
+}
+/* Active and Hover States for Dropdown Items */
+.ts-wrapper .ts-dropdown .active,
+.ts-wrapper .ts-dropdown [data-selectable]:hover {
+    /*@apply bg-gray-700 text-white;*/
+}
+/* Disabled and Focus States */
+.ts-wrapper.disabled .ts-control,
+.ts-wrapper.focus .ts-control {
+    @apply bg-gray-700 text-gray-400 border-gray-500;
+}
+/* Multi-select Tags Style */
+.ts-wrapper.multi .ts-control > div {
+    @apply bg-gray-600 text-white;
+}
+/* Border Radius Adjustments */
+.ts-wrapper .ts-control,
+.ts-wrapper .ts-dropdown,
+.ts-wrapper .ts-control > div {
+
+}
+/* Dropdown Box Shadow */
+.ts-wrapper .ts-dropdown {
+    @apply shadow-md;
+}
+
+.ts-wrapper .clear-button {
+    display: none;
+}

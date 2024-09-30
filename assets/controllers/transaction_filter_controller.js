@@ -1,9 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
-import 'flowbite/dist/flowbite.turbo.min.js';
+import debounce from 'debounce';
 
 export default class extends Controller {
 
-    static targets = ['output', 'mrOutputMonth', 'mrOutputYear', 'dropdown', 'monthOverviewCol', 'yearOverviewCol', 'form'];
+    static targets = ['output', 'mrOutputMonth', 'mrOutputYear', 'dropdown', 'monthOverviewCol', 'yearOverviewCol', 'form', 'searchQuery', 'searchQueryReset', 'searchQueryShortcut'];
 
     static values = {
         month: Number,
@@ -15,11 +15,18 @@ export default class extends Controller {
     #monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
     #dropdown = null;
 
+    initialize() {
+        this.debouncedSubmit = debounce(this.debouncedSubmit.bind(this), 500);
+    }
+
     connect() {
+        this.#resetSearchQuery();
         this.#initDropdown();
     }
 
     prev() {
+        this.#resetSearchQuery();
+
         if (1 == this.monthValue) {
             this.monthValue = 12;
             this.yearValue--;
@@ -32,6 +39,8 @@ export default class extends Controller {
     }
 
     next() {
+        this.#resetSearchQuery();
+
         if (12 == this.monthValue) {
             this.monthValue = 1;
             this.yearValue++;
@@ -85,6 +94,23 @@ export default class extends Controller {
         this.#setDropdownYearCol();
     }
 
+    debouncedSubmit() {
+        this.searchQueryResetTarget.classList.remove('hidden');
+        this.searchQueryShortcutTarget.classList.add('hidden');
+
+        this.formTarget.requestSubmit();
+    }
+
+    clearSearchQuery() {
+        this.#resetSearchQuery();
+    }
+
+    focusSearch(event) {
+        event.preventDefault();
+
+        this.searchQueryTarget.focus();
+    }
+
     #initDropdown() {
         const options = {
             placement: 'bottom',
@@ -120,7 +146,6 @@ export default class extends Controller {
             div.classList.remove('bg-gray-100');
         }
     }
-
     #setDropdownYearCol() {
         this.yearOverviewColTarget.querySelector(`div [data-value="${this.dropdownYearValue}"]`).classList.add('bg-gray-100');
     }
@@ -129,5 +154,12 @@ export default class extends Controller {
         for (const div of list) {
             div.classList.remove('bg-gray-100');
         }
+    }
+
+    #resetSearchQuery() {
+        this.searchQueryTarget.value = "";
+
+        this.searchQueryResetTarget.classList.add('hidden');
+        this.searchQueryShortcutTarget.classList.remove('hidden');
     }
 }

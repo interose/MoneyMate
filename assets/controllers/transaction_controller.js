@@ -6,7 +6,7 @@ export default class extends Controller {
 
     static targets = ['dropdown', 'dropdownTransactionValue', 'dropdownSplitTransactionValue', 'dropdownForm', 'dropdownSelect'];
 
-    showDropdown(event) {
+    showCategoryDropdown(event) {
         const tooltip = this.dropdownTarget;
 
         this.dropdownTransactionValueTarget.value = event.target.dataset.transactionId;
@@ -15,7 +15,8 @@ export default class extends Controller {
 
         tooltip.classList.remove('hidden');
         computePosition(event.target, tooltip, {
-            middleware: [flip(), offset({mainAxis: -25, crossAxis: -24})],
+            placement: 'bottom-start',
+            // middleware: [flip(), offset({mainAxis: -25, crossAxis: -24})],
         }).then(({x, y}) => {
             Object.assign(tooltip.style, {
                 left: `${x}px`,

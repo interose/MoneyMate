@@ -6,9 +6,9 @@
 <turbo-stream action="update" target="{{ target }}">
     <template>
         {% if splitTransaction is defined %}
-            {% include 'grid/_row.html.twig' with { 'transaction': transaction, 'splitTransaction': splitTransaction } %}
+            {% include 'transaction/_row.html.twig' with { 'transaction': transaction, 'splitTransaction': splitTransaction } %}
         {% else %}
-            {% include 'grid/_row.html.twig' with { 'transaction': transaction } %}
+            {% include 'transaction/_row.html.twig' with { 'transaction': transaction } %}
         {% endif %}
     </template>
 </turbo-stream>
