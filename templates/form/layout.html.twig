@@ -1,13 +1,61 @@
 {% use '@TalesFromADevFlowbite/form/default.html.twig' %}
 
 {% block class_input_error -%}
-    bg-red-50 border-red-300 text-red-800 placeholder-red-800 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 dark:placeholder-red-400 focus:z-10 focus:ring-red-500 focus:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500
+    bg-white border-red-800 text-red-800 placeholder-red-800 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 dark:placeholder-red-400 focus:z-10 focus:ring-red-500 focus:border-red-800 dark:focus:ring-red-500 dark:focus:border-red-500
 {%- endblock class_input_error %}
 
 {% block class_text_error -%}
-    mt-2 text-sm text-red-800 dark:text-red-400
+    {%- if help is empty -%}
+        mb-4 mt-2 text-xs text-red-800 dark:text-red-400
+    {%- else -%}
+        mt-2 text-xs text-red-800 dark:text-red-400
+    {%- endif -%}
 {%- endblock class_text_error %}
 
 {% block class_label_error -%}
-    block mb-2 text-sm font-medium text-red-800 dark:text-red-400
+    absolute text-sm text-red-800 dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
 {%- endblock class_label_error %}
+
+{% block class_input_text -%}
+    block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-700 peer
+{%- endblock class_input_text %}
+
+{% block class_label -%}
+    absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-700 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1
+{%- endblock class_label %}
+
+{% block class_help_text -%}
+    mt-2 text-xs text-gray-500 dark:text-gray-400
+{%- endblock class_help_text %}
+
+{%- block form_row -%}
+    {%- if errors|length > 0 or help is not empty -%}
+        {%- set row_attr = row_attr|merge({'class': (row_attr.class|default(''))~' '~'relative'|trim}) -%}
+    {% else %}
+        {%- set row_attr = row_attr|merge({'class': (row_attr.class|default('mb-3'))~' '~'relative'|trim}) -%}
+    {%- endif -%}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_label(form) -}}
+    </div>
+    {{- form_errors(form) -}}
+    {{- form_help(form) -}}
+{%- endblock form_row -%}
+
+{% block form_help -%}
+    {%- if help is not empty -%}
+        {%- set help_attr_class = (block('class_help_text') ~ ' '~ help_attr.class|default('inline-flex items-center mb-4'))|trim -%}
+
+        {%- set help_attr = help_attr|merge({'class': help_attr_class}) -%}
+        <p id="{{ id }}_help"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+            <svg class="size-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.008-3.018a1.502 1.502 0 0 1 2.522 1.159v.024a1.44 1.44 0 0 1-1.493 1.418 1 1 0 0 0-1.037.999V14a1 1 0 1 0 2 0v-.539a3.44 3.44 0 0 0 2.529-3.256 3.502 3.502 0 0 0-7-.255 1 1 0 0 0 2 .076c.014-.398.187-.774.48-1.044Zm.982 7.026a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2h-.01Z" clip-rule="evenodd"/>
+            </svg>
+            {{- block('form_help_content') -}}
+        </p>
+    {%- endif -%}
+{%- endblock form_help %}

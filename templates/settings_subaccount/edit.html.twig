@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <twig:Header title=""></twig:Header>
+
+    <div class="grid grid-cols-6 gap-4 px-4 pt-6 dark:bg-gray-900">
+        <twig:Card title="Edit Subaccount" grid="col-start-2 col-end-5">
+            <turbo-frame id="mdl">
+
+                {% if app.request.headers.get('turbo-frame') is not empty %}
+                    <twig:ModalHeader><i class="fa-solid fa-tag me-2.5"></i>Edit Subaccount</twig:ModalHeader>
+                {% endif %}
+
+                {{ include('settings_subaccount/_form.html.twig') }}
+            </turbo-frame>
+        </twig:Card>
+    </div>
+{% endblock %}

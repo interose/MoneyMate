@@ -5,41 +5,109 @@
         <div class="sm:flex">
             <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
                 <a
-                    class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-[#112D4E] rounded-lg hover:bg-[#112D4E]/90 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    href="{{ path('app_settings_account_new') }}"
+                    class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-[#112D4E] rounded-lg hover:bg-[#112D4E]/90 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700"
+                    href="{{ path('app_settings_account_step1') }}"
                 >
                     <svg class="w-3 h-3 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>
                     </svg>
-                    Add Account
+                    Account-Wizzard
                 </a>
             </div>
         </div>
     </twig:Header>
 
-    <div class="grid grid-cols-3 gap-4 px-4 pt-6 dark:bg-gray-900">
-        {% for account in accounts %}
-            <twig:Card padding="p-4">
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="col-span-1 flex justify-items-center content-center items-center">
-                        {% if account.logo %}
-                            <img src="{{ asset('uploads/logos/'~account.logo) }}" />
-                        {% endif %}
-                    </div>
-                    <div class="col-span-2 text-xs space-y-1 text-slate-700">
-                        <p class="font-bold">{{ account.name }}</p>
-                        <p>{{ account.accountHolder }}</p>
-                        <p>{{ account.iban }}</p>
-                        <p>{{ account.bic }} - {{ account.bankCode }}</p>
-
-                        <div class="flex justify-end pt-3">
-                            <a href="{{ path('app_settings_account_edit', {'id': account.id}) }}">
-                                <i class="fa-solid fa-square-pen text-lg hover:text-gray-900"></i>
+    <twig:Content>
+        <table
+            class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+            data-controller="account-table"
+        >
+            <thead class="bg-gray-100 dark:bg-gray-700">
+            <tr>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"></th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Name</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">BIC / BLZ</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">HBCI</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"></th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"></th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+            {% for account in accounts %}
+                <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
+                        {% if account.subAccounts.count > 0 %}
+                            <a href="#" data-action="click->account-table#toggle" data-account-table-target-param="account-{{ account.id }}">
+                            <svg class="size-4 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path class="subaccounts-expanded:hidden block" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                <path class="subaccounts-expanded:block hidden" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                            </svg>
                             </a>
-                        </div>
-                    </div>
-                </div>
-            </twig:Card>
-        {% endfor %}
-    </div>
+                        {% endif %}
+                    </td>
+                    <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ account.name }}</td>
+                    <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ account.bic }} / {{ account.bankCode }}</td>
+                    <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ account.url }}</td>
+                    <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 text-center"></td>
+                    <td class="p-3 pe-6 space-x-2 text-gray-500 whitespace-nowrap text-right">
+                        <a
+                            href="{{ path('app_settings_account_step1', {'id': account.id}) }}"
+                        >
+                            <i class="fa-solid fa-square-pen text-lg hover:text-gray-900"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% if account.subAccounts.count > 0 %}
+                    <tr id="account-{{ account.id }}" class="hidden">
+                        <td>&nbsp;</td>
+
+                        <td colspan="5">
+                            <div class="flex flex-col p-3 text-xs font-normal text-gray-500">
+                                {% for subAccount in account.subAccounts %}
+                                    <div class="flex flex-row gap-16">
+                                        <span>
+                                        {% if subAccount.description is empty %}
+                                            <i>No description</i>
+                                        {% else %}
+                                            {{ subAccount.description }}
+                                        {% endif %}
+                                        </span>
+
+                                        <span><b>IBAN:</b> {{ subAccount.iban }}</span>
+                                        <span><b>Account Number:</b> {{ subAccount.accountNumber }}</span>
+                                        <span class="flex flex-row">
+                                            <b>Enabled:</b>
+                                            {% if subAccount.enabled %}
+                                                <svg class="size-4 text-emerald-700 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                                                </svg>
+                                            {% else %}
+                                                <svg class="size-4 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                                </svg>
+                                            {% endif %}
+                                        </span>
+
+                                        <span class="grow flex justify-end pe-3">
+                                            <a
+                                                href="{{ path('app_settings_subaccount_edit', {'id': subAccount.id}) }}"
+                                                data-turbo-frame="mdl"
+                                            >
+                                                <i class="fa-solid fa-square-pen text-lg hover:text-gray-900"></i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% else %}
+                <tr>
+                    <td colspan="6" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">No records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </twig:Content>
 {% endblock %}

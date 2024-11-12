@@ -18,54 +18,46 @@ class Account
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['new', 'edit'])]
+    #[Assert\NotBlank(groups: ['step1'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['new', 'edit'])]
-    private ?string $accountHolder = null;
-
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['new', 'edit'])]
-    #[Assert\Iban(groups: ['new', 'edit'])]
-    private ?string $iban = null;
-
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['new', 'edit'])]
-    #[Assert\Bic(groups: ['new', 'edit'])]
+    #[Assert\NotBlank(groups: ['step1'])]
+    #[Assert\Bic(groups: ['step1'])]
     private ?string $bic = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['new', 'edit'])]
+    #[Assert\NotBlank(groups: ['step1'])]
     private ?string $bankCode = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['new', 'edit'])]
-    #[Assert\Url(groups: ['new', 'edit'])]
+    #[Assert\NotBlank(groups: ['step1'])]
+    #[Assert\Url(groups: ['step1'])]
     private ?string $url = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(groups: ['new', 'edit_credentials'])]
+    #[Assert\NotBlank(groups: ['step3'])]
     private ?string $tanMediaName = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotBlank(groups: ['new', 'edit_credentials'])]
-    #[Assert\Positive(groups: ['new', 'edit_credentials'], message: 'Please choose a valid number.')]
+    #[Assert\NotBlank(groups: ['step3'])]
+    #[Assert\Positive(groups: ['step3'], message: 'Please choose a valid number.')]
     private ?int $tanMechanism = null;
 
     #[ORM\Column(type: Types::BINARY, nullable: true)]
-    #[Assert\NotBlank(groups: ['new', 'edit_credentials'])]
-    private $username = null;
+    #[Assert\NotBlank(groups: ['step2'])]
+    private $username;
 
     #[ORM\Column(type: Types::BINARY, nullable: true)]
-    #[Assert\NotBlank(groups: ['new', 'edit_credentials'])]
-    private $password = null;
+    #[Assert\NotBlank(groups: ['step2'])]
+    private $password;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Image(groups: ['new', 'edit'], maxSize: '2048K')]
+    #[Assert\Image(groups: ['step4'], maxSize: '2048K')]
     private ?string $logo = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(groups: ['step4'])]
     private ?string $backgroundColor = null;
 
     /**
@@ -75,11 +67,26 @@ class Account
     private Collection $subAccounts;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(groups: ['step4'])]
     private ?string $foregroundColor = null;
 
     public function __construct()
     {
         $this->subAccounts = new ArrayCollection();
+    }
+
+    public function isFinal(): bool
+    {
+        return
+            strlen($this->name) > 0
+            && strlen($this->bic) > 0
+            && strlen($this->bankCode) > 0
+            && strlen($this->url) > 0
+            && strlen($this->tanMediaName) > 0
+            && $this->tanMechanism > 0
+            && !is_null($this->username)
+            && !is_null($this->password)
+        ;
     }
 
     public function getId(): ?int
@@ -107,18 +114,6 @@ class Account
     public function setAccountHolder(string $accountHolder): static
     {
         $this->accountHolder = $accountHolder;
-
-        return $this;
-    }
-
-    public function getIban(): ?string
-    {
-        return $this->iban;
-    }
-
-    public function setIban(string $iban): static
-    {
-        $this->iban = $iban;
 
         return $this;
     }

@@ -16,10 +16,6 @@ class CurrentBalance
     #[ORM\Column]
     private ?int $balance = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?SubAccount $subAccount = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -33,18 +29,6 @@ class CurrentBalance
     public function setBalance(int $balance): static
     {
         $this->balance = $balance;
-
-        return $this;
-    }
-
-    public function getSubAccount(): ?SubAccount
-    {
-        return $this->subAccount;
-    }
-
-    public function setSubAccount(SubAccount $subAccount): static
-    {
-        $this->subAccount = $subAccount;
 
         return $this;
     }

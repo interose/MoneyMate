@@ -19,13 +19,7 @@ class SubAccount
     private ?string $iban = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $bic = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $accountNumber = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $blz = null;
 
     #[ORM\ManyToOne(inversedBy: 'subAccounts')]
     #[ORM\JoinColumn(nullable: false)]
@@ -42,9 +36,6 @@ class SubAccount
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?CurrentBalance $currentBalance = null;
 
     public function __construct()
     {
@@ -80,18 +71,6 @@ class SubAccount
         return $this;
     }
 
-    public function getBic(): ?string
-    {
-        return $this->bic;
-    }
-
-    public function setBic(string $bic): static
-    {
-        $this->bic = $bic;
-
-        return $this;
-    }
-
     public function getAccountNumber(): ?string
     {
         return $this->accountNumber;
@@ -100,18 +79,6 @@ class SubAccount
     public function setAccountNumber(string $accountNumber): static
     {
         $this->accountNumber = $accountNumber;
-
-        return $this;
-    }
-
-    public function getBlz(): ?string
-    {
-        return $this->blz;
-    }
-
-    public function setBlz(string $blz): static
-    {
-        $this->blz = $blz;
 
         return $this;
     }
@@ -166,18 +133,6 @@ class SubAccount
                 $transaction->setSubAccount(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCurrentBalance(): ?CurrentBalance
-    {
-        return $this->currentBalance;
-    }
-
-    public function setCurrentBalance(?CurrentBalance $currentBalance): static
-    {
-        $this->currentBalance = $currentBalance;
 
         return $this;
     }

@@ -84,3 +84,17 @@ body {
 .ts-wrapper .clear-button {
     display: none;
 }
+
+input[type="file"]::file-selector-button {
+    -webkit-margin-start: -1rem;
+    -webkit-margin-end: 1rem;
+    background: #1f2937;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    font-size: .875rem;
+    font-weight: 500;
+    margin-inline-end: 1rem;
+    margin-inline-start: -1rem;
+    padding: .625rem 1rem .625rem 2rem;
+}

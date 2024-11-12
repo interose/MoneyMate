@@ -4,8 +4,7 @@
         <meta charset="UTF-8">
         <title>{% block title %}{% endblock %}</title>
         <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon" />
-        {% block stylesheets %}
-        {% endblock %}
+        {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
@@ -58,7 +57,7 @@
                 id="mdl"
                 data-mdl-target="dynamicContent"
                 class="aria-busy:opacity-50 transition-opacity"
-                data-turbo-form-redirect="true"
+{#                data-turbo-form-redirect="true"#}
             >
                 <turbo-stream action="append" target="flash-container">
                     <template>{{ include('_flashes.html.twig') }}</template>

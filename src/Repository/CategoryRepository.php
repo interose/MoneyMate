@@ -18,21 +18,11 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function getCategoriesForDropdown(): array
     {
-//        $qb = $this->createQueryBuilder('c');
-//        $qb->addSelect('g');
-//        $qb->leftJoin('c.categoryGroup', 'g');
-//        $qb->addOrderBy('ISNULL(g.name)');
-//        $qb->addOrderBy('g.name', 'asc');
-//        $qb->addOrderBy('c.name', 'asc');
-
-
-
         $sql = <<<SQL
-SELECT c.id, c.name AS categoryName, cg.name AS categoryGroupName
+SELECT c.id AS id, c.name AS categoryName, cg.name AS categoryGroupName
 FROM category c
 LEFT JOIN category_group cg on c.category_group_id = cg.id
 ORDER BY ISNULL(cg.name), cg.name ASC, c.name ASC
-;
 SQL;
 
         $entityManager = $this->getEntityManager();

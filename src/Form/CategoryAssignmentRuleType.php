@@ -18,6 +18,9 @@ class CategoryAssignmentRuleType extends AbstractType
         $builder
             ->add('rule', TextType::class, [
                 'label' => 'Rule',
+                'attr' => [
+                    'placeholder' => ' ',
+                ],
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'Type',

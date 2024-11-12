@@ -4,11 +4,11 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\CategoryGroup;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use TalesFromADev\FlowbiteBundle\Form\Type\SwitchType;
 
 class CategoryType extends AbstractType
@@ -24,13 +24,19 @@ class CategoryType extends AbstractType
                 'expanded' => false,
                 'placeholder' => 'Please select',
                 'required' => false,
+                'attr' => [
+                    'placeholder' => ' ',
+                ],
             ])
             ->add('name', TextType::class, [
                 'label' => 'Name',
+                'attr' => [
+                    'placeholder' => ' ',
+                ],
             ])
             ->add('treeIgnore', SwitchType::class, [
                 'label' => 'Tree Ignore',
-                'required' => false
+                'required' => false,
             ])
             ->add('dashboardIgnore', SwitchType::class, [
                 'label' => 'Dashboard Ignore',

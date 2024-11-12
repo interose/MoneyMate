@@ -24,7 +24,7 @@ class TransactionController extends AbstractController
     #[Route('/transaction', name: 'app_transaction_index', methods: ['GET'])]
     public function index(
         TransactionRepository $repository,
-        CategoryGroupRepository $groupRepository,
+        CategoryRepository $categoryRepository,
         #[MapQueryParameter] int $month = null,
         #[MapQueryParameter] int $year = null,
         #[MapQueryParameter] string $sort = 'valutaDate',
@@ -49,7 +49,7 @@ class TransactionController extends AbstractController
             'year' => $year,
             'sort' => $sort,
             'sortDirection' => $sortDirection,
-            'categoryGroups' => $groupRepository->getByName(),
+            'categories' => $categoryRepository->getCategoriesForDropdown(),
             'query' => $query
         ]);
     }
@@ -119,18 +119,20 @@ class TransactionController extends AbstractController
         ]);
     }
 
-    #[Route('/transaction/get-categories', name: 'app_transaction_get_categories', methods: ['GET'])]
-    public function getCategories(CategoryRepository $repository): JsonResponse
-    {
-        $categories = $repository->findBy([], ['categoryGroup' => 'ASC', 'name' => 'ASC']);
+//    #[Route('/transaction/get-categories', name: 'app_transaction_get_categories', methods: ['GET'])]
+//    public function getCategories(CategoryRepository $repository): JsonResponse
+//    {
+//        $categories = $repository->findBy([], ['categoryGroup' => 'ASC', 'name' => 'ASC']);
 
-        $result = array_map(function(Category $category) {
-            return [
-                'value' => $category->getId(),
-                'text' => $category->getCategoryGroup() ? $category->getCategoryGroup()->getName().':'.$category->getName() : $category->getName(),
-            ];
-        }, $categories);
+//        $result = array_map(function(Category $category) {
+//            return [
+//                'value' => $category->getId(),
+//                'text' => $category->getCategoryGroup() ? $category->getCategoryGroup()->getName().':'.$category->getName() : $category->getName(),
+//            ];
+//        }, $categories);
 
-        return new JsonResponse(['results' => $result]);
-    }
+//        $result = $repository->getCategoriesForDropdown();
+//
+//        return new JsonResponse(['results' => $result]);
+//    }
 }
