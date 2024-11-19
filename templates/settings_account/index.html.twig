@@ -24,11 +24,12 @@
         >
             <thead class="bg-gray-100 dark:bg-gray-700">
             <tr>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"></th>
+                <th scope="col" class="w-10 p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"></th>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Name</th>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">BIC / BLZ</th>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">HBCI</th>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"></th>
+                <th scope="col" class="w-16 p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Logo</th>
+                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Colors</th>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400"></th>
             </tr>
             </thead>
@@ -48,55 +49,66 @@
                     <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ account.name }}</td>
                     <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ account.bic }} / {{ account.bankCode }}</td>
                     <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ account.url }}</td>
-                    <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 text-center"></td>
+                    <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 text-center">
+                        {% if account.logo %}
+                            <img src="{{ asset('uploads/logos/'~account.logo) }}" class="max-h-8 max-w-16 inline-block" />
+                        {% endif %}
+                    </td>
+                    <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 text-center">
+                        <div class="inline-block size-6 border" style="background-color: {{ account.foregroundColor }}"></div>
+                        <div class="inline-block size-6 border" style="background-color: {{ account.backgroundColor }}"></div>
+                    </td>
                     <td class="p-3 pe-6 space-x-2 text-gray-500 whitespace-nowrap text-right">
-                        <a
-                            href="{{ path('app_settings_account_step1', {'id': account.id}) }}"
-                        >
-                            <i class="fa-solid fa-square-pen text-lg hover:text-gray-900"></i>
-                        </a>
+{#                        <a#}
+{#                            href="{{ path('app_settings_account_step1', {'id': account.id}) }}"#}
+{#                        >#}
+{#                            <i class="fa-solid fa-square-pen text-lg hover:text-gray-900"></i>#}
+{#                        </a>#}
+
+                        <a href="{{ path('app_settings_account_edit_credentials', {'id': account.id}) }}" title="Edit credentials" data-turbo-frame="mdl"><i class="fa-solid fa-key"></i></a>
+                        <a href="{{ path('app_settings_account_edit_tan', {'id': account.id}) }}" title="Edit TAN Mode" data-turbo-frame="mdl"><i class="fa-regular fa-credit-card"></i></a>
+                        <a href="{{ path('app_settings_account_edit_basic', {'id': account.id}) }}" title="Edit" data-turbo-frame="mdl"><i class="fa-solid fa-pen"></i></a>
                     </td>
                 </tr>
                 {% if account.subAccounts.count > 0 %}
-                    <tr id="account-{{ account.id }}" class="hidden">
-                        <td>&nbsp;</td>
-
-                        <td colspan="5">
-                            <div class="flex flex-col p-3 text-xs font-normal text-gray-500">
+                    <tr id="account-{{ account.id }}" class="{% if editedAccountId != 0 and editedAccountId == account.id %}{% else %}hidden{% endif %}">
+                        <td class="p-3 text-xs font-normal text-gray-500 whitespace-nowrap dark:text-gray-400"></td>
+                        <td class="p-3" colspan="6">
+                            <h5 class="mb-3">Subaccounts</h5>
+                            <div class="flex flex-row flex-wrap gap-4">
                                 {% for subAccount in account.subAccounts %}
-                                    <div class="flex flex-row gap-16">
-                                        <span>
-                                        {% if subAccount.description is empty %}
-                                            <i>No description</i>
-                                        {% else %}
-                                            {{ subAccount.description }}
-                                        {% endif %}
-                                        </span>
-
-                                        <span><b>IBAN:</b> {{ subAccount.iban }}</span>
-                                        <span><b>Account Number:</b> {{ subAccount.accountNumber }}</span>
-                                        <span class="flex flex-row">
-                                            <b>Enabled:</b>
-                                            {% if subAccount.enabled %}
-                                                <svg class="size-4 text-emerald-700 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                                                </svg>
+                                    <a
+                                        href="{{ path('app_settings_subaccount_edit', {'id': subAccount.id}) }}"
+                                        data-turbo-frame="mdl"
+                                        class="block group relative text-xs font-normal p-4 border rounded-lg text-gray-600 dark:text-gray-400 bg-gray-50 space-y-1"
+                                    >
+                                        <i class="absolute invisible group-hover:visible top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600 text-2xl fa-solid fa-pen"></i>
+                                        <div class="group-hover:opacity-50">
+                                            {% if subAccount.description is empty %}
+                                            <p class="text-gray-500/50"><i>No description</i></p>
                                             {% else %}
-                                                <svg class="size-4 text-red-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
-                                                </svg>
+                                            <p><b>{{ subAccount.description }}</b></p>
                                             {% endif %}
-                                        </span>
-
-                                        <span class="grow flex justify-end pe-3">
-                                            <a
-                                                href="{{ path('app_settings_subaccount_edit', {'id': subAccount.id}) }}"
-                                                data-turbo-frame="mdl"
-                                            >
-                                                <i class="fa-solid fa-square-pen text-lg hover:text-gray-900"></i>
-                                            </a>
-                                        </span>
-                                    </div>
+                                            <div class="flex flex-row">
+                                                <div class="text-gray-500/50 mr-4">IBAN</div>
+                                                <div class="grow flex justify-end"><b>{{ subAccount.iban }}</b></div>
+                                            </div>
+                                            <div class="flex flex-row">
+                                                <div class="text-gray-500/50 mr-4">Account Number</div>
+                                                <div class="grow flex justify-end"><b>{{ subAccount.accountNumber }}</b></div>
+                                            </div>
+                                            <div class="flex flex-row">
+                                                <div class="text-gray-500/50 mr-4">Enabled</div>
+                                                <div class="grow flex justify-end">
+                                                    {% if subAccount.enabled %}
+                                                        <i class="text-emerald-700 fa-solid fa-circle-check"></i>
+                                                    {% else %}
+                                                        <i class="text-red-700 fa-solid fa-circle-xmark"></i>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                 {% endfor %}
                             </div>
                         </td>
@@ -104,7 +116,7 @@
                 {% endif %}
             {% else %}
                 <tr>
-                    <td colspan="6" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">No records found</td>
+                    <td colspan="7" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">No records found</td>
                 </tr>
             {% endfor %}
             </tbody>

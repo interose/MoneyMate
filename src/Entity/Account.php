@@ -53,7 +53,7 @@ class Account
     private $password;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Image(groups: ['step4'], maxSize: '2048K')]
+    #[Assert\Image(groups: ['step5'], maxSize: '1048K', maxWidth: 1024, maxHeight: 1024)]
     private ?string $logo = null;
 
     #[ORM\Column(length: 255, nullable: true)]

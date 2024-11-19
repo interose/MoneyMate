@@ -9,16 +9,15 @@ use App\Form\AccountStep3Type;
 use App\Form\AccountStep4Type;
 use App\Lib\FinTs\Factory;
 use App\Lib\FinTs\TanRequiredException;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use App\Lib\SubAccountUpdater;
 use App\Repository\AccountRepository;
 use App\Repository\SubAccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -51,9 +50,6 @@ class SettingsAccountWizzardController extends AbstractController
             $entityManager->persist($account);
             $entityManager->flush();
 
-            $test1 = $form->getClickedButton();
-            $test2 = $form->getClickedButton()->getName();
-
             return $this->redirectToRoute('app_settings_account_step2', ['id' => $account->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -64,8 +60,12 @@ class SettingsAccountWizzardController extends AbstractController
     }
 
     #[Route('/{id}/step2', name: 'app_settings_account_step2', methods: ['GET', 'POST'])]
-    public function step2(Request $request, Account $account, AccountRepository $repository, ParameterBagInterface $bag): Response
-    {
+    public function step2(
+        Request $request,
+        Account $account,
+        AccountRepository $repository,
+        ParameterBagInterface $bag
+    ): Response {
         $form = $this->createForm(AccountStep2Type::class, $account, [
             'action' => $this->generateUrl('app_settings_account_step2', ['id' => $account->getId()]),
             'validation_groups' => 'step2',
@@ -95,8 +95,12 @@ class SettingsAccountWizzardController extends AbstractController
     }
 
     #[Route('/{id}/step3', name: 'app_settings_account_step3', methods: ['GET', 'POST'])]
-    public function step3(Request $request, Account $account, EntityManagerInterface $entityManager, Factory $finTsFactory): Response
-    {
+    public function step3(
+        Request $request,
+        Account $account,
+        EntityManagerInterface $entityManager,
+        Factory $finTsFactory
+    ): Response {
         $formHasFinTsError = false;
         $formFinTsErrorMessage = '';
 
@@ -134,27 +138,6 @@ class SettingsAccountWizzardController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/step3/fetch-tan-media', name: 'app_settings_account_step3_fetch_tan_media', methods: ['GET', 'POST'])]
-    public function step3FetchTanMedia(Request $request, Account $account, Factory $finTsFactory): JsonResponse
-    {
-        if (!$request->query->has('tan-mode')) {
-            return new JsonResponse('', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $tanMode = $request->query->getInt('tan-mode');
-
-        try {
-            $finTs = $finTsFactory->getFinTs($account);
-            $tanMedia = array_map(function ($medium) {
-                return ['name' => $medium->getName(), 'phoneNumber' => $medium->getPhoneNumber()];
-            }, $finTs->getTanMedia($tanMode));
-        } catch (\Exception $e) {
-            return new JsonResponse('', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        return new JsonResponse($tanMedia);
-    }
-
     #[Route('/{id}/step4', name: 'app_settings_account_step4', methods: ['GET', 'POST'])]
     public function step4(
         Request $request,
@@ -169,13 +152,13 @@ class SettingsAccountWizzardController extends AbstractController
         $tan = $request->request->get('tan');
 
         try {
-//            $finTs = $finTsFactory->getFinTs($account);
-//            $subAccounts = $finTs->getAllAccounts($tan);
+            $finTs = $finTsFactory->getFinTs($account);
+            $subAccounts = $finTs->getAllAccounts($tan);
 
-//            $updater->createOrUpdate($account, $subAccounts);
+            $updater->createOrUpdate($account, $subAccounts);
         } catch (TanRequiredException $e) {
-            //@Todo
-            die($e->getMessage());
+            // @Todo
+            exit($e->getMessage());
         } catch (\Exception $e) {
             return $this->render('settings_account_wizzard/step4Error.html.twig', [
                 'account' => $account,
@@ -193,7 +176,7 @@ class SettingsAccountWizzardController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $logoFile */
-            $logoFile = $form->get('logo')->getData();
+            $logoFile = $form->get('logoFile')->getData();
 
             // this condition is needed because the 'brochure' field is not required
             // so the PDF file must be processed only when a file is uploaded

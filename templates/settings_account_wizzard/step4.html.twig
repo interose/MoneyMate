@@ -8,7 +8,6 @@
             <twig:AccountWizzardStepper currentStep="4" :account="account" />
 
             <h5 class="inline-flex items-center mb-6 text-base font-semibold text-gray-700 dark:text-gray-400">Found and stored the following subaccounts:</h5>
-{#            <h3 class="mb-4 text-[#112D4E]"></h3>#}
 
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
                 <thead>
@@ -26,10 +25,9 @@
                         <td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400">{{ subAccount.accountNumber }}</td>
                         <td class="p-1 px-2 text-xs font-normal text-gray-600 flex justify-center whitespace-nowrap dark:text-gray-400">
                             {% if subAccount.enabled %}
-                                <svg class="size-4 text-emerald-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                                </svg>
-
+                                <i class="text-emerald-700 fa-solid fa-circle-check"></i>
+                            {% else %}
+                                <i class="text-red-700 fa-solid fa-circle-xmark"></i>
                             {% endif %}
                         </td>
                         <td class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400">{{ subAccount.description }}</td>
@@ -50,9 +48,9 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="">
-                    <label for="{{ form.logo.vars.id }}" class="text-xs text-gray-600 dark:text-gray-400 inline-flex">{{ form.logo.vars.label }}</label>
-                    {{ form_widget(form.logo, {'attr': {'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'}}) }}
-                    {{ form_help(form.logo) }}
+                    <label for="{{ form.logoFile.vars.id }}" class="text-xs text-gray-600 dark:text-gray-400 inline-flex">{{ form.logoFile.vars.label }}</label>
+                    {{ form_widget(form.logoFile, {'attr': {'class': 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'}}) }}
+                    {{ form_help(form.logoFile) }}
                 </div>
 
                 <div class="flex flex-row gap-4">

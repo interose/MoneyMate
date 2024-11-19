@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <twig:Header title=""></twig:Header>
+
+    <div class="grid grid-cols-6 gap-4 px-4 pt-6 dark:bg-gray-900">
+        <twig:Card title="Edit Account" grid="col-start-2 col-end-5">
+            <turbo-frame id="mdl">
+
+                {% if app.request.headers.get('turbo-frame') is not empty %}
+                    <twig:ModalHeader>Edit Account</twig:ModalHeader>
+                {% endif %}
+
+                {{ form_start(form) }}
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">{{ form_row(form.name) }}</div>
+                    <div>{{ form_row(form.bic) }}</div>
+                    <div>{{ form_row(form.bankCode) }}</div>
+                    <div class="col-span-2">{{ form_row(form.url) }}</div>
+                    <div class="flex flex-row items-center">
+                        <label for="{{ form.foregroundColor.vars.id }}" class="text-xs text-gray-600 dark:text-gray-400 inline-flex">{{ form.foregroundColor.vars.label }}</label>
+                        {{ form_widget(form.foregroundColor, {'attr': {'class': 'p-1 ms-4 h-10 w-14 bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700'}}) }}
+                    </div>
+                    <div class="flex flex-row items-center">
+                        <label for="{{ form.backgroundColor.vars.id }}" class="text-xs text-gray-600 dark:text-gray-400 inline-flex">{{ form.backgroundColor.vars.label }}</label>
+                        {{ form_widget(form.backgroundColor, {'attr': {'class': 'p-1 ms-4 h-10 w-14 bg-white border border-gray-200 cursor-pointer rounded-lg disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700'}}) }}
+                    </div>
+                    <div class="col-span-2">
+                        <label for="{{ form.logoFile.vars.id }}" class="text-xs text-gray-600 dark:text-gray-400 inline-flex">{{ form.logoFile.vars.label }}</label>
+                        {{ form_widget(form.logoFile) }}
+                        {{ form_help(form.logoFile) }}
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
+                        <i class="fa-solid fa-floppy-disk me-2.5"></i>Save
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </turbo-frame>
+        </twig:Card>
+    </div>
+{% endblock %}

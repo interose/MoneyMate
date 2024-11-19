@@ -35,9 +35,7 @@
                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ category.id }}</td>
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                        {% if category.categoryGroup %}
-                        {{ category.categoryGroup.name }}
-                        {% endif %}
+                        {% if category.categoryGroup %}{{ category.categoryGroup.name }}{% endif %}
                     </td>
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ category.name }}</td>
                     <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 text-center">

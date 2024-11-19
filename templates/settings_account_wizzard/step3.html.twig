@@ -7,7 +7,7 @@
         <twig:Card grid="col-span-8 xl:col-start-2 xl:col-end-8">
             <div
                 data-controller="account-wizzard"
-                data-account-wizzard-url-value="{{ path('app_settings_account_step3_fetch_tan_media', {'id': account.id}) }}"
+                data-account-wizzard-url-value="{{ path('app_settings_account_fetch_tan_media', {'id': account.id}) }}"
             >
                 <twig:AccountWizzardStepper currentStep="3" :account="account" />
 
