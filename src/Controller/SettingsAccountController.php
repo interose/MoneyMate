@@ -187,4 +187,17 @@ class SettingsAccountController extends AbstractController
 
         return new JsonResponse($tanMedia);
     }
+
+    #[Route('/{id}', name: 'app_settings_account_delete', methods: ['POST'])]
+    public function delete(Request $request, Account $account, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$account->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($account);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Account deleted!');
+        }
+
+        return $this->redirectToRoute('app_settings_account_index', [], Response::HTTP_SEE_OTHER);
+    }
 }

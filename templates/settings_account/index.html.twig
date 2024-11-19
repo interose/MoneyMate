@@ -59,15 +59,29 @@
                         <div class="inline-block size-6 border" style="background-color: {{ account.backgroundColor }}"></div>
                     </td>
                     <td class="p-3 pe-6 space-x-2 text-gray-500 whitespace-nowrap text-right">
-{#                        <a#}
-{#                            href="{{ path('app_settings_account_step1', {'id': account.id}) }}"#}
-{#                        >#}
-{#                            <i class="fa-solid fa-square-pen text-lg hover:text-gray-900"></i>#}
-{#                        </a>#}
-
                         <a href="{{ path('app_settings_account_edit_credentials', {'id': account.id}) }}" title="Edit credentials" data-turbo-frame="mdl"><i class="fa-solid fa-key"></i></a>
                         <a href="{{ path('app_settings_account_edit_tan', {'id': account.id}) }}" title="Edit TAN Mode" data-turbo-frame="mdl"><i class="fa-regular fa-credit-card"></i></a>
                         <a href="{{ path('app_settings_account_edit_basic', {'id': account.id}) }}" title="Edit" data-turbo-frame="mdl"><i class="fa-solid fa-pen"></i></a>
+
+                        <twig:Modal :allowSmallWidth="true" class="inline">
+                            <twig:block name="trigger">
+                                <button
+                                    class="ml-4 text-red-400 hover:text-red-600"
+                                    data-action="mdl#open"
+                                ><i class="fa-solid fa-trash"></i></button>
+                            </twig:block>
+
+                            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                Delete this bank account?
+                            </h3>
+
+                            <div class="flex justify-between">
+                                <form method="dialog">
+                                    <button class="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center">Cancel</button>
+                                </form>
+                                {{ include('settings_account/_delete_form.html.twig') }}
+                            </div>
+                        </twig:Modal>
                     </td>
                 </tr>
                 {% if account.subAccounts.count > 0 %}
