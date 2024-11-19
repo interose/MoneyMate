@@ -26,7 +26,7 @@ class SettingsSubAccountController extends AbstractController
 
             $this->addFlash('success', 'Subaccount updated');
 
-            return $this->redirectToRoute('app_settings_account_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_settings_account_index', ['editedAccountId' => $subAccount->getAccount()->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('settings_subaccount/edit.html.twig', [

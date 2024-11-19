@@ -31,11 +31,11 @@ class SubAccount
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'subAccount')]
     private Collection $transactions;
 
-    #[ORM\Column]
-    private ?bool $isEnabled = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column]
+    private ?bool $enabled = null;
 
     public function __construct()
     {
@@ -83,18 +83,6 @@ class SubAccount
         return $this;
     }
 
-    public function isEnabled(): ?bool
-    {
-        return $this->isEnabled;
-    }
-
-    public function setEnabled(bool $isEnabled): static
-    {
-        $this->isEnabled = $isEnabled;
-
-        return $this;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -133,6 +121,18 @@ class SubAccount
                 $transaction->setSubAccount(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): static
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }

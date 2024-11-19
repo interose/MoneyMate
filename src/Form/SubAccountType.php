@@ -20,14 +20,16 @@ class SubAccountType extends AbstractType
             ->add('iban', TextType::class, [
                 'attr' => [
                     'readonly' => 'readonly',
+                    'class' => 'text-gray-500',
                 ],
             ])
             ->add('accountNumber', TextType::class, [
                 'attr' => [
                     'readonly' => 'readonly',
+                    'class' => 'text-gray-500',
                 ],
             ])
-            ->add('isEnabled')
+            ->add('enabled')
             ->add('description')
         ;
     }
