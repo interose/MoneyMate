@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <twig:Header title="Application Settings">
+    </twig:Header>
+
+    <div class="grid grid-cols-8 gap-4 px-4 pt-6 dark:bg-gray-900">
+        <twig:Card grid="col-span-8 xl:col-start-2 xl:col-end-8">
+            <div class="mb-8 border-b">
+                <h3 class="mb-4 font-medium leading-tight">Generic Application Settings</h3>
+                <div class="mb-8">
+                    <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Main Account</p>
+                    <p class=" px-2">{% if settings.mainAccount is defined %}{{ settings.mainAccount.description }} - ({{ settings.mainAccount.accountNumber }}){% endif %}</p>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="mb-4 font-medium leading-tight">Account "Boersenverlag"</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 inline-flex items-center mb-4">
+                    <svg class="size-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.008-3.018a1.502 1.502 0 0 1 2.522 1.159v.024a1.44 1.44 0 0 1-1.493 1.418 1 1 0 0 0-1.037.999V14a1 1 0 1 0 2 0v-.539a3.44 3.44 0 0 0 2.529-3.256 3.502 3.502 0 0 0-7-.255 1 1 0 0 0 2 .076c.014-.398.187-.774.48-1.044Zm.982 7.026a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2h-.01Z" clip-rule="evenodd"></path>
+                    </svg>
+                    Currently, only the import of the Champions list is supported. To use this service, a valid account with <a class="underline underline-offset-4" href="https://www.boersenverlag.de/" target="_blank">"Börsenverlag"</a> is required.
+                </p>
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <div class="mb-3">
+                            <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Enabled</p>
+                            <p class=" px-2">{% if settings.boerseAccountEnabled is defined and settings.boerseAccountEnabled  %}<i class="fa-solid fa-circle-check"></i>{% else %}<i class="fa-solid fa-circle-check"></i>{% endif %}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="mb-3">
+                            <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">User</p>
+                            <p class=" px-2">{% if settings.boersePublisherUser is defined and settings.boersePublisherUser is not empty  %}{{ settings.boersePublisherUser }}{% else %}<i>not set</i>{% endif %}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="mb-3">
+                            <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Password</p>
+                            <p class=" px-2">{% if settings.boersePublisherPw is defined and settings.boersePublisherPw is not empty  %}<i class="fa-solid fa-ellipsis"></i>{% else %}<i>not set</i>{% endif %}</p>
+                        </div>
+                    </div>
+
+                    <div class="col-span-3">
+                        <div class="mb-3">
+                            <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Champion CSV URL</p>
+                            <p class=" px-2">{% if settings.boerseDividendUrl is defined and settings.boerseDividendUrl is not empty  %}{{ settings.boerseDividendUrl }}{% else %}<i>not set</i>{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex justify-end">
+                <a
+                    href="{{ path('app_settings_global_edit') }}"
+                    class="text-white bg-[#112D4E]  hover:bg-[#112D4E]/90 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
+                    <i class="fa-solid fa-pen me-2.5"></i>Edit
+                </a>
+            </div>
+        </twig:Card>
+    </div>
+{% endblock %}

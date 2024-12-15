@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\SettingsRepository;
+use App\Repository\SettingRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SettingsRepository::class)]
-class Settings
+#[ORM\Entity(repositoryClass: SettingRepository::class)]
+class Setting
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,7 +14,7 @@ class Settings
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $key = null;
+    private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     private ?string $value = null;
@@ -22,18 +22,6 @@ class Settings
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getKey(): ?string
-    {
-        return $this->key;
-    }
-
-    public function setKey(string $key): static
-    {
-        $this->key = $key;
-
-        return $this;
     }
 
     public function getValue(): ?string
@@ -44,6 +32,18 @@ class Settings
     public function setValue(string $value): static
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
 
         return $this;
     }

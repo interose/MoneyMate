@@ -6,7 +6,7 @@ use App\Entity\Account;
 use App\Entity\Category;
 use App\Entity\CategoryGroup;
 use App\Entity\CurrentBalance;
-use App\Entity\Settings;
+use App\Entity\Setting;
 use App\Entity\SplitTransaction;
 use App\Entity\SubAccount;
 use App\Entity\Transaction;
