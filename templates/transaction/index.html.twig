@@ -25,12 +25,14 @@
 
 {% block body %}
 <div class="flex flex-row bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-    <twig:TransactionFilter></twig:TransactionFilter>
+    {% include 'transaction/_filter.html.twig' %}
 
     <div class="flex-1"></div>
 
+
+
     <div class="p-2 flex items-center text-xs font-medium text-center text-gray-600">
-        4.123,45 €
+        1.111,11 €
     </div>
 
     <div class="p-2 flex items-center text-xs font-medium text-center text-gray-600">

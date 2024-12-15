@@ -1,0 +1,12 @@
+<div class="border-s border-gray-300 ps-4 relative">
+    <div class="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">
+        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+    </div>
+    <input type="search" data-transaction-filter-target="searchQuery" name="query" data-action="transaction-filter#debouncedSubmit" class="p-1 pl-6 pr-8 w-50 text-xs font-medium text-gray-600 rounded bg-gray-50 border border-gray-300 focus:outline-none cursor-pointer" placeholder="Search" />
+    <button data-action="click->transaction-filter#clearSearchQuery" data-transaction-filter-target="searchQueryReset" type="button" class="hidden absolute inset-y-0 end-0 flex items-center pe-3 text-xs font-medium text-gray-600">
+        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+        </svg>
+    </button>
+    <div data-transaction-filter-target="searchQueryShortcut" class="absolute inset-y-0 end-0 flex items-center pe-3 text-xs font-medium text-gray-600">&#8984;K</div>
+</div>
