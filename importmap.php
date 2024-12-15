@@ -25,9 +25,6 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
-    'flowbite/dist/flowbite.turbo.min.js' => [
-        'version' => '2.4.1',
-    ],
     '@fortawesome/fontawesome-free/css/all.min.css' => [
         'version' => '6.6.0',
         'type' => 'css',
@@ -59,5 +56,8 @@ return [
     'tom-select/dist/css/tom-select.default.css' => [
         'version' => '2.3.1',
         'type' => 'css',
+    ],
+    'flowbite/dist/flowbite.turbo.min.js' => [
+        'version' => '2.5.2',
     ],
 ];

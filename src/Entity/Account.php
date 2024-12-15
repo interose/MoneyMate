@@ -106,18 +106,6 @@ class Account
         return $this;
     }
 
-    public function getAccountHolder(): ?string
-    {
-        return $this->accountHolder;
-    }
-
-    public function setAccountHolder(string $accountHolder): static
-    {
-        $this->accountHolder = $accountHolder;
-
-        return $this;
-    }
-
     public function getBic(): ?string
     {
         return $this->bic;

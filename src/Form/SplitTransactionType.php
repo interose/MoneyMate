@@ -42,15 +42,15 @@ class SplitTransactionType extends AbstractType
                 },
                 'placeholder' => 'Choose a category',
                 'autocomplete' => true,
-                'constraints' => new NotBlank()
+                'constraints' => new NotBlank(),
             ])
             ->add('amount', MoneyType::class, [
-                'getter' => function(SplitTransaction $splitTransaction, FormInterface $form): string {
+                'getter' => function (SplitTransaction $splitTransaction, FormInterface $form): string {
                     return $splitTransaction->getAmountAsCurrency();
                 },
                 'constraints' => [
                     new NotBlank(),
-                    new GreaterThan(0)
+                    new GreaterThan(0),
                 ],
                 'empty_data' => 0,
             ])
