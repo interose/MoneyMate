@@ -14,7 +14,7 @@ class Settings
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $name = null;
+    private ?string $key = null;
 
     #[ORM\Column(length: 255)]
     private ?string $value = null;
@@ -24,14 +24,14 @@ class Settings
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getKey(): ?string
     {
-        return $this->name;
+        return $this->key;
     }
 
-    public function setName(string $name): static
+    public function setKey(string $key): static
     {
-        $this->name = $name;
+        $this->key = $key;
 
         return $this;
     }
