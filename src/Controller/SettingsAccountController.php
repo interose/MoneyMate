@@ -6,6 +6,7 @@ use App\Entity\Account;
 use App\Form\AccountEditBasicType;
 use App\Form\AccountStep2Type;
 use App\Form\AccountStep3Type;
+use App\Lib\FinTs\Action;
 use App\Lib\FinTs\Factory;
 use App\Repository\AccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,8 +39,8 @@ class SettingsAccountController extends AbstractController
         Request $request,
         SluggerInterface $slugger,
         EntityManagerInterface $entityManager,
-        #[Autowire('%kernel.project_dir%/public/uploads/logos')] string $logosDirectory): Response
-    {
+        #[Autowire('%kernel.project_dir%/public/uploads/logos')] string $logosDirectory,
+    ): Response {
         $form = $this->createForm(AccountEditBasicType::class, $account, [
             'action' => $this->generateUrl('app_settings_account_edit_basic', ['id' => $account->getId()]),
             'validation_groups' => ['step1', 'step4'],
@@ -90,17 +91,20 @@ class SettingsAccountController extends AbstractController
         Request $request,
         Account $account,
         EntityManagerInterface $entityManager,
-        Factory $finTsFactory
+        Factory $finTsFactory,
     ): Response {
         $formHasFinTsError = false;
         $formFinTsErrorMessage = '';
 
         try {
             $finTs = $finTsFactory->getFinTs($account);
+            $finTsAction = new \stdClass();
+            $finTsAction->action = Action::GetTanModes;
+
             $tanModeChoices = ['Please select' => ''];
             array_map(function ($item) use (&$tanModeChoices) {
                 $tanModeChoices[$item->getName()] = $item->getId();
-            }, $finTs->getTanModes());
+            }, $finTs->handleAction($finTsAction));
         } catch (\Exception $e) {
             $tanModeChoices = [];
             $formHasFinTsError = true;
@@ -136,9 +140,8 @@ class SettingsAccountController extends AbstractController
         Request $request,
         Account $account,
         AccountRepository $repository,
-        ParameterBagInterface $bag
+        ParameterBagInterface $bag,
     ): Response {
-
         $form = $this->createForm(AccountStep2Type::class, $account, [
             'action' => $this->generateUrl('app_settings_account_edit_credentials', ['id' => $account->getId()]),
             'validation_groups' => 'step2',
@@ -148,7 +151,7 @@ class SettingsAccountController extends AbstractController
         $form->get('username')->setData('');
         $form->get('password')->setData('');
 
-        $form->handleRequest($request);
+        $form->handleAction($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $key = $bag->get('encryption_key');
@@ -174,13 +177,15 @@ class SettingsAccountController extends AbstractController
             return new JsonResponse('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $tanMode = $request->query->getInt('tan-mode');
+        $finTsAction = new \stdClass();
+        $finTsAction->action = Action::GetTanMedia;
+        $finTsAction->tanMode = $request->query->getInt('tan-mode');
 
         try {
             $finTs = $finTsFactory->getFinTs($account);
             $tanMedia = array_map(function ($medium) {
                 return ['name' => $medium->getName(), 'phoneNumber' => $medium->getPhoneNumber()];
-            }, $finTs->getTanMedia($tanMode));
+            }, $finTs->handleAction($finTsAction));
         } catch (\Exception $e) {
             return new JsonResponse('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }

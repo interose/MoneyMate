@@ -10,20 +10,20 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class Factory
 {
     public function __construct(
-        private RequestStack $requestStack,
-        private ParameterBagInterface $parameterBag,
-        private AccountRepository $accountRepository,
+        private readonly RequestStack $requestStack,
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly AccountRepository $accountRepository,
     ) {
     }
 
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getFinTs(Account $account): BaseWrapper
+    public function getFinTs(Account $account): Base
     {
         list($username, $pin) = $this->accountRepository->getEncrypted($account->getId(), $this->parameterBag->get('encryption_key'));
 
-        $baseWrapper = new BaseWrapper(
+        $base = new Base(
             $this->requestStack,
             $account->getUrl(),
             $account->getBankCode(),
@@ -34,13 +34,13 @@ class Factory
         );
 
         if (strlen($account->getTanMediaName()) > 0) {
-            $baseWrapper->setTanMedium($account->getTanMediaName());
+            $base->setTanMedium($account->getTanMediaName());
         }
 
         if (intval($account->getTanMechanism()) > 0) {
-            $baseWrapper->setTanMode(intval($account->getTanMechanism()));
+            $base->setTanMode(intval($account->getTanMechanism()));
         }
 
-        return $baseWrapper;
+        return $base;
     }
 }

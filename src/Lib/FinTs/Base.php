@@ -2,10 +2,9 @@
 
 namespace App\Lib\FinTs;
 
+use Fhp\Action\GetSEPAAccounts;
 use Fhp\BaseAction;
 use Fhp\FinTs;
-use Fhp\Action\GetSEPAAccounts;
-use Fhp\Model\NoPsd2TanMode;
 use Fhp\Model\SEPAAccount;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -15,7 +14,8 @@ class Base
     public const SESSION_IDENTIFIER = 'fints';
 
     private int $tanMode = 0;
-    private string $tanMedium = '';
+    private ?string $tanMedium = null;
+    private ?BaseAction $persistedAction = null;
 
     /**
      * FinTsBase constructor.
@@ -30,12 +30,12 @@ class Base
      */
     public function __construct(
         protected RequestStack $requestStack,
-        private string $server,
-        private string $bankCode,
-        private string $username,
-        private string $pin,
-        private string $productName,
-        private string $productVersion
+        private readonly string $server,
+        private readonly string $bankCode,
+        private readonly string $username,
+        private readonly string $pin,
+        private readonly string $productName,
+        private readonly string $productVersion,
     ) {
         $this->create();
     }
@@ -45,6 +45,13 @@ class Base
      */
     protected function create(?string $persistedInstance = null): void
     {
+        $session = $this->requestStack->getSession();
+
+        if ($session->has(self::SESSION_IDENTIFIER)) {
+            list($persistedInstance, $persistedAction) = unserialize($session->get(self::SESSION_IDENTIFIER));
+            $this->persistedAction = unserialize($persistedAction);
+        }
+
         $options = new \Fhp\Options\FinTsOptions();
         $options->url = $this->server;
         $options->bankCode = $this->bankCode;
@@ -52,90 +59,94 @@ class Base
         $options->productVersion = $this->productVersion;
         $credentials = \Fhp\Options\Credentials::create($this->username, $this->pin);
         $this->finTs = FinTs::new($options, $credentials, $persistedInstance);
-
     }
 
     /**
-     * @param string|null $tan
-     *
-     * @return BaseAction|null
-     *
-     * @throws TanRequiredException
      * @throws \Fhp\CurlException
      * @throws \Fhp\Protocol\ServerException
+     * @throws TanRequiredException
      */
-    protected function init(?string $tan = ''): ?BaseAction
+    public function handleAction(\stdClass $request): array|bool
     {
-        $action = null;
-
-        if (0 === strlen($tan)) {
-            $this->login();
-        } else {
-            $action = $this->submitTan($tan);
+        if (!property_exists($request, 'action')) {
+            throw new \InvalidArgumentException('Action property missing');
         }
 
-        return $action;
+        switch ($request->action) {
+            case Action::GetTanModes:
+                return $this->finTs->getTanModes();
+
+            case Action::GetTanMedia:
+                return $this->finTs->getTanMedia($request->tanMode);
+
+            case Action::GetAllAccounts:
+                return $this->getAccounts();
+
+            case Action::CheckDecoupled:
+                return $this->finTs->checkDecoupledSubmission($this->persistedAction);
+
+            default:
+                throw new \InvalidArgumentException('Unknown action: '.$request->action->value);
+        }
     }
 
     /**
-     * @throws TanRequiredException          if action needs a tan
      * @throws \Fhp\CurlException            when the connection fails in a layer below the FinTS protocol
      * @throws \Fhp\Protocol\ServerException when the server responds with a (FinTS-encoded) error message
+     * @throws TanRequiredException
      */
-    protected function login(): void
+    public function login(): void
     {
         $this->finTs->selectTanMode($this->tanMode, $this->tanMedium);
 
         $action = $this->finTs->login();
         if ($action->needsTan()) {
+            $tanRequest = $action->getTanRequest();
+
             $this->preserveState($action);
+
+            throw new TanRequiredException($tanRequest->getChallenge());
         }
-    }
-
-    /**
-     * @param string $tan The tan
-     *
-     * @return BaseAction Instance of BaseAction
-     *
-     * @throws \Exception If a previous session could not be created from the session
-     */
-    protected function submitTan(string $tan): BaseAction
-    {
-        $session = $this->requestStack->getSession();
-        if (!$session->has(self::SESSION_IDENTIFIER)) {
-            throw new \Exception('Could not restore state!');
-        }
-
-        $state = $session->get(self::SESSION_IDENTIFIER);
-        if (is_null($state)) {
-            throw new \Exception('Could not restore state! Sessionstate is empty!');
-        }
-
-        list($persistedInstance, $persistedAction) = unserialize($state);
-
-        $this->create($persistedInstance);
-
-        $action = unserialize($persistedAction);
-
-        $this->finTs->submitTan($action, $tan);
-
-        return $action;
     }
 
     /**
      * @param BaseAction $action The action which should be saved for the next request
-     *
-     * @throws TanRequiredException if action needs a tan
      */
-    private function preserveState(BaseAction $action)
+    private function preserveState(BaseAction $action): void
     {
         $persistedAction = serialize($action);
         $persistedFinTs = $this->finTs->persist();
 
         $session = $this->requestStack->getSession();
         $session->set(self::SESSION_IDENTIFIER, serialize([$persistedFinTs, $persistedAction]));
+    }
 
-        throw new TanRequiredException();
+    /**
+     * @throws \Fhp\CurlException
+     * @throws \Fhp\Protocol\ServerException
+     * @throws TanRequiredException
+     * @throws \Exception
+     */
+    private function handleStrongAuthentication(BaseAction $action): void
+    {
+        if ($this->finTs->getSelectedTanMode()->isDecoupled()) {
+            $tanRequest = $action->getTanRequest();
+
+            $msg = 'The bank requested authentication on another device.';
+            if (null !== $tanRequest->getChallenge()) {
+                $msg .= "\n".' Instructions: '.$tanRequest->getChallenge();
+            }
+
+            if (null !== $tanRequest->getTanMediumName()) {
+                $msg .= "\n".'Please check this device: '.$tanRequest->getTanMediumName();
+            }
+
+            $this->preserveState($action);
+
+            throw new TanRequiredException($msg);
+        } else {
+            throw new \Exception('TAN Mode not supported!');
+        }
     }
 
     /**
@@ -145,17 +156,15 @@ class Base
      * @throws \Fhp\CurlException            when the connection fails in a layer below the FinTS protocol
      * @throws \Fhp\Protocol\ServerException when the server responds with a (FinTS-encoded) error message
      */
-    protected function execute(BaseAction $action)
+    protected function execute(BaseAction $action): void
     {
         $this->finTs->execute($action);
         if ($action->needsTan()) {
-            $this->preserveState($action);
+            $this->handleStrongAuthentication($action);
         }
     }
 
     /**
-     * @param BaseAction|null $action
-     *
      * @return SEPAAccount[]
      *
      * @throws TanRequiredException
@@ -163,39 +172,26 @@ class Base
      * @throws \Fhp\Protocol\ServerException
      * @throws \Exception
      */
-    protected function getAccounts(?BaseAction $action = null): array
+    protected function getAccounts(): array
     {
-        /* no action from the previous session, start from the beginning */
-        if (is_null($action)) {
-            $action = GetSEPAAccounts::create();
-            $this->execute($action);
-        }
+        $action = GetSEPAAccounts::create();
+        $this->execute($action);
 
-        if ($action instanceof GetSEPAAccounts) {
-            $accounts = $action->getAccounts();
-            if (!is_array($accounts) || 0 === count($accounts)) {
-                throw new \Exception('No accounts!');
-            }
-        } else {
-            throw new \Exception(sprintf('Invalid action: %s', get_class($action)));
+        $accounts = $action->getAccounts();
+        if (0 === count($accounts)) {
+            throw new \Exception('No accounts!');
         }
 
         return $accounts;
     }
 
-    /**
-     * @param string $tanMode
-     */
     public function setTanMode(int $tanMode): void
     {
         $this->tanMode = $tanMode;
     }
 
-    /**
-     * @param string $tanMedium
-     */
     public function setTanMedium(string $tanMedium): void
     {
-        $this->tanMedium = $tanMedium;
+        $this->tanMedium = $tanMedium ?? null;
     }
 }

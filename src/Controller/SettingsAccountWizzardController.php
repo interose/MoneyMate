@@ -7,6 +7,7 @@ use App\Form\AccountStep1Type;
 use App\Form\AccountStep2Type;
 use App\Form\AccountStep3Type;
 use App\Form\AccountStep4Type;
+use App\Lib\FinTs\Action;
 use App\Lib\FinTs\Factory;
 use App\Lib\FinTs\TanRequiredException;
 use App\Lib\SubAccountUpdater;
@@ -64,7 +65,7 @@ class SettingsAccountWizzardController extends AbstractController
         Request $request,
         Account $account,
         AccountRepository $repository,
-        ParameterBagInterface $bag
+        ParameterBagInterface $bag,
     ): Response {
         $form = $this->createForm(AccountStep2Type::class, $account, [
             'action' => $this->generateUrl('app_settings_account_step2', ['id' => $account->getId()]),
@@ -99,17 +100,25 @@ class SettingsAccountWizzardController extends AbstractController
         Request $request,
         Account $account,
         EntityManagerInterface $entityManager,
-        Factory $finTsFactory
+        Factory $finTsFactory,
     ): Response {
         $formHasFinTsError = false;
         $formFinTsErrorMessage = '';
 
         try {
             $finTs = $finTsFactory->getFinTs($account);
-            $tanModeChoices = ['Please select' => ''];
-            array_map(function ($item) use (&$tanModeChoices) {
-                $tanModeChoices[$item->getName()] = $item->getId();
-            }, $finTs->getTanModes());
+
+            $finTsAction = new \stdClass();
+            $finTsAction->action = Action::GetTanModes;
+
+            $tanModeChoices = array_map(function ($mode) {
+                return [
+                    'id' => $mode->getId(),
+                    'name' => $mode->getName(),
+                    'isDecoupled' => $mode->isDecoupled(),
+                    'needsTanMedium' => $mode->needsTanMedium(),
+                ];
+            }, $finTs->handleAction($finTsAction));
         } catch (\Exception $e) {
             $tanModeChoices = [];
             $formHasFinTsError = true;
@@ -147,18 +156,31 @@ class SettingsAccountWizzardController extends AbstractController
         SubAccountRepository $repository,
         SluggerInterface $slugger,
         EntityManagerInterface $entityManager,
-        #[Autowire('%kernel.project_dir%/public/uploads/logos')] string $logosDirectory): Response
-    {
-        $tan = $request->request->get('tan');
-
+        #[Autowire('%kernel.project_dir%/public/uploads/logos')] string $logosDirectory,
+    ): Response {
         try {
             $finTs = $finTsFactory->getFinTs($account);
-            $subAccounts = $finTs->getAllAccounts($tan);
+
+            if (!$request->query->has('finTsAction')) {
+                $finTs->login();
+            } else {
+                $finTsAction = new \stdClass();
+                $finTsAction->action = Action::CheckDecoupled;
+                if (true !== $finTs->handleAction($finTsAction)) {
+                    throw new TanRequiredException();
+                }
+            }
+
+            $finTsAction = new \stdClass();
+            $finTsAction->action = Action::GetAllAccounts;
+            $subAccounts = $finTs->handleAction($finTsAction);
 
             $updater->createOrUpdate($account, $subAccounts);
         } catch (TanRequiredException $e) {
-            // @Todo
-            exit($e->getMessage());
+            return $this->render('settings_account_wizzard/step4ConfirmTan.html.twig', [
+                'account' => $account,
+                'msg' => $e->getMessage(),
+            ]);
         } catch (\Exception $e) {
             return $this->render('settings_account_wizzard/step4Error.html.twig', [
                 'account' => $account,
