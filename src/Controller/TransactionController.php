@@ -2,17 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\SplitTransaction;
 use App\Entity\Transaction;
 use App\Form\TransactionType;
-use App\Repository\CategoryGroupRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\SplitTransactionRepository;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -25,13 +22,12 @@ class TransactionController extends AbstractController
     public function index(
         TransactionRepository $repository,
         CategoryRepository $categoryRepository,
-        #[MapQueryParameter] int $month = null,
-        #[MapQueryParameter] int $year = null,
+        #[MapQueryParameter] ?int $month = null,
+        #[MapQueryParameter] ?int $year = null,
         #[MapQueryParameter] string $sort = 'valutaDate',
         #[MapQueryParameter] string $sortDirection = 'asc',
-        #[MapQueryParameter] string $query = null,
-    ): Response
-    {
+        #[MapQueryParameter] ?string $query = null,
+    ): Response {
         if (null === $month) {
             $month = date('m');
         }
@@ -50,7 +46,7 @@ class TransactionController extends AbstractController
             'sort' => $sort,
             'sortDirection' => $sortDirection,
             'categories' => $categoryRepository->getCategoriesForDropdown(),
-            'query' => $query
+            'query' => $query,
         ]);
     }
 
@@ -119,20 +115,20 @@ class TransactionController extends AbstractController
         ]);
     }
 
-//    #[Route('/transaction/get-categories', name: 'app_transaction_get_categories', methods: ['GET'])]
-//    public function getCategories(CategoryRepository $repository): JsonResponse
-//    {
-//        $categories = $repository->findBy([], ['categoryGroup' => 'ASC', 'name' => 'ASC']);
+    //    #[Route('/transaction/get-categories', name: 'app_transaction_get_categories', methods: ['GET'])]
+    //    public function getCategories(CategoryRepository $repository): JsonResponse
+    //    {
+    //        $categories = $repository->findBy([], ['categoryGroup' => 'ASC', 'name' => 'ASC']);
 
-//        $result = array_map(function(Category $category) {
-//            return [
-//                'value' => $category->getId(),
-//                'text' => $category->getCategoryGroup() ? $category->getCategoryGroup()->getName().':'.$category->getName() : $category->getName(),
-//            ];
-//        }, $categories);
+    //        $result = array_map(function(Category $category) {
+    //            return [
+    //                'value' => $category->getId(),
+    //                'text' => $category->getCategoryGroup() ? $category->getCategoryGroup()->getName().':'.$category->getName() : $category->getName(),
+    //            ];
+    //        }, $categories);
 
-//        $result = $repository->getCategoriesForDropdown();
-//
-//        return new JsonResponse(['results' => $result]);
-//    }
+    //        $result = $repository->getCategoriesForDropdown();
+    //
+    //        return new JsonResponse(['results' => $result]);
+    //    }
 }

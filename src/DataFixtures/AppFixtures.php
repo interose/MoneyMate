@@ -21,7 +21,7 @@ class AppFixtures extends Fixture
      */
     private $manager;
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
 
@@ -71,25 +71,24 @@ class AppFixtures extends Fixture
 //        $this->manager->flush();
 //        unset($settings);
 
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-02'), 15.99, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-25'), 30.65, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-31'), 13.19, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-01'), 62.59, $c, $subaccount);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-02'), 15.99, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-25'), 30.65, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-31'), 13.19, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-01'), 62.59, $subaccount, $c);
 
-        $t = $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-16'), 110, $c, $subaccount);
+        $t = $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-16'), 110, $subaccount, $c);
         $this->createSplitTransaction($t, \DateTime::createFromFormat('Y-m-d', '2020-06-10'), 10, $c);
         $this->createSplitTransaction($t, \DateTime::createFromFormat('Y-m-d', '2020-06-04'), 26, $c);
         $this->createSplitTransaction($t, \DateTime::createFromFormat('Y-m-d', '2020-06-09'), 54, $c);
         $this->createSplitTransaction($t, \DateTime::createFromFormat('Y-m-d', '2020-05-28'), 13, $c);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-11'), 67.59, $c, $subaccount);
-
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-11'), 67.59, $subaccount, $c);
 
         $c = $this->createCategory('category-1-2', $cG);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-02'), 36.4, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-25'), 41.25, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-31'), 9.14, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-01'), 25.96, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-21'), 384.29, $c, $subaccount);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-02'), 36.4, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-25'), 41.25, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-31'), 9.14, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-01'), 25.96, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-21'), 384.29, $subaccount, $c);
 
         $cG = $this->createCategoryGroup('group-2');
 
@@ -102,18 +101,18 @@ class AppFixtures extends Fixture
 //        $this->manager->flush();
 //        unset($settings);
 
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-05'), 41.37, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-12'), 55.9, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-30'), 46.91, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-02'), 41.17, $c, $subaccount);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-05'), 41.37, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-12'), 55.9, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-30'), 46.91, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-02'), 41.17, $subaccount, $c);
 
         $c = $this->createCategory('category-2-2', $cG);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-05'), 6.1, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-12'), 28.33, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-30'), 25.19, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-02'), 54.09, $c, $subaccount);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-05'), 6.1, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-12'), 28.33, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-30'), 25.19, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-02'), 54.09, $subaccount, $c);
 
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-11'), 31.8, null, $subaccount);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-11'), 31.8, $subaccount);
 
         $c = $this->createCategory('category-3', null, true);
 
@@ -124,15 +123,15 @@ class AppFixtures extends Fixture
 //        $this->manager->flush();
 //        unset($settings);
 
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-08'), 7.02, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-23'), 4.96, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-18'), 9.44, $c, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-04'), 8.25, $c, $subaccount);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-08'), 7.02, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-08-23'), 4.96, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-07-18'), 9.44, $subaccount, $c);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-04'), 8.25, $subaccount, $c);
 
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-15'), 120, null, $subaccount, 'credit');
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-09-15'), 120, $subaccount, null, 'credit');
 
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-3'), 12.53, null, $subaccount);
-        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-13'), 247.28, null, $subaccount, 'debit', 'MUENCHEN HOTEL XY\\MUENCHEN\\DE', 'test1234');
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-3'), 12.53, $subaccount);
+        $this->createTransaction(\DateTime::createFromFormat('Y-m-d', '2020-06-13'), 247.28, $subaccount, null, 'debit', 'MUENCHEN HOTEL XY\\MUENCHEN\\DE', 'test1234');
     }
 
     /**
@@ -151,12 +150,12 @@ class AppFixtures extends Fixture
     }
 
     /**
-     * @param string             $name
+     * @param string $name
      * @param CategoryGroup|null $cG
      *
      * @return Category
      */
-    private function createCategory(string $name, CategoryGroup $cG = null, bool $treeIgnore = false)
+    private function createCategory(string $name, ?CategoryGroup $cG = null, ?bool $treeIgnore = false)
     {
         $c = new Category();
         $c->setName($name);
@@ -179,7 +178,7 @@ class AppFixtures extends Fixture
      *
      * @return Transaction
      */
-    private function createTransaction(\DateTime $d, float $amount, Category $c = null, SubAccount $subAccount, string $creditDebit = 'debit', string $name = null, string $description = null)
+    private function createTransaction(\DateTime $d, float $amount, SubAccount $subAccount, ?Category $c = null, ?string $creditDebit = 'debit', ?string $name = null, ?string $description = null)
     {
         $t = new Transaction();
         $t->setCategory($c);
