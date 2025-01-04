@@ -18,30 +18,36 @@ export default class extends Controller {
     }
 
     async fetchTanMedia(event) {
-        const loader = this.loaderTarget;
-        loader.classList.remove('hidden');
+        const tanModeSelect = event.currentTarget;
+        const selectedTanMode = tanModeSelect.options[tanModeSelect.selectedIndex];
+        const tanMediaSelect = this.tanMediaSelectTarget;
 
-        const response = await fetch(this.urlValue + '?tan-mode=' + event.currentTarget.value);
-        const select = this.tanMediaSelectTarget;
-
-
-        if (200 === response.status) {
-            const data = await response.json()
-
-            data.forEach(function(item) {
-                let option = document.createElement('option')
-                option.value = item.name;
-                option.innerText = item.name;
-
-                select.appendChild(option);
-            });
-
-            select.removeAttribute('disabled');
-            select.classList.remove('cursor-not-allowed');
-
-            loader.classList.add('hidden');
+        if (selectedTanMode.dataset.needsTanMedium === "false") {
+            tanMediaSelect.options[0].innerText = 'Selected TAN Mode needs no TAN Medium';
         } else {
-            // todo error message
+            const loader = this.loaderTarget;
+            loader.classList.remove('hidden');
+
+            const response = await fetch(this.urlValue + '?tan-mode=' + event.currentTarget.value);
+
+            if (200 === response.status) {
+                const data = await response.json()
+
+                data.forEach(function(item) {
+                    let option = document.createElement('option')
+                    option.value = item.name;
+                    option.innerText = item.name;
+
+                    select.appendChild(option);
+                });
+
+                select.removeAttribute('disabled');
+                select.classList.remove('cursor-not-allowed');
+
+                loader.classList.add('hidden');
+            } else {
+                // todo error message
+            }
         }
     }
 }
