@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class AccountStep3Type extends AbstractType
 {
@@ -16,10 +18,24 @@ class AccountStep3Type extends AbstractType
         $tanModeChoices = $options['tanModeChoices'] ?? [];
 
         if (count($tanModeChoices) > 0) {
+
+            $choicesAttr = [];
+            $choices = ['Please select' => ''];
+
+            foreach ($tanModeChoices as $tanModeChoice) {
+                $choices[$tanModeChoice['name']] = $tanModeChoice['id'];
+
+                $choicesAttr[$tanModeChoice['name']] = [
+                    'data-needs-tan-medium' => $tanModeChoice['needsTanMedium'] ? 'true' : 'false',
+                    'data-is-decoupled' => $tanModeChoice['isDecoupled'] ? 'true' : 'false',
+                ];
+            }
+
             $builder
                 ->add('tanMechanism', ChoiceType::class, [
                     'label' => 'TAN Mode',
-                    'choices' => $tanModeChoices,
+                    'choices' => $choices,
+                    'choice_attr' => $choicesAttr,
                 ])
                 ->add('tanMediaName', ChoiceType::class, [
                     'label' => 'TAN Medium',
@@ -59,6 +75,17 @@ class AccountStep3Type extends AbstractType
                 'novalidate' => true,
             ],
             'tanModeChoices' => [],
+            'constraints' => [
+                new Callback([$this, 'validateFields']),
+            ],
         ]);
+    }
+
+    /**
+     * Custom validation logic for both fields.
+     */
+    public function validateFields($data, ExecutionContextInterface $context)
+    {
+        $enabled = $data['tanMechanism'] ?? false;
     }
 }

@@ -36,7 +36,6 @@ class Account
     private ?string $url = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(groups: ['step3'])]
     private ?string $tanMediaName = null;
 
     #[ORM\Column(nullable: true)]
