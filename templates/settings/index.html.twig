@@ -10,7 +10,7 @@
                 <h3 class="mb-4 font-medium leading-tight">Generic Application Settings</h3>
                 <div class="mb-8">
                     <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Main Account</p>
-                    <p class=" px-2">{% if settings.mainAccount is defined %}{{ settings.mainAccount.description }} - ({{ settings.mainAccount.accountNumber }}){% endif %}</p>
+                    <p class=" px-2">{% if settings.mainAccount is defined %}{{ settings.mainAccount.description ?? '<i>no description</i>'}} - ({{ settings.mainAccount.accountNumber }}){% endif %}</p>
                 </div>
             </div>
 
@@ -26,7 +26,7 @@
                     <div>
                         <div class="mb-3">
                             <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Enabled</p>
-                            <p class=" px-2">{% if settings.boerseAccountEnabled is defined and settings.boerseAccountEnabled  %}<i class="fa-solid fa-circle-check"></i>{% else %}<i class="fa-solid fa-circle-check"></i>{% endif %}</p>
+                            <p class=" px-2">{% if settings.boerseAccountEnabled is defined and settings.boerseAccountEnabled == true %}<i class="fa-solid fa-circle-check text-green-700"></i>{% else %}<i class="fa-solid fa-circle-xmark text-red-800"></i>{% endif %}</p>
                         </div>
                     </div>
                     <div>
