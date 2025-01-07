@@ -23,6 +23,12 @@ class StockController extends AbstractController
         #[MapQueryParameter] string $query = '',
         #[MapQueryParameter] ?array $filter = null,
     ): Response {
+        try {
+            $updater->checkUpdate();
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
         $validSorts = ['name', 'industry', 'geoPak10', 'profitConsistency', 'lossRatio', 'dividendYield', 'sharePrice', 'gd200', 'trend', 'comment'];
         $sort = in_array($sort, $validSorts) ? $sort : 'name';
 
