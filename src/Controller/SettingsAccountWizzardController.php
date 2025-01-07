@@ -10,6 +10,7 @@ use App\Form\AccountStep4Type;
 use App\Lib\FinTs\Action;
 use App\Lib\FinTs\Factory;
 use App\Lib\FinTs\TanRequiredException;
+use App\Lib\FinTs\Wrapper;
 use App\Lib\LogoUploader;
 use App\Lib\SubAccountUpdater;
 use App\Repository\AccountRepository;
@@ -101,28 +102,15 @@ class SettingsAccountWizzardController extends AbstractController
         Request $request,
         Account $account,
         EntityManagerInterface $entityManager,
-        Factory $finTsFactory,
+        Wrapper $finTsWrapper
     ): Response {
-        $formHasFinTsError = false;
+
+        $tanModeChoices = [];
         $formFinTsErrorMessage = '';
 
         try {
-            $finTs = $finTsFactory->getFinTs($account);
-
-            $finTsAction = new \stdClass();
-            $finTsAction->action = Action::GetTanModes;
-
-            $tanModeChoices = array_map(function ($mode) {
-                return [
-                    'id' => $mode->getId(),
-                    'name' => $mode->getName(),
-                    'isDecoupled' => $mode->isDecoupled(),
-                    'needsTanMedium' => $mode->needsTanMedium(),
-                ];
-            }, $finTs->handleAction($finTsAction));
+            $tanModeChoices = $finTsWrapper->getTanModeChoices($account);
         } catch (\Exception $e) {
-            $tanModeChoices = [];
-            $formHasFinTsError = true;
             $formFinTsErrorMessage = str_replace("\n", '<br>', $e->getMessage());
         }
 
@@ -142,7 +130,6 @@ class SettingsAccountWizzardController extends AbstractController
 
         return $this->render('settings_account_wizzard/step3.html.twig', [
             'form' => $form,
-            'formHasFinTsError' => $formHasFinTsError,
             'formFinTsErrorMessage' => $formFinTsErrorMessage,
             'account' => $account,
         ]);
@@ -152,30 +139,15 @@ class SettingsAccountWizzardController extends AbstractController
     public function step4(
         Request $request,
         Account $account,
-        Factory $finTsFactory,
+        Wrapper $finTsWrapper,
         SubAccountUpdater $updater,
         SubAccountRepository $repository,
         EntityManagerInterface $entityManager,
         LogoUploader $uploader,
     ): Response {
+
         try {
-            $finTs = $finTsFactory->getFinTs($account);
-
-            if (!$request->query->has('finTsAction')) {
-                $finTs->login();
-            } else {
-                $finTsAction = new \stdClass();
-                $finTsAction->action = Action::CheckDecoupled;
-                if (true !== $finTs->handleAction($finTsAction)) {
-                    throw new TanRequiredException();
-                }
-            }
-
-            $finTsAction = new \stdClass();
-            $finTsAction->action = Action::GetAllAccounts;
-            $subAccounts = $finTs->handleAction($finTsAction);
-
-            $updater->createOrUpdate($account, $subAccounts);
+            $finTsWrapper->getAllSubaccounts($account, );
         } catch (TanRequiredException $e) {
             return $this->render('settings_account_wizzard/step4ConfirmTan.html.twig', [
                 'account' => $account,
@@ -187,6 +159,36 @@ class SettingsAccountWizzardController extends AbstractController
                 'error' => str_replace("\n", '<br>', $e->getMessage()),
             ]);
         }
+
+//        try {
+//            $finTs = $finTsFactory->getFinTs($account);
+//
+//            if (!$request->query->has('finTsAction')) {
+//                $finTs->login();
+//            } else {
+//                $finTsAction = new \stdClass();
+//                $finTsAction->action = Action::CheckDecoupled;
+//                if (true !== $finTs->handleAction($finTsAction)) {
+//                    throw new TanRequiredException();
+//                }
+//            }
+//
+//            $finTsAction = new \stdClass();
+//            $finTsAction->action = Action::GetAllAccounts;
+//            $subAccounts = $finTs->handleAction($finTsAction);
+//
+//            $updater->createOrUpdate($account, $subAccounts);
+//        } catch (TanRequiredException $e) {
+//            return $this->render('settings_account_wizzard/step4ConfirmTan.html.twig', [
+//                'account' => $account,
+//                'msg' => $e->getMessage(),
+//            ]);
+//        } catch (\Exception $e) {
+//            return $this->render('settings_account_wizzard/step4Error.html.twig', [
+//                'account' => $account,
+//                'error' => str_replace("\n", '<br>', $e->getMessage()),
+//            ]);
+//        }
 
         $subAccounts = $repository->findBy(['account' => $account]);
 

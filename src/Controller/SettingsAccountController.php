@@ -8,19 +8,17 @@ use App\Form\AccountStep2Type;
 use App\Form\AccountStep3Type;
 use App\Lib\FinTs\Action;
 use App\Lib\FinTs\Factory;
+use App\Lib\FinTs\Wrapper;
 use App\Lib\LogoUploader;
 use App\Repository\AccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/settings/account')]
 class SettingsAccountController extends AbstractController
@@ -76,23 +74,15 @@ class SettingsAccountController extends AbstractController
         Request $request,
         Account $account,
         EntityManagerInterface $entityManager,
-        Factory $finTsFactory,
+        Wrapper $finTsWrapper,
     ): Response {
-        $formHasFinTsError = false;
+
+        $tanModeChoices = [];
         $formFinTsErrorMessage = '';
 
         try {
-            $finTs = $finTsFactory->getFinTs($account);
-            $finTsAction = new \stdClass();
-            $finTsAction->action = Action::GetTanModes;
-
-            $tanModeChoices = ['Please select' => ''];
-            array_map(function ($item) use (&$tanModeChoices) {
-                $tanModeChoices[$item->getName()] = $item->getId();
-            }, $finTs->handleAction($finTsAction));
+            $tanModeChoices = $finTsWrapper->getTanModeChoices($account);
         } catch (\Exception $e) {
-            $tanModeChoices = [];
-            $formHasFinTsError = true;
             $formFinTsErrorMessage = str_replace("\n", '<br>', $e->getMessage());
         }
 
@@ -114,7 +104,6 @@ class SettingsAccountController extends AbstractController
 
         return $this->render('settings_account/editTan.html.twig', [
             'form' => $form,
-            'formHasFinTsError' => $formHasFinTsError,
             'formFinTsErrorMessage' => $formFinTsErrorMessage,
             'account' => $account,
         ]);
@@ -156,21 +145,14 @@ class SettingsAccountController extends AbstractController
     }
 
     #[Route('/{id}/fetch-tan-media', name: 'app_settings_account_fetch_tan_media', methods: ['GET', 'POST'])]
-    public function fetchTanMedia(Request $request, Account $account, Factory $finTsFactory): JsonResponse
+    public function fetchTanMedia(Request $request, Account $account, Wrapper $finTsWrapper): JsonResponse
     {
         if (!$request->query->has('tan-mode')) {
             return new JsonResponse('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $finTsAction = new \stdClass();
-        $finTsAction->action = Action::GetTanMedia;
-        $finTsAction->tanMode = $request->query->getInt('tan-mode');
-
         try {
-            $finTs = $finTsFactory->getFinTs($account);
-            $tanMedia = array_map(function ($medium) {
-                return ['name' => $medium->getName(), 'phoneNumber' => $medium->getPhoneNumber()];
-            }, $finTs->handleAction($finTsAction));
+            $tanMedia = $finTsWrapper->getTanMediaChoices($account, $request->query->getInt('tan-mode'));
         } catch (\Exception $e) {
             return new JsonResponse('', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
