@@ -8,6 +8,7 @@ use App\Form\AccountStep2Type;
 use App\Form\AccountStep3Type;
 use App\Lib\FinTs\Action;
 use App\Lib\FinTs\Factory;
+use App\Lib\LogoUploader;
 use App\Repository\AccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,9 +38,8 @@ class SettingsAccountController extends AbstractController
     public function editBasic(
         Account $account,
         Request $request,
-        SluggerInterface $slugger,
         EntityManagerInterface $entityManager,
-        #[Autowire('%kernel.project_dir%/public/uploads/logos')] string $logosDirectory,
+        LogoUploader $uploader,
     ): Response {
         $form = $this->createForm(AccountEditBasicType::class, $account, [
             'action' => $this->generateUrl('app_settings_account_edit_basic', ['id' => $account->getId()]),
@@ -52,24 +52,9 @@ class SettingsAccountController extends AbstractController
             /** @var UploadedFile $logoFile */
             $logoFile = $form->get('logoFile')->getData();
 
-            // this condition is needed because the 'brochure' field is not required
-            // so the PDF file must be processed only when a file is uploaded
             if ($logoFile) {
-                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
-
-                // Move the file to the directory where brochures are stored
-                try {
-                    $logoFile->move($logosDirectory, $newFilename);
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-
-                // updates the 'brochureFilename' property to store the PDF file name
-                // instead of its contents
-                $account->setLogo($newFilename);
+                $filename = $uploader->upload($logoFile);
+                $account->setLogo($filename);
             }
 
             $entityManager->persist($account);
@@ -151,7 +136,7 @@ class SettingsAccountController extends AbstractController
         $form->get('username')->setData('');
         $form->get('password')->setData('');
 
-        $form->handleAction($request);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $key = $bag->get('encryption_key');

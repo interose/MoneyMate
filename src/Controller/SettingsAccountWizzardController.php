@@ -10,6 +10,7 @@ use App\Form\AccountStep4Type;
 use App\Lib\FinTs\Action;
 use App\Lib\FinTs\Factory;
 use App\Lib\FinTs\TanRequiredException;
+use App\Lib\LogoUploader;
 use App\Lib\SubAccountUpdater;
 use App\Repository\AccountRepository;
 use App\Repository\SubAccountRepository;
@@ -154,9 +155,8 @@ class SettingsAccountWizzardController extends AbstractController
         Factory $finTsFactory,
         SubAccountUpdater $updater,
         SubAccountRepository $repository,
-        SluggerInterface $slugger,
         EntityManagerInterface $entityManager,
-        #[Autowire('%kernel.project_dir%/public/uploads/logos')] string $logosDirectory,
+        LogoUploader $uploader,
     ): Response {
         try {
             $finTs = $finTsFactory->getFinTs($account);
@@ -194,30 +194,16 @@ class SettingsAccountWizzardController extends AbstractController
             'action' => $this->generateUrl('app_settings_account_step4', ['id' => $account->getId()]),
             'validation_groups' => 'step4',
         ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $logoFile */
             $logoFile = $form->get('logoFile')->getData();
 
-            // this condition is needed because the 'brochure' field is not required
-            // so the PDF file must be processed only when a file is uploaded
             if ($logoFile) {
-                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
-
-                // Move the file to the directory where brochures are stored
-                try {
-                    $logoFile->move($logosDirectory, $newFilename);
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-
-                // updates the 'brochureFilename' property to store the PDF file name
-                // instead of its contents
-                $account->setLogo($newFilename);
+                $filename = $uploader->upload($logoFile);
+                $account->setLogo($filename);
             }
 
             $entityManager->persist($account);
