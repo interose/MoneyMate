@@ -34,7 +34,7 @@ class TransactionRepository extends ServiceEntityRepository
             if ('category' === $sort) {
                 $qb->orderBy('c.name', $direction);
             } else {
-                $qb->orderBy('t.' . $sort, $direction);
+                $qb->orderBy('t.'.$sort, $direction);
             }
         }
 

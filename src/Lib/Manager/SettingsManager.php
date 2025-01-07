@@ -24,6 +24,8 @@ class SettingsManager
 
     public function get(string $name, $default = null)
     {
+        $this->loadSettings();
+
         $value = $this->globalSettings[$name] ?? null;
 
         return null === $value ? $default : $value;
@@ -113,7 +115,7 @@ class SettingsManager
                     break;
 
                 case self::SETTING_STOCK_ACCOUNT_ENABLED:
-                    $value = $setting->getValue() === '1';
+                    $value = '1' === $setting->getValue();
                     break;
 
                 default:

@@ -10,7 +10,7 @@
                 <h3 class="mb-4 font-medium leading-tight">Generic Application Settings</h3>
                 <div class="mb-8">
                     <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Main Account</p>
-                    <p class=" px-2">{% if settings.mainAccount is defined %}{{ settings.mainAccount.description ?? '<i>no description</i>'}} - ({{ settings.mainAccount.accountNumber }}){% endif %}</p>
+                    <p class=" px-2">{% if settings.mainAccount is defined and settings.mainAccount is not null %}{{ settings.mainAccount.description ?? '<i>no description</i>'}} - ({{ settings.mainAccount.accountNumber }}){% endif %}</p>
                 </div>
             </div>
 
