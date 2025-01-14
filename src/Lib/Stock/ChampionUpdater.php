@@ -3,7 +3,6 @@
 namespace App\Lib\Stock;
 
 use App\Lib\Manager\SettingsManager;
-use App\Repository\SettingRepository;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -13,9 +12,9 @@ class ChampionUpdater
     private const DAYS_TO_UPDATE = 7;
 
     public function __construct(
-        #[Autowire('%kernel.cache_dir%/')] private string $cacheDir,
+        #[Autowire('%kernel.cache_dir%/')] private readonly string $cacheDir,
         private readonly HttpClientInterface $client,
-        private readonly SettingRepository $settingsRepository,
+        private readonly SettingsManager $settingsManager,
         private readonly ChampionImporter $importer,
     ) {
     }
@@ -50,8 +49,7 @@ class ChampionUpdater
         }
 
         if (null === $lastUpdate || $lastUpdate->diff(new \DateTimeImmutable())->days > self::DAYS_TO_UPDATE) {
-            $url = $this->settingsRepository->findOneBy(['name' => SettingsManager::SETTING_STOCK_DIVIDEND_URL])->getValue();
-
+            $url = $this->settingsManager->get(SettingsManager::SETTING_STOCK_DIVIDEND_URL);
             if (null !== $url) {
                 $this->fetchCsv($url);
 
