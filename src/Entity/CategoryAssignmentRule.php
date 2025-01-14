@@ -9,24 +9,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: CategoryAssignmentRuleRepository::class)]
 class CategoryAssignmentRule
 {
-    const TYPE_SIMPLE = 0;
-    const TYPE_REGEX = 1;
-    const AVAILABLE_TYPES = [
+    public const TYPE_SIMPLE = 0;
+    public const TYPE_REGEX = 1;
+    public const AVAILABLE_TYPES = [
         self::TYPE_SIMPLE => 'Simple',
         self::TYPE_REGEX => 'Regex',
     ];
-    const AVAILABLE_TYPE_CHOICES = [
+    public const AVAILABLE_TYPE_CHOICES = [
         'Simple' => self::TYPE_SIMPLE,
         'Regex' => self::TYPE_REGEX,
     ];
 
-    const TRANSACTION_FIELD_NAME = 0;
-    const TRANSACTION_FIELD_DESCRIPTION = 1;
-    const AVAILABLE_TRANSACTION_FIELDS = [
+    public const TRANSACTION_FIELD_NAME = 0;
+    public const TRANSACTION_FIELD_DESCRIPTION = 1;
+    public const AVAILABLE_TRANSACTION_FIELDS = [
         self::TRANSACTION_FIELD_NAME => 'Name',
         self::TRANSACTION_FIELD_DESCRIPTION => 'Description',
     ];
-    const AVAILABLE_TRANSACTION_FIELD_CHOICE = [
+    public const AVAILABLE_TRANSACTION_FIELD_CHOICE = [
         'Name' => self::TRANSACTION_FIELD_NAME,
         'Description' => self::TRANSACTION_FIELD_DESCRIPTION,
     ];
