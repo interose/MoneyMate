@@ -58,7 +58,7 @@ class TransactionController extends AbstractController
 
         $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
 
-        if ($request->request->has('splitTransactionId') && 0 !== $request->request->get('splitTransactionId')) {
+        if ($request->request->has('splitTransactionId') && 0 !== $request->request->getInt('splitTransactionId')) {
             $splitTransaction = $splitTransactionRepository->findOneById($request->request->getInt('splitTransactionId'));
 
             $splitTransaction->setCategory($catgory);
@@ -114,21 +114,4 @@ class TransactionController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    //    #[Route('/transaction/get-categories', name: 'app_transaction_get_categories', methods: ['GET'])]
-    //    public function getCategories(CategoryRepository $repository): JsonResponse
-    //    {
-    //        $categories = $repository->findBy([], ['categoryGroup' => 'ASC', 'name' => 'ASC']);
-
-    //        $result = array_map(function(Category $category) {
-    //            return [
-    //                'value' => $category->getId(),
-    //                'text' => $category->getCategoryGroup() ? $category->getCategoryGroup()->getName().':'.$category->getName() : $category->getName(),
-    //            ];
-    //        }, $categories);
-
-    //        $result = $repository->getCategoriesForDropdown();
-    //
-    //        return new JsonResponse(['results' => $result]);
-    //    }
 }
