@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\SplitTransaction;
 use App\Entity\Transaction;
 use App\Form\TransactionType;
+use App\Lib\Manager\SettingsManager;
 use App\Repository\CategoryRepository;
 use App\Repository\SplitTransactionRepository;
 use App\Repository\TransactionRepository;
@@ -22,6 +23,7 @@ class TransactionController extends AbstractController
     public function index(
         TransactionRepository $repository,
         CategoryRepository $categoryRepository,
+        SettingsManager $settingsManager,
         #[MapQueryParameter] ?int $month = null,
         #[MapQueryParameter] ?int $year = null,
         #[MapQueryParameter] string $sort = 'valutaDate',
@@ -39,8 +41,16 @@ class TransactionController extends AbstractController
         $validSorts = ['valutaDate', 'category'];
         $sort = in_array($sort, $validSorts) ? $sort : 'valutaDate';
 
+        $mainAccount = $settingsManager->get(SettingsManager::SETTING_MAIN_ACCOUNT);
+        if ($mainAccount) {
+            $transactions = $repository->findBySearch($month, $year, $sort, $sortDirection, $query);
+        } else {
+            $transactions = [];
+            $this->addFlash('error_static', 'Please set a main account in the settings.');
+        }
+
         return $this->render('transaction/index.html.twig', [
-            'transactions' => $repository->findBySearch($month, $year, $sort, $sortDirection, $query),
+            'transactions' => $transactions,
             'month' => $month,
             'year' => $year,
             'sort' => $sort,

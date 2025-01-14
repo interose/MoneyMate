@@ -29,22 +29,18 @@
 
     <div class="flex-1"></div>
 
-
-
+    {% if get_main_account_id() != 0 %}
+    <div class="p-2 flex items-center text-xs font-medium text-center text-gray-600">1.111,11 €</div>
     <div class="p-2 flex items-center text-xs font-medium text-center text-gray-600">
-        1.111,11 €
-    </div>
-
-    <div class="p-2 flex items-center text-xs font-medium text-center text-gray-600">
-        <a href="{{ path('app_account_update_statements', {'id': 3}) }}" data-turbo-frame="mdl" class="p-1 px-2 me-1 text-xs font-medium text-center inline-flex items-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300">
+        <a href="{{ path('app_account_update_statements', {'id': get_main_account_id()}) }}" data-turbo-frame="mdl" class="p-1 px-2 me-1 text-xs font-medium text-center inline-flex items-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300">
             <svg class="size-4 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
             </svg>
             Update Transactions
         </a>
     </div>
+    {% endif %}
 </div>
-
 
 <turbo-frame
     id="transaction-list"
