@@ -20,6 +20,19 @@ class ChampionUpdater
     ) {
     }
 
+    public function getLastUpdated(): ?\DateTimeImmutable
+    {
+        $lastUpdate = null;
+        $file = $this->cacheDir.self::CACHE_FILE;
+
+        if (file_exists($file)) {
+            $lastUpdate = new \DateTimeImmutable();
+            $lastUpdate->setTimestamp(filemtime($file));
+        }
+
+        return $lastUpdate;
+    }
+
     /**
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
@@ -27,7 +40,7 @@ class ChampionUpdater
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Exception
      */
-    public function checkUpdate(): void
+    public function getUpdate(): void
     {
         $lastUpdate = null;
         $file = $this->cacheDir.self::CACHE_FILE;

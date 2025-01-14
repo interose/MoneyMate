@@ -23,11 +23,7 @@ class StockController extends AbstractController
         #[MapQueryParameter] string $query = '',
         #[MapQueryParameter] ?array $filter = null,
     ): Response {
-        try {
-            $updater->checkUpdate();
-        } catch (\Exception $e) {
-            $this->addFlash('error', $e->getMessage());
-        }
+        $lastUpdate = $updater->getLastUpdated();
 
         $validSorts = ['name', 'industry', 'geoPak10', 'profitConsistency', 'lossRatio', 'dividendYield', 'sharePrice', 'gd200', 'trend', 'comment'];
         $sort = in_array($sort, $validSorts) ? $sort : 'name';
@@ -38,6 +34,20 @@ class StockController extends AbstractController
             'sortDirection' => $sortDirection,
             'trends' => StockTrend::cases(),
             'comments' => StockComment::cases(),
+            'lastUpdate' => $lastUpdate ? $lastUpdate->format('d.m.Y H:i') : 'not updated yet',
         ]);
+    }
+
+    #[Route('/update', name: 'app_stock_update', methods: ['GET'])]
+    public function update(ChampionUpdater $updater): Response
+    {
+        try {
+            $updater->getUpdate();
+            $this->addFlash('success', 'Champions updated.');
+        } catch (\Exception $e) {
+            $this->addFlash('error_static', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_stock_index', [], Response::HTTP_SEE_OTHER);
     }
 }
