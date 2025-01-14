@@ -1,7 +1,5 @@
-{% for message in app.flashes('success') %}
-    <twig:Flash type="success">{{ message|raw }}</twig:Flash>
-{% endfor %}
-
-{% for message in app.flashes('error') %}
-    <twig:Flash type="error">{{ message }}</twig:Flash>
+{% for type, messages in app.flashes %}
+    <twig:Flash type="{{ type }}">
+        {% for message in messages %}{{ message|raw }}<br>{% endfor %}
+    </twig:Flash>
 {% endfor %}
