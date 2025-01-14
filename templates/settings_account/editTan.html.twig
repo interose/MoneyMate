@@ -25,7 +25,7 @@
                         </div>
                     </div>
 
-                    {% if formFinTsErrorMessage is defined and formFinTsErrorMessage is not null %}
+                    {% if formFinTsErrorMessage is defined and formFinTsErrorMessage is not empty %}
                         <div class="p-4 mb-6 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                             <span class="font-medium"><b>Communication Error:</b><br></span>
                             {{ formFinTsErrorMessage|raw }}<br><br>
@@ -36,7 +36,7 @@
                     {{ form_start(form, {'attr': {'data-account-wizzard-target': 'form'}}) }}
 
                     <div class="grid grid-cols-2 gap-4">
-                        {% if formFinTsErrorMessage is defined and formFinTsErrorMessage is not null %}
+                        {% if formFinTsErrorMessage is defined and formFinTsErrorMessage is not empty %}
                             <div>{{ form_row(form.tanMechanism, {'attr': {'data-account-wizzard-target': 'tanModeSelect'}}) }}</div>
                         {% else %}
                             <div>{{ form_row(form.tanMechanism, {'attr': {'data-account-wizzard-target': 'tanModeSelect', 'data-action': 'account-wizzard#fetchTanMedia'}}) }}</div>

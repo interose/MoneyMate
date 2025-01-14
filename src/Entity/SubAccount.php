@@ -6,6 +6,7 @@ use App\Repository\SubAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Fhp\Model\SEPAAccount;
 
 #[ORM\Entity(repositoryClass: SubAccountRepository::class)]
 class SubAccount
@@ -135,5 +136,22 @@ class SubAccount
         $this->enabled = $enabled;
 
         return $this;
+    }
+
+    /**
+     * Transforms the database record to a SEPAAccount object.
+     */
+    public function getSEPAAcount(): SEPAAccount
+    {
+        $sepaAccount = new SEPAAccount();
+
+        $sepaAccount
+            ->setIban($this->getIban())
+            ->setBic($this->getAccount()->getBic())
+            ->setBlz($this->getAccount()->getBankCode())
+            ->setAccountNumber($this->getAccountNumber())
+        ;
+
+        return $sepaAccount;
     }
 }

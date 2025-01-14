@@ -6,6 +6,7 @@ use Fhp\Action\GetSEPAAccounts;
 use Fhp\BaseAction;
 use Fhp\FinTs;
 use Fhp\Model\SEPAAccount;
+use Fhp\Model\StatementOfAccount\Transaction;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class Base
@@ -85,6 +86,9 @@ class Base
             case Action::CheckDecoupled:
                 return $this->finTs->checkDecoupledSubmission($this->persistedAction);
 
+            case Action::GetStatementOfAccount:
+                return $this->getStatementOfAccount($request->account, $request->getFrom, $request->getTo);
+
             default:
                 throw new \InvalidArgumentException('Unknown action: '.$request->action->value);
         }
@@ -107,6 +111,36 @@ class Base
 
             throw new TanRequiredException($tanRequest->getChallenge());
         }
+    }
+
+    /**
+     * @throws \Fhp\CurlException
+     * @throws TanRequiredException
+     * @throws \Fhp\Protocol\ServerException
+     *
+     * @return Transaction[]
+     */
+    private function getStatementOfAccount(SEPAAccount $account, \DateTime $from, \DateTime $to): array
+    {
+        $getStatement = \Fhp\Action\GetStatementOfAccount::create($account, $from, $to);
+        $this->finTs->execute($getStatement);
+
+        if ($getStatement->needsTan()) {
+            $tanRequest = $getStatement->getTanRequest();
+
+            $this->preserveState($getStatement);
+
+            throw new TanRequiredException($tanRequest->getChallenge());
+        }
+
+        $transactions = [];
+        $soa = $getStatement->getStatement();
+
+        foreach ($soa->getStatements() as $statement) {
+            $transactions = array_merge($transactions, $statement->getTransactions());
+        }
+
+        return $transactions;
     }
 
     /**

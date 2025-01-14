@@ -46,6 +46,7 @@ class AccountStep3Type extends AbstractType
                     'choices' => [
                         'Please select' => '',
                     ],
+                    'empty_data' => '',
                 ]);
 
             // this is needed because the possible choices are added via javascript
@@ -75,17 +76,6 @@ class AccountStep3Type extends AbstractType
                 'novalidate' => true,
             ],
             'tanModeChoices' => [],
-            'constraints' => [
-                new Callback([$this, 'validateFields']),
-            ],
         ]);
-    }
-
-    /**
-     * Custom validation logic for both fields.
-     */
-    public function validateFields($data, ExecutionContextInterface $context)
-    {
-        $enabled = $data['tanMechanism'] ?? false;
     }
 }

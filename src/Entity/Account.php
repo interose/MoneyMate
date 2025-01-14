@@ -146,7 +146,7 @@ class Account
         return $this->tanMediaName;
     }
 
-    public function setTanMediaName(string $tanMediaName): static
+    public function setTanMediaName(string $tanMediaName = null): static
     {
         $this->tanMediaName = $tanMediaName;
 

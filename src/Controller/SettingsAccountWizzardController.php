@@ -8,7 +8,6 @@ use App\Form\AccountStep2Type;
 use App\Form\AccountStep3Type;
 use App\Form\AccountStep4Type;
 use App\Lib\FinTs\Action;
-use App\Lib\FinTs\Factory;
 use App\Lib\FinTs\TanRequiredException;
 use App\Lib\FinTs\Wrapper;
 use App\Lib\LogoUploader;
@@ -17,14 +16,11 @@ use App\Repository\AccountRepository;
 use App\Repository\SubAccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/settings/account/wizzard')]
 class SettingsAccountWizzardController extends AbstractController
@@ -102,9 +98,8 @@ class SettingsAccountWizzardController extends AbstractController
         Request $request,
         Account $account,
         EntityManagerInterface $entityManager,
-        Wrapper $finTsWrapper
+        Wrapper $finTsWrapper,
     ): Response {
-
         $tanModeChoices = [];
         $formFinTsErrorMessage = '';
 
@@ -141,17 +136,16 @@ class SettingsAccountWizzardController extends AbstractController
         Account $account,
         Wrapper $finTsWrapper,
         SubAccountUpdater $updater,
-        SubAccountRepository $repository,
-        EntityManagerInterface $entityManager,
-        LogoUploader $uploader,
-    ): Response {
-
+        SubAccountRepository $repository): Response
+    {
         try {
-            $finTsWrapper->getAllSubaccounts($account, );
+            $subAccounts = $finTsWrapper->getAllSubaccounts($account, $request->query->get('action'));
+            $updater->createOrUpdate($account, $subAccounts);
         } catch (TanRequiredException $e) {
-            return $this->render('settings_account_wizzard/step4ConfirmTan.html.twig', [
+            return $this->render('settings_account_wizzard/step4ConfirmTanMedia.html.twig', [
                 'account' => $account,
-                'msg' => $e->getMessage(),
+                'action' => Action::CheckDecoupled->value,
+                'msg' => 'Please confirm the action on your device and then click OK.',
             ]);
         } catch (\Exception $e) {
             return $this->render('settings_account_wizzard/step4Error.html.twig', [
@@ -160,40 +154,25 @@ class SettingsAccountWizzardController extends AbstractController
             ]);
         }
 
-//        try {
-//            $finTs = $finTsFactory->getFinTs($account);
-//
-//            if (!$request->query->has('finTsAction')) {
-//                $finTs->login();
-//            } else {
-//                $finTsAction = new \stdClass();
-//                $finTsAction->action = Action::CheckDecoupled;
-//                if (true !== $finTs->handleAction($finTsAction)) {
-//                    throw new TanRequiredException();
-//                }
-//            }
-//
-//            $finTsAction = new \stdClass();
-//            $finTsAction->action = Action::GetAllAccounts;
-//            $subAccounts = $finTs->handleAction($finTsAction);
-//
-//            $updater->createOrUpdate($account, $subAccounts);
-//        } catch (TanRequiredException $e) {
-//            return $this->render('settings_account_wizzard/step4ConfirmTan.html.twig', [
-//                'account' => $account,
-//                'msg' => $e->getMessage(),
-//            ]);
-//        } catch (\Exception $e) {
-//            return $this->render('settings_account_wizzard/step4Error.html.twig', [
-//                'account' => $account,
-//                'error' => str_replace("\n", '<br>', $e->getMessage()),
-//            ]);
-//        }
-
         $subAccounts = $repository->findBy(['account' => $account]);
 
         $form = $this->createForm(AccountStep4Type::class, $account, [
-            'action' => $this->generateUrl('app_settings_account_step4', ['id' => $account->getId()]),
+            'action' => $this->generateUrl('app_settings_account_step5', ['id' => $account->getId()]),
+            'validation_groups' => 'step4',
+        ]);
+
+        return $this->render('settings_account_wizzard/step4.html.twig', [
+            'account' => $account,
+            'subAccounts' => $subAccounts,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/step5', name: 'app_settings_account_step5', methods: ['POST'])]
+    public function step5(Request $request, Account $account, EntityManagerInterface $entityManager, LogoUploader $uploader): Response
+    {
+        $form = $this->createForm(AccountStep4Type::class, $account, [
+            'action' => $this->generateUrl('app_settings_account_step5', ['id' => $account->getId()]),
             'validation_groups' => 'step4',
         ]);
 
@@ -212,14 +191,8 @@ class SettingsAccountWizzardController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Account updated');
-
-            return $this->redirectToRoute('app_settings_account_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('settings_account_wizzard/step4.html.twig', [
-            'account' => $account,
-            'subAccounts' => $subAccounts,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_settings_account_index', [], Response::HTTP_SEE_OTHER);
     }
 }
