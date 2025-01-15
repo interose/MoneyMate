@@ -34,16 +34,16 @@
     </div>
 </td>
 <td
-    class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400"
+    class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400 cursor-pointer"
     data-action="click->transaction#showCategoryDropdown"
     data-transaction-id="{{ transaction.id }}"
     data-split-transaction-id="{% if splitTransaction is defined %}{{ splitTransaction.id }}{% else %}0{% endif %}"
     data-transaction-category-id="{% if splitTransaction is defined and splitTransaction.category %}{{ splitTransaction.category.id }}{% elseif transaction.category %}{{ transaction.category.id }}{% endif %}"
 >
     {% if splitTransaction is defined %}
-        {{ splitTransaction.category.name }}
+        {{ not(splitTransaction.category.categoryGroup is empty) ? splitTransaction.category.categoryGroup.name~':' : '' }}{{ splitTransaction.category.name }}
     {% elseif transaction.category %}
-        {{ transaction.category.name }}
+        {{ not(transaction.category.categoryGroup is empty) ? transaction.category.categoryGroup.name~':' : '' }}{{ transaction.category.name }}
     {% endif %}
 </td>
 <td class="p-1 px-2 pe-4 text-xs font-normal text-right text-gray-600 whitespace-nowrap dark:text-gray-400">

@@ -16,7 +16,7 @@ export default class extends Controller {
         tooltip.classList.remove('hidden');
         computePosition(event.target, tooltip, {
             placement: 'bottom-start',
-            // middleware: [flip(), offset({mainAxis: -25, crossAxis: -24})],
+            middleware: [flip(), offset({mainAxis: -25, crossAxis: 0})],
         }).then(({x, y}) => {
             Object.assign(tooltip.style, {
                 left: `${x}px`,
