@@ -38,6 +38,9 @@ class SubAccount
     #[ORM\Column]
     private ?bool $enabled = null;
 
+    #[ORM\OneToOne(mappedBy: 'subaccount', cascade: ['persist', 'remove'])]
+    private ?CurrentBalance $currentBalance = null;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
@@ -153,5 +156,22 @@ class SubAccount
         ;
 
         return $sepaAccount;
+    }
+
+    public function getCurrentBalance(): ?CurrentBalance
+    {
+        return $this->currentBalance;
+    }
+
+    public function setCurrentBalance(CurrentBalance $currentBalance): static
+    {
+        // set the owning side of the relation if necessary
+        if ($currentBalance->getSubaccount() !== $this) {
+            $currentBalance->setSubaccount($this);
+        }
+
+        $this->currentBalance = $currentBalance;
+
+        return $this;
     }
 }
