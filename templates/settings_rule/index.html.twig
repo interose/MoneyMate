@@ -22,10 +22,34 @@
         <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
             <thead class="bg-gray-100 dark:bg-gray-700">
             <tr>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Rule</th>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Type</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                    <a href="{{ path('app_settings_rule_index', {
+                        ...app.request.query.all(),
+                        sort: 'rule',
+                        sortDirection: sort == 'rule' and sortDirection == 'asc' ? 'desc' : 'asc',
+                    }) }}">
+                        Rule {{ _self.sortArrow('rule', sort, sortDirection) }}
+                    </a>
+                </th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                    <a href="{{ path('app_settings_rule_index', {
+                        ...app.request.query.all(),
+                        sort: 'type',
+                        sortDirection: sort == 'type' and sortDirection == 'asc' ? 'desc' : 'asc',
+                    }) }}">
+                        Type {{ _self.sortArrow('type', sort, sortDirection) }}
+                    </a>
+                </th>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Transaction Field</th>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Category</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                    <a href="{{ path('app_settings_rule_index', {
+                        ...app.request.query.all(),
+                        sort: 'category',
+                        sortDirection: sort == 'category' and sortDirection == 'asc' ? 'desc' : 'asc',
+                    }) }}">
+                        Category {{ _self.sortArrow('category', sort, sortDirection) }}
+                    </a>
+                </th>
                 <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Actions</th>
             </tr>
             </thead>

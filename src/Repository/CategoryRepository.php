@@ -32,4 +32,20 @@ SQL;
 
         return $result->fetchAllAssociative();
     }
+
+    public function findBySearch(?string $sort = null, string $direction = 'DESC')
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        if ($sort) {
+            if ('group' === $sort) {
+                $qb->leftJoin('c.categoryGroup', 'cg');
+                $qb->orderBy('cg.name', $direction);
+            } else {
+                $qb->orderBy('c.'.$sort, $direction);
+            }
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

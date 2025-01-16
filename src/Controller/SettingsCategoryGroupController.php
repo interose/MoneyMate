@@ -9,16 +9,25 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/settings/category-group')]
 class SettingsCategoryGroupController extends AbstractController
 {
     #[Route('/', name: 'app_settings_categorygroup_index', methods: ['GET'])]
-    public function index(CategoryGroupRepository $repository): Response
-    {
+    public function index(
+        CategoryGroupRepository $repository,
+        #[MapQueryParameter] string $sort = 'name',
+        #[MapQueryParameter] string $sortDirection = 'asc',
+    ): Response {
+        $validSorts = ['name'];
+        $sort = in_array($sort, $validSorts) ? $sort : 'name';
+
         return $this->render('settings_category_group/index.html.twig', [
-            'categoryGroups' => $repository->findAll(),
+            'categoryGroups' => $repository->findBySearch($sort, $sortDirection),
+            'sort' => $sort,
+            'sortDirection' => $sortDirection,
         ]);
     }
 

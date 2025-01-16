@@ -23,10 +23,42 @@
             <thead class="bg-gray-100 dark:bg-gray-700">
             <tr>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">#</th>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Group</th>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Name</th>
-                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Tree Ignore</th>
-                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Dashboard Ignore</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                    <a href="{{ path('app_settings_category_index', {
+                        ...app.request.query.all(),
+                        sort: 'group',
+                        sortDirection: sort == 'group' and sortDirection == 'asc' ? 'desc' : 'asc',
+                    }) }}">
+                        Group {{ _self.sortArrow('group', sort, sortDirection) }}
+                    </a>
+                </th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                    <a href="{{ path('app_settings_category_index', {
+                        ...app.request.query.all(),
+                        sort: 'name',
+                        sortDirection: sort == 'name' and sortDirection == 'asc' ? 'desc' : 'asc',
+                    }) }}">
+                        Name {{ _self.sortArrow('name', sort, sortDirection) }}
+                    </a>
+                </th>
+                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
+                    <a href="{{ path('app_settings_category_index', {
+                        ...app.request.query.all(),
+                        sort: 'treeIgnore',
+                        sortDirection: sort == 'treeIgnore' and sortDirection == 'asc' ? 'desc' : 'asc',
+                    }) }}">
+                        Tree Ignore {{ _self.sortArrow('treeIgnore', sort, sortDirection) }}
+                    </a>
+                </th>
+                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
+                    <a href="{{ path('app_settings_category_index', {
+                        ...app.request.query.all(),
+                        sort: 'dashboardIgnore',
+                        sortDirection: sort == 'dashboardIgnore' and sortDirection == 'asc' ? 'desc' : 'asc',
+                    }) }}">
+                        Dashboard Ignore {{ _self.sortArrow('dashboardIgnore', sort, sortDirection) }}
+                    </a>
+                </th>
                 <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Actions</th>
             </tr>
             </thead>

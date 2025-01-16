@@ -9,16 +9,25 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/settings/rules')]
 class SettingsRuleController extends AbstractController
 {
     #[Route('/', name: 'app_settings_rule_index', methods: ['GET'])]
-    public function index(CategoryAssignmentRuleRepository $repository): Response
-    {
+    public function index(
+        CategoryAssignmentRuleRepository $repository,
+        #[MapQueryParameter] string $sort = 'name',
+        #[MapQueryParameter] string $sortDirection = 'asc',
+    ): Response {
+        $validSorts = ['rule', 'type', 'category'];
+        $sort = in_array($sort, $validSorts) ? $sort : 'rule';
+
         return $this->render('settings_rule/index.html.twig', [
-            'rules' => $repository->findAll(),
+            'rules' => $repository->findBySearch($sort, $sortDirection),
+            'sort' => $sort,
+            'sortDirection' => $sortDirection,
         ]);
     }
 

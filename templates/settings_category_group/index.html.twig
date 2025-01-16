@@ -23,7 +23,15 @@
             <thead class="bg-gray-100 dark:bg-gray-700">
             <tr>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">#</th>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Name</th>
+                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                    <a href="{{ path('app_settings_categorygroup_index', {
+                        ...app.request.query.all(),
+                        sort: 'name',
+                        sortDirection: sort == 'name' and sortDirection == 'asc' ? 'desc' : 'asc',
+                    }) }}">
+                        Name {{ _self.sortArrow('name', sort, sortDirection) }}
+                    </a>
+                </th>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Color</th>
                 <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">Amount of Categories</th>
                 <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Actions</th>

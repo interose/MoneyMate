@@ -16,28 +16,17 @@ class CategoryAssignmentRuleRepository extends ServiceEntityRepository
         parent::__construct($registry, CategoryAssignmentRule::class);
     }
 
-    //    /**
-    //     * @return CategoryAssignmentRule[] Returns an array of CategoryAssignmentRule objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findBySearch(?string $sort = null, string $direction = 'DESC')
+    {
+        $qb = $this->createQueryBuilder('r');
 
-    //    public function findOneBySomeField($value): ?CategoryAssignmentRule
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ('category' === $sort) {
+            $qb->leftJoin('r.category', 'c');
+            $qb->orderBy('c.name', $direction);
+        } else {
+            $qb->orderBy('r.'.$sort, $direction);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

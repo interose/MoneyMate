@@ -24,4 +24,15 @@ class CategoryGroupRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findBySearch(?string $sort = null, string $direction = 'DESC')
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        if ($sort) {
+            $qb->orderBy('c.'.$sort, $direction);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
