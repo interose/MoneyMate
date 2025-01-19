@@ -114,4 +114,25 @@ class Wrapper
 
         return $finTs->handleAction($finTsAction);
     }
+
+    public function getBalance(Account $account, SEPAAccount $sepaAccount, ?string $action = null): int
+    {
+        $finTs = $this->factory->getFinTs($account);
+
+        if (is_null($action)) {
+            $finTs->login();
+        } else {
+            $finTsAction = new \stdClass();
+            $finTsAction->action = Action::CheckDecoupled;
+            if (true !== $finTs->handleAction($finTsAction)) {
+                throw new TanRequiredException();
+            }
+        }
+
+        $finTsAction = new \stdClass();
+        $finTsAction->action = Action::GetBalance;
+        $finTsAction->account = $sepaAccount;
+
+        return $finTs->handleAction($finTsAction);
+    }
 }

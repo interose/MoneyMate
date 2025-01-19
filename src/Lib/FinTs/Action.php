@@ -12,4 +12,5 @@ enum Action: string
     case SubmitTan = 'submitTan';
     case Success = 'success';
     case GetStatementOfAccount = 'getStatementOfAccount';
+    case GetBalance = 'getBalance';
 }

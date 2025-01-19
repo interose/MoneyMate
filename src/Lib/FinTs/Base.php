@@ -67,7 +67,7 @@ class Base
      * @throws \Fhp\Protocol\ServerException
      * @throws TanRequiredException
      */
-    public function handleAction(\stdClass $request): array|bool
+    public function handleAction(\stdClass $request): array|bool|int
     {
         if (!property_exists($request, 'action')) {
             throw new \InvalidArgumentException('Action property missing');
@@ -88,6 +88,9 @@ class Base
 
             case Action::GetStatementOfAccount:
                 return $this->getStatementOfAccount($request->account, $request->getFrom, $request->getTo);
+
+            case Action::GetBalance:
+                return $this->getBalance($request->account);
 
             default:
                 throw new \InvalidArgumentException('Unknown action: '.$request->action->value);
@@ -141,6 +144,35 @@ class Base
         }
 
         return $transactions;
+    }
+
+    /**
+     * @throws \Fhp\CurlException
+     * @throws TanRequiredException
+     * @throws \Fhp\Protocol\ServerException
+     */
+    private function getBalance(SEPAAccount $account): int
+    {
+        $getBalance = \Fhp\Action\GetBalance::create($account);
+        $this->finTs->execute($getBalance);
+
+        if ($getBalance->needsTan()) {
+            $tanRequest = $getBalance->getTanRequest();
+
+            $this->preserveState($getBalance);
+
+            throw new TanRequiredException($tanRequest->getChallenge());
+        }
+
+        $balances = $getBalance->getBalances();
+        if (!is_array($balances) || 1 !== count($balances)) {
+            throw new \Exception('Could not get balance for first account!');
+        }
+
+        /** @var \Fhp\Segment\SAL\HISAL $hisal */
+        $hisal = $balances[0];
+
+        return intval($hisal->getGebuchterSaldo()->getAmount() * 100);
     }
 
     /**

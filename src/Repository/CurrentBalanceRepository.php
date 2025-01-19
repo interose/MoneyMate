@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CurrentBalance;
+use App\Entity\SubAccount;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,23 @@ class CurrentBalanceRepository extends ServiceEntityRepository
         parent::__construct($registry, CurrentBalance::class);
     }
 
-    //    /**
-    //     * @return CurrentBalance[] Returns an array of CurrentBalance objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function updateBalance(SubAccount $subAccount, int $balance): void
+    {
+        $balanceObj = $this->createQueryBuilder('c')
+            ->andWhere('c.subaccount = :val')
+            ->setParameter('val', $subAccount)
+            ->getQuery()
+            ->getOneOrNullResult();
 
-    //    public function findOneBySomeField($value): ?CurrentBalance
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (null === $balanceObj) {
+            $balanceObj = new CurrentBalance();
+            $balanceObj->setSubAccount($subAccount);
+        }
+
+        $balanceObj->setBalance($balance);
+
+        $em = $this->getEntityManager();
+        $em->persist($balanceObj);
+        $em->flush();
+    }
 }
