@@ -60,4 +60,7 @@ return [
     'flowbite/dist/flowbite.turbo.min.js' => [
         'version' => '2.5.2',
     ],
+    'highcharts' => [
+        'version' => '12.1.2',
+    ],
 ];

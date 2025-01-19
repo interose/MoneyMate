@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\SubAccount;
 use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,5 +40,32 @@ class TransactionRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getTurnoverByMonth(SubAccount $subAccount, \DateTime $start, \DateTime $end): array
+    {
+        $con = $this->getEntityManager()->getConnection();
+
+        $sql = <<<SQL
+SELECT
+    SUM(CASE WHEN t.credit_debit = 'debit' THEN t.amount ELSE 0 END) AS debit,
+    SUM(CASE WHEN t.credit_debit = 'credit' THEN t.amount ELSE 0 END) AS credit,
+    DATE_FORMAT(t.valuta_date, '%Y-%m') AS month_number,
+    DATE_FORMAT(t.valuta_date, '%b') AS month_name,
+    DATE_FORMAT(t.valuta_date, '%Y') AS year_number
+FROM transaction t
+WHERE t.sub_account_id = :subaccount_id
+GROUP BY month_number, month_name, year_number
+ORDER BY month_number ASC
+SQL;
+        $stmt = $con->prepare($sql);
+        $stmt->bindValue(':subaccount_id', $subAccount->getId());
+
+        $result = $stmt->executeQuery();
+
+        return $result->fetchAllAssociative();
     }
 }
