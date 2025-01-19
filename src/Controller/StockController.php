@@ -42,8 +42,11 @@ class StockController extends AbstractController
     public function update(ChampionUpdater $updater): Response
     {
         try {
-            $updater->getUpdate();
-            $this->addFlash('success', 'Champions updated.');
+            if ($updater->getUpdate()) {
+                $this->addFlash('success', 'Champions updated.');
+            } else {
+                $this->addFlash('notice', 'Nothing to do.');
+            }
         } catch (\Exception $e) {
             $this->addFlash('error_static', $e->getMessage());
         }

@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class ChampionUpdater
 {
     private const CACHE_FILE = 'championsLastUpdated.csv';
-    private const DAYS_TO_UPDATE = 7;
+    private const HASH_ALGO = 'md5';
 
     public function __construct(
         #[Autowire('%kernel.cache_dir%/')] private readonly string $cacheDir,
@@ -39,22 +39,25 @@ class ChampionUpdater
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Exception
      */
-    public function getUpdate(): void
+    public function getUpdate(): bool
     {
-        $lastUpdate = null;
         $file = $this->cacheDir.self::CACHE_FILE;
+
+        $localChecksum = $remoteChecksum = null;
+        $url = $this->settingsManager->get(SettingsManager::SETTING_STOCK_DIVIDEND_URL);
+
         if (file_exists($file)) {
-            $lastUpdate = new \DateTimeImmutable();
-            $lastUpdate->setTimestamp(filemtime($file));
+            $localChecksum = hash_file(self::HASH_ALGO, $file);
+            $remoteChecksum = $this->getRemoteChecksum($url);
         }
 
-        if (null === $lastUpdate || $lastUpdate->diff(new \DateTimeImmutable())->days > self::DAYS_TO_UPDATE) {
-            $url = $this->settingsManager->get(SettingsManager::SETTING_STOCK_DIVIDEND_URL);
-            if (null !== $url) {
-                $this->fetchCsv($url);
+        if (null === $localChecksum || null === $remoteChecksum || $localChecksum !== $remoteChecksum) {
+            $this->fetchCsv($url);
+            $this->importer->doImport($this->cacheDir.self::CACHE_FILE);
 
-                $this->importer->doImport($this->cacheDir.self::CACHE_FILE);
-            }
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -67,8 +70,8 @@ class ChampionUpdater
     private function fetchCsv(string $url): void
     {
         $response = $this->client->request('GET', $url, [
-            'verify_peer' => 0,
-            'verify_host' => 0,
+            'verify_peer' => false,
+            'verify_host' => false,
         ]);
 
         $statusCode = $response->getStatusCode();
@@ -78,5 +81,37 @@ class ChampionUpdater
         }
 
         file_put_contents($this->cacheDir.self::CACHE_FILE, $response->getContent());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function getRemoteChecksum(string $url): string
+    {
+        $context = stream_context_create([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ],
+            'http' => [
+                'method' => 'GET',
+            ],
+        ]);
+
+        $stream = fopen($url, 'rb', false, $context);
+        if (!$stream) {
+            throw new \Exception("Unable to open remote file: $url");
+        }
+
+        $hashContext = hash_init(self::HASH_ALGO);
+
+        while (!feof($stream)) {
+            $chunk = fread($stream, 8192); // Read in 8KB chunks
+            hash_update($hashContext, $chunk);
+        }
+
+        fclose($stream);
+
+        return hash_final($hashContext);
     }
 }
