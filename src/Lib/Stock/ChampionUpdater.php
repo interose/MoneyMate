@@ -19,13 +19,13 @@ class ChampionUpdater
     ) {
     }
 
-    public function getLastUpdated(): ?\DateTimeImmutable
+    public function getLastUpdated(): ?\DateTime
     {
         $lastUpdate = null;
         $file = $this->cacheDir.self::CACHE_FILE;
 
         if (file_exists($file)) {
-            $lastUpdate = new \DateTimeImmutable();
+            $lastUpdate = new \DateTime();
             $lastUpdate->setTimestamp(filemtime($file));
         }
 
