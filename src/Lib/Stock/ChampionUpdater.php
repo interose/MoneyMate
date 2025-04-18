@@ -26,6 +26,7 @@ class ChampionUpdater
 
         if (file_exists($file)) {
             $lastUpdate = new \DateTime();
+            $lastUpdate->setTimezone(new \DateTimeZone('Europe/Berlin'));
             $lastUpdate->setTimestamp(filemtime($file));
         }
 

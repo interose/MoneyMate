@@ -35,7 +35,7 @@
             Last Update: <i class="ms-1.5 text-gray-400">{{ lastUpdate }}</i>
         </div>
         <div class="p-2 flex items-center text-xs font-medium text-center text-gray-600">
-            <a href="{{ path('app_stock_update') }}" data-turbo-frame="mdl" class="p-1 px-2 me-1 text-xs font-medium text-center inline-flex items-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300">
+            <a href="{{ path('app_stock_update') }}" data-turbo-frame="stock-list" class="p-1 px-2 me-1 text-xs font-medium text-center inline-flex items-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300">
                 <svg class="size-4 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"></path>
                 </svg>
@@ -48,6 +48,10 @@
     </div>
 
     <turbo-frame id="stock-list" class="aria-busy:opacity-50 aria-busy:blur-sm transition-all">
+        <turbo-stream action="append" target="flash-container">
+            <template>{{ include('_flashes.html.twig') }}</template>
+        </turbo-stream>
+
         <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
             <thead>
             <tr>
