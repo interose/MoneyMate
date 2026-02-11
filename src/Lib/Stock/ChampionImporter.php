@@ -33,7 +33,7 @@ class ChampionImporter
             $obj = new StockChampion();
             $obj->setName(iconv('ISO-8859-1', 'UTF-8', $data[0]));
             $obj->setWkn($data[1]);
-            $obj->setIndustry($data[2]);
+            $obj->setIndustry(iconv('ISO-8859-1', 'UTF-8', $data[2]));
             $obj->setGeoPak10($this->parsePercentage($data[3]));
             $obj->setProfitConsistency($this->parsePercentage($data[4]));
             $obj->setLossRatio($this->parseFloat($data[5]));
