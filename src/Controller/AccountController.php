@@ -37,10 +37,10 @@ class AccountController extends AbstractController
                 $request->query->get('action')
             );
 
-            $currentBalance = $finTsWrapper->getBalance(
-                $subAccount->getAccount(),
-                $subAccount->getSEPAAcount(),
-            );
+////            $currentBalance = $finTsWrapper->getBalance(
+////                $subAccount->getAccount(),
+////                $subAccount->getSEPAAcount(),
+////            );
         } catch (TanRequiredException $e) {
             return $this->render('account/confirmTanMedia.html.twig', [
                 'action' => Action::CheckDecoupled->value,
@@ -53,7 +53,7 @@ class AccountController extends AbstractController
             return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        $currentBalanceRepository->updateBalance($subAccount, $currentBalance);
+////        $currentBalanceRepository->updateBalance($subAccount, $currentBalance);
 
         if (0 === count($transactions)) {
             $this->addFlash('error_static', 'No transactions found.');
@@ -62,7 +62,7 @@ class AccountController extends AbstractController
         }
 
         $stats = $importHandler->import($transactions, $subAccount);
-        $this->addFlash('success_static', sprintf('Overall = %d, New = %d, Assigned = %d', $stats->iTransactions, $stats->iNew, $stats->iAssigned));
+        $this->addFlash('success_static', sprintf('Overall = %d<br>New = %d<br>Assigned = %d', $stats->iTransactions, $stats->iNew, $stats->iAssigned));
 
         return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
     }
