@@ -48,10 +48,13 @@
 <turbo-frame
     id="transaction-list"
     class="aria-busy:opacity-50 aria-busy:blur-sm transition-all"
-    data-controller="transaction"
-    data-action="click@window->transaction#hide"
+{#    data-controller="transaction"#}
+{#    data-action="click@window->transaction#hide"#}
 >
-    <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
+    <table
+        class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+        data-controller="ta-dropdown-manager"
+    >
     <thead>
     <tr>
         <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700"></th>
