@@ -41,10 +41,9 @@ input[type="file"]::file-selector-button {
 
 /* Custom Dropdown Styling */
 .dropdown-content {
-    position: absolute;
-    z-index: 50;
-    width: 200px;
+    position: fixed; /* Using fixed to avoid z-index/overflow issues in table cells */
+    z-index: 9999;
+    width: 300px;
     max-height: 300px;
-    overflow-y: auto;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }

@@ -43,141 +43,23 @@
     <div
         class="relative w-full"
         data-controller="ta-dropdown"
-        data-action="ta-dropdown:opening@window->ta-dropdown-manager#closeAll"
+{#        data-action="ta-dropdown:opening@window->ta-dropdown-manager#closeAll"#}
+        data-ta-dropdown-ta-dropdown-manager-outlet=".dropdown-manager"
     >
         <button
-{#            class="w-full flex justify-between items-center text-left bg-white border border-slate-200 hover:border-blue-400 text-slate-600 text-[11px] rounded px-2 py-1 transition-all"#}
             class="w-full flex justify-between items-center text-left text-slate-600 text-[11px] rounded px-2 py-1 transition-all"
             data-action="click->ta-dropdown#toggle"
         >
-            <span id="label-1">Food</span>
+            <span id="label-1">
+                {% if splitTransaction is defined %}
+                    {{ not(splitTransaction.category.categoryGroup is empty) ? splitTransaction.category.categoryGroup.name~':' : '' }}{{ splitTransaction.category.name }}
+                {% elseif transaction.category %}
+                    {{ not(transaction.category.categoryGroup is empty) ? transaction.category.categoryGroup.name~':' : '' }}{{ transaction.category.name }}
+                {% endif %}
+            </span>
             <svg class="w-3 h-3 ml-1 text-slate-400 hidden" data-ta-dropdown-target="arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </button>
-
-        <div
-            class="dropdown-content absolute left-0 mt-1 bg-white border border-slate-200 rounded-md shadow-xl overflow-hidden hidden"
-            data-ta-dropdown-target="dropdown"
-        >
-            <div class="p-2 border-b border-slate-100 bg-slate-50">
-                <input type="text" id="search-1" placeholder="Search..." data-ta-dropdown-target="search" onkeyup="handleKeyNavigation(event, 1)" class="w-full text-[11px] border border-slate-200 rounded px-2 py-1 focus:ring-1 focus:ring-blue-400 outline-none">
-            </div>
-            <div class="max-h-48 overflow-y-auto py-1" id="list-1">
-                <div class="group-container">
-                    <div class="px-3 py-1 text-[9px] font-bold text-slate-400 uppercase bg-slate-50/50">Personal</div>
-
-                    <button onclick="selectCategory(1, 'Food')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">
-                        Food
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
-
-
-
-
-{#    <div id="dropdown-1" class="dropdown-content absolute left-0 mt-1 bg-white border border-slate-200 rounded-md shadow-xl overflow-hidden">#}
-{#        <div class="p-2 border-b border-slate-100 bg-slate-50">#}
-{#            <input type="text" id="search-1" placeholder="Search..." onkeyup="handleKeyNavigation(event, 1)" class="w-full text-[11px] border border-slate-200 rounded px-2 py-1 focus:ring-1 focus:ring-blue-400 outline-none">#}
-{#        </div>#}
-{#        <div class="max-h-48 overflow-y-auto py-1" id="list-1">#}
-{#            <div class="group-container">#}
-{#                <div class="px-3 py-1 text-[9px] font-bold text-slate-400 uppercase bg-slate-50/50">Personal</div>#}
-
-{#                <button onclick="selectCategory(1, 'Food')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Food#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Shopping')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Shopping#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Entertainment')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Entertainment#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Health')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Health#}
-{#                </button>#}
-
-{#            </div>#}
-
-{#            <div class="group-container">#}
-{#                <div class="px-3 py-1 text-[9px] font-bold text-slate-400 uppercase bg-slate-50/50">Fixed Costs</div>#}
-
-{#                <button onclick="selectCategory(1, 'Living')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Living#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Insurance')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Insurance#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Utilities')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Utilities#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Subscription')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Subscription#}
-{#                </button>#}
-
-{#            </div>#}
-
-{#            <div class="group-container">#}
-{#                <div class="px-3 py-1 text-[9px] font-bold text-slate-400 uppercase bg-slate-50/50">Mobility</div>#}
-
-{#                <button onclick="selectCategory(1, 'Transport')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Transport#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Gas')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Gas#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Public Transit')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Public Transit#}
-{#                </button>#}
-
-{#            </div>#}
-
-{#            <div class="group-container">#}
-{#                <div class="px-3 py-1 text-[9px] font-bold text-slate-400 uppercase bg-slate-50/50">Income</div>#}
-
-{#                <button onclick="selectCategory(1, 'Salary')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Salary#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Investment')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Investment#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Gift')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Gift#}
-{#                </button>#}
-
-{#            </div>#}
-
-{#            <div class="group-container">#}
-{#                <div class="px-3 py-1 text-[9px] font-bold text-slate-400 uppercase bg-slate-50/50">Other</div>#}
-
-{#                <button onclick="selectCategory(1, 'Other')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Other#}
-{#                </button>#}
-
-{#                <button onclick="selectCategory(1, 'Uncategorized')" class="cat-item w-full text-left px-3 py-1.5 text-[11px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">#}
-{#                    Uncategorized#}
-{#                </button>#}
-
-{#            </div>#}
-
-{#        </div>#}
-{#    </div>#}
-
-{#    {% if splitTransaction is defined %}#}
-{#        {{ not(splitTransaction.category.categoryGroup is empty) ? splitTransaction.category.categoryGroup.name~':' : '' }}{{ splitTransaction.category.name }}#}
-{#    {% elseif transaction.category %}#}
-{#        {{ not(transaction.category.categoryGroup is empty) ? transaction.category.categoryGroup.name~':' : '' }}{{ transaction.category.name }}#}
-{#    {% endif %}#}
 </td>
 <td class="p-1 px-2 pe-4 text-xs font-normal text-right text-gray-600 whitespace-nowrap dark:text-gray-400">
     {% if transaction.isCredit %}

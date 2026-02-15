@@ -47,13 +47,11 @@
 
 <turbo-frame
     id="transaction-list"
-    class="aria-busy:opacity-50 aria-busy:blur-sm transition-all"
-{#    data-controller="transaction"#}
-{#    data-action="click@window->transaction#hide"#}
+    class="aria-busy:opacity-50 aria-busy:blur-sm transition-all dropdown-manager"
+    data-controller="ta-dropdown-manager"
 >
     <table
         class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
-        data-controller="ta-dropdown-manager"
     >
     <thead>
     <tr>
@@ -108,7 +106,6 @@
     {% endfor %}
     </tbody>
 </table>
-
     {% include 'transaction/_categoryDropdown.html.twig' %}
 </turbo-frame>
 {% endblock %}

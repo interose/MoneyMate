@@ -16,6 +16,9 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function getCategoriesForDropdown(): array
     {
         $sql = <<<SQL
@@ -24,13 +27,28 @@ FROM category c
 LEFT JOIN category_group cg on c.category_group_id = cg.id
 ORDER BY ISNULL(cg.name), cg.name ASC, c.name ASC
 SQL;
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $results = $stmt->executeQuery()->fetchAllAssociative();
 
-        $entityManager = $this->getEntityManager();
-        $stmt = $entityManager->getConnection()->prepare($sql);
+        $nested = [];
+        foreach ($results as $row) {
+            $groupName = $row['categoryGroupName'] ?? 'Uncategorized';
 
-        $result = $stmt->executeQuery();
+            if (!isset($nested[$groupName])) {
+                $nested[$groupName] = [
+//                    'groupId' => $row['categoryGroupId'],
+                    'groupName' => $groupName,
+                    'categories' => [],
+                ];
+            }
 
-        return $result->fetchAllAssociative();
+            $nested[$groupName]['categories'][] = [
+                'id' => $row['id'],
+                'name' => $row['categoryName'],
+            ];
+        }
+
+        return array_values($nested);
     }
 
     public function findBySearch(?string $sort = null, string $direction = 'DESC')

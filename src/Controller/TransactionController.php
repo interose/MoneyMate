@@ -55,7 +55,7 @@ class TransactionController extends AbstractController
             'year' => $year,
             'sort' => $sort,
             'sortDirection' => $sortDirection,
-            'categories' => $categoryRepository->getCategoriesForDropdown(),
+            'categoryGroups' => $categoryRepository->getCategoriesForDropdown(),
             'query' => $query,
         ]);
     }
