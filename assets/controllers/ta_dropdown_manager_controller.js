@@ -3,6 +3,8 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ["menu", "search", "group", "catItem"]
 
+    currentActiveIndex = -1;
+
     showMenu(buttonElement) {
         // If clicking the same button, toggle closed
         if (this.currentButton === buttonElement && !this.menuTarget.classList.contains("hidden")) {
@@ -12,6 +14,11 @@ export default class extends Controller {
 
         // Store current button reference
         this.currentButton = buttonElement
+
+        // Reset state
+        this.currentActiveIndex = -1;
+        this.searchTarget.value = '';
+        this.filterCategories({ target: this.searchTarget }); // Reset filter
 
         // Positioning relative to the anchor button
         const rect = buttonElement.getBoundingClientRect();
@@ -48,12 +55,12 @@ export default class extends Controller {
 
         if (event.key === 'ArrowDown') {
             event.preventDefault();
-            // currentActiveIndex = Math.min(currentActiveIndex + 1, visibleItems.length - 1);
-            // updateHighlight(visibleItems);
+            this.currentActiveIndex = Math.min(this.currentActiveIndex + 1, visibleItems.length - 1);
+            this.updateHighlight(visibleItems);
         } else if (event.key === 'ArrowUp') {
             event.preventDefault();
-            // currentActiveIndex = Math.max(currentActiveIndex - 1, 0);
-            // updateHighlight(visibleItems);
+            this.currentActiveIndex = Math.max(this.currentActiveIndex - 1, 0);
+            this.updateHighlight(visibleItems);
         } else if (event.key === 'Enter') {
             event.preventDefault();
             // if (currentActiveIndex >= 0 && visibleItems[currentActiveIndex]) {
@@ -63,6 +70,17 @@ export default class extends Controller {
             // currentActiveIndex = -1;
             this.filterCategories(event);
         }
+    }
+
+    updateHighlight(visibleItems) {
+        visibleItems.forEach((item, idx) => {
+            if (idx === this.currentActiveIndex) {
+                item.classList.add('bg-active');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('bg-active');
+            }
+        });
     }
 
     handleEscape(event) {
