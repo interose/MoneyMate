@@ -49,6 +49,7 @@
         <button
             class="w-full flex justify-between items-center text-left text-slate-600 text-[11px] rounded px-2 py-1 transition-all"
             data-action="click->ta-dropdown#toggle"
+            data-transaction-id="{{ transaction.id }}"
         >
             <span id="label-1">
                 {% if splitTransaction is defined %}

@@ -37,22 +37,16 @@
     </div>
     <div class="max-h-48 overflow-y-auto py-1" id="dropdown-list">
         {% for group in categoryGroups %}
-{#            <div#}
-{#                class="group-container"#}
-{#                data-ta-dropdown-manager-target="group"#}
-{#            >#}
-{#                <div class="px-3 py-1 text-[9px] font-bold text-slate-400 uppercase bg-slate-50/50">#}
-{#                    {{ group.groupName }}#}
-{#                </div>#}
                 {% for category in group.categories %}
                     <button
                         class="cat-item w-full text-left px-2 py-1.5 text-[12px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors"
                         data-ta-dropdown-manager-target="catItem"
+                        data-action="click->ta-dropdown-manager#selectCategory"
+                        data-category-id="{{ category.id }}"
                     >
                         {{ group.groupName }}:{{ category.name }}
                     </button>
                 {% endfor %}
-{#            </div>#}
         {% endfor %}
     </div>
 </div>

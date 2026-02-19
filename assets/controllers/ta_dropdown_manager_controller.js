@@ -3,9 +3,13 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ["menu", "search", "group", "catItem"]
 
+    static values = {
+        updateUrl: String
+    }
+
     currentActiveIndex = -1;
 
-    showMenu(buttonElement) {
+    showMenu(buttonElement, transactionId) {
         // If clicking the same button, toggle closed
         if (this.currentButton === buttonElement && !this.menuTarget.classList.contains("hidden")) {
             this.close()
@@ -22,10 +26,11 @@ export default class extends Controller {
 
         // Positioning relative to the anchor button
         const rect = buttonElement.getBoundingClientRect();
-        this.menuTarget.style.top = `${rect.bottom + window.scrollY}px`
-        this.menuTarget.style.left = `${rect.left + window.scrollX}px`
+        this.menuTarget.style.top = `${rect.bottom + window.scrollY}px`;
+        this.menuTarget.style.left = `${rect.left + window.scrollX}px`;
         this.menuTarget.style.width = `${rect.width}px`;
-        this.menuTarget.classList.remove("hidden")
+        this.menuTarget.classList.remove("hidden");
+        this.menuTarget.dataset.transactionId = transactionId;
 
         setTimeout(() => {
             this.searchTarget.focus();
@@ -63,11 +68,11 @@ export default class extends Controller {
             this.updateHighlight(visibleItems);
         } else if (event.key === 'Enter') {
             event.preventDefault();
-            // if (currentActiveIndex >= 0 && visibleItems[currentActiveIndex]) {
-            //     visibleItems[currentActiveIndex].click();
-            // }
+            if (this.currentActiveIndex >= 0 && visibleItems[this.currentActiveIndex]) {
+                visibleItems[this.currentActiveIndex].click();
+            }
         } else {
-            // currentActiveIndex = -1;
+            this.currentActiveIndex = -1;
             this.filterCategories(event);
         }
     }
@@ -81,6 +86,36 @@ export default class extends Controller {
                 item.classList.remove('bg-active');
             }
         });
+    }
+
+    async selectCategory(event) {
+        const button = event.currentTarget;
+        const categoryId = button.dataset.categoryId;
+        const transactionId = this.menuTarget.dataset.transactionId;
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = this.updateUrlValue;
+
+        const fields = {
+            transactionId: transactionId,
+            categoryId: categoryId,
+            splitTransactionId: 0,
+        };
+
+        for (const [key, value] of Object.entries(fields)) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        Turbo.navigator.submitForm(form);
+        document.body.removeChild(form);
+
+        this.close();
     }
 
     handleEscape(event) {
