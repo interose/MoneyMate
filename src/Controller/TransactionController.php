@@ -113,7 +113,7 @@ class TransactionController extends AbstractController
 
             $this->addFlash('success', 'Successful updated!');
 
-            return $this->redirectToRoute('app_transaction_monthly', [
+            return $this->redirectToRoute('app_transaction_index', [
                 'year' => $transaction->getValutaDate()->format('Y'),
                 'month' => $transaction->getValutaDate()->format('n'),
             ], Response::HTTP_SEE_OTHER);

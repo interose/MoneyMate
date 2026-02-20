@@ -25,7 +25,7 @@ class SplitTransactionForm extends AbstractController
     protected function instantiateForm(): FormInterface
     {
         return $this->createForm(TransactionType::class, $this->transaction, [
-            'action' => $this->transaction->getId() ? $this->generateUrl('app_grid_transaction_update', ['id' => $this->transaction->getId()]) : '',
+            'action' => $this->transaction->getId() ? $this->generateUrl('app_transaction_update', ['id' => $this->transaction->getId()]) : '',
         ]);
     }
 }
