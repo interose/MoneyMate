@@ -41,7 +41,6 @@ class SplitTransactionType extends AbstractType
                         ->orderBy('c.categoryGroup, c.name', 'ASC');
                 },
                 'placeholder' => 'Choose a category',
-                'autocomplete' => true,
                 'constraints' => new NotBlank(),
             ])
             ->add('amount', MoneyType::class, [
