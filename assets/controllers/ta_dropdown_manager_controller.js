@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ["menu", "search", "group", "catItem"]
+    static targets = ["dropdown", "search", "group", "catItem"]
 
     static values = {
         updateUrl: String
@@ -9,15 +9,17 @@ export default class extends Controller {
 
     currentActiveIndex = -1;
 
-    showMenu(buttonElement, transactionId) {
+    toggle(event) {
+        const button = event.currentTarget;
+
         // If clicking the same button, toggle closed
-        if (this.currentButton === buttonElement && !this.menuTarget.classList.contains("hidden")) {
+        if (this.currentButton === button && !this.dropdownTarget.classList.contains("hidden")) {
             this.close()
             return
         }
 
         // Store current button reference
-        this.currentButton = buttonElement
+        this.currentButton = button
 
         // Reset state
         this.currentActiveIndex = -1;
@@ -25,12 +27,12 @@ export default class extends Controller {
         this.filterCategories({ target: this.searchTarget }); // Reset filter
 
         // Positioning relative to the anchor button
-        const rect = buttonElement.getBoundingClientRect();
-        this.menuTarget.style.top = `${rect.bottom + window.scrollY}px`;
-        this.menuTarget.style.left = `${rect.left + window.scrollX}px`;
-        this.menuTarget.style.width = `${rect.width}px`;
-        this.menuTarget.classList.remove("hidden");
-        this.menuTarget.dataset.transactionId = transactionId;
+        const rect = button.getBoundingClientRect();
+        this.dropdownTarget.style.top = `${rect.bottom + window.scrollY}px`;
+        this.dropdownTarget.style.left = `${rect.left + window.scrollX}px`;
+        this.dropdownTarget.style.width = `${rect.width}px`;
+        this.dropdownTarget.classList.remove("hidden");
+        this.dropdownTarget.dataset.transactionId = button.dataset.transactionId;
 
         setTimeout(() => {
             this.searchTarget.focus();
@@ -39,13 +41,13 @@ export default class extends Controller {
     }
 
     close() {
-        this.menuTarget.classList.add("hidden")
+        this.dropdownTarget.classList.add("hidden")
         this.currentButton = null
     }
 
     hide(event) {
         // Close if clicking outside
-        if (!this.menuTarget.contains(event.target) &&
+        if (!this.dropdownTarget.contains(event.target) &&
             !this.currentButton?.contains(event.target)) {
             this.close()
         }
@@ -91,7 +93,7 @@ export default class extends Controller {
     async selectCategory(event) {
         const button = event.currentTarget;
         const categoryId = button.dataset.categoryId;
-        const transactionId = this.menuTarget.dataset.transactionId;
+        const transactionId = this.dropdownTarget.dataset.transactionId;
 
         const form = document.createElement('form');
         form.method = 'POST';
@@ -119,7 +121,7 @@ export default class extends Controller {
     }
 
     handleEscape(event) {
-        if (event.key === 'Escape' && !this.menuTarget.classList.contains('hidden')) {
+        if (event.key === 'Escape' && !this.dropdownTarget.classList.contains('hidden')) {
             event.preventDefault();
             event.stopPropagation();
 
