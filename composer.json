@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "beberlei/doctrineextensions": "^1.5",
@@ -40,7 +40,6 @@
         "symfony/string": "7.1.*",
         "symfony/translation": "7.1.*",
         "symfony/twig-bundle": "7.1.*",
-        "symfony/ux-autocomplete": "^2.19",
         "symfony/ux-live-component": "^2.19",
         "symfony/ux-turbo": "^2.18",
         "symfony/ux-twig-component": "^2.18",

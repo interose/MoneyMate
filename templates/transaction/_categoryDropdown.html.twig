@@ -1,26 +1,28 @@
 <div
-    data-transaction-target="dropdown"
-    class="z-10 absolute hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+    data-{{ controller }}-target="dropdown"
+    class="bg-white border border-slate-200 rounded-md shadow-xl overflow-hidden hidden dropdown-content"
 >
-    <form
-        action="{{ path('app_transaction_set_category') }}"
-        method="POST"
-        data-transaction-target="dropdownForm"
-    >
-        <input data-transaction-target="dropdownTransactionValue" type="hidden" name="transactionId" value="" />
-        <input data-transaction-target="dropdownSplitTransactionValue" type="hidden" name="splitTransactionId" value="" />
-        <select
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            name="categoryId"
-            data-action="change->transaction#submit"
-            data-transaction-target="dropdownSelect"
+    <div class="p-2 border-b border-slate-100 bg-slate-50">
+        <input
+            type="text"
+            placeholder="Search..."
+            class="w-full text-[11px] border border-slate-200 rounded px-2 py-1 focus:ring-1 focus:ring-blue-400 outline-none"
+            data-{{ controller }}-target="search"
+            data-action="keyup->{{ controller }}#handleKeyNavigation keydown->{{ controller }}#handleEscape"
         >
-            <option value="">Please choose</option>
-            {% for category in categories %}
-                <option value="{{ category.id }}">
-                    {{ not(category.categoryGroupName is empty) ? category.categoryGroupName~':' : '' }}{{ category.categoryName }}
-                </option>
-            {% endfor %}
-        </select>
-    </form>
+    </div>
+    <div class="max-h-48 overflow-y-auto py-1">
+        {% for group in categoryGroups %}
+                {% for category in group.categories %}
+                    <button
+                        class="cat-item w-full text-left px-2 py-1.5 text-[12px] text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                        data-{{ controller }}-target="catItem"
+                        data-action="click->{{ controller }}#selectCategory"
+                        data-category-id="{{ category.id }}"
+                    >
+                        {{ group.groupName }}:{{ category.name }}
+                    </button>
+                {% endfor %}
+        {% endfor %}
+    </div>
 </div>

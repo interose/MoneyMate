@@ -33,18 +33,23 @@
         <div data-popper-arrow></div>
     </div>
 </td>
-<td
-    class="p-1 px-2 text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400 cursor-pointer"
-    data-action="click->transaction#showCategoryDropdown"
-    data-transaction-id="{{ transaction.id }}"
-    data-split-transaction-id="{% if splitTransaction is defined %}{{ splitTransaction.id }}{% else %}0{% endif %}"
-    data-transaction-category-id="{% if splitTransaction is defined and splitTransaction.category %}{{ splitTransaction.category.id }}{% elseif transaction.category %}{{ transaction.category.id }}{% endif %}"
->
-    {% if splitTransaction is defined %}
-        {{ not(splitTransaction.category.categoryGroup is empty) ? splitTransaction.category.categoryGroup.name~':' : '' }}{{ splitTransaction.category.name }}
-    {% elseif transaction.category %}
-        {{ not(transaction.category.categoryGroup is empty) ? transaction.category.categoryGroup.name~':' : '' }}{{ transaction.category.name }}
-    {% endif %}
+<td class="text-xs font-normal text-gray-600 whitespace-nowrap dark:text-gray-400 cursor-pointer relative overflow-visible">
+    <div class="relative w-full">
+        <button
+            class="w-full flex justify-between items-center text-left text-slate-600 text-[11px] rounded px-2 py-1 transition-all"
+            data-action="click->ta-dropdown-manager#toggle"
+            data-transaction-id="{{ transaction.id }}"
+        >
+            <span id="label-1">
+                {% if splitTransaction is defined %}
+                    {{ not(splitTransaction.category.categoryGroup is empty) ? splitTransaction.category.categoryGroup.name~':' : '' }}{{ splitTransaction.category.name }}
+                {% elseif transaction.category %}
+                    {{ not(transaction.category.categoryGroup is empty) ? transaction.category.categoryGroup.name~':' : '' }}{{ transaction.category.name }}
+                {% endif %}
+            </span>
+            <svg class="w-3 h-3 ml-1 text-slate-400 hidden" data-ta-dropdown-target="arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+    </div>
 </td>
 <td class="p-1 px-2 pe-4 text-xs font-normal text-right text-gray-600 whitespace-nowrap dark:text-gray-400">
     {% if transaction.isCredit %}

@@ -25,10 +25,19 @@
                         }
                     }) }}
                 </td>
-                <td class="px-3 py-2 w-60">
+                <td class="px-3 py-2 w-60 relative">
                     {{ form_row(splitTransaction.category, {
                         label: false
                     }) }}
+                    <button
+                        type="button"
+                        class="w-full flex justify-between items-center text-left border border-slate-200 bg-white text-slate-600 text-xs rounded px-3 py-1 hover:border-blue-300 transition-all"
+                        data-action="click->split-transaction-form#toggle"
+                        data-row-index="{{ loop.index0 }}"
+                    >
+                        <span id="form-category-label">Uncategorized</span>
+                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </button>
                 </td>
                 <td class="px-3 py-2 w-28">
                     {{ form_row(splitTransaction.amount, {
@@ -52,4 +61,6 @@
     </div>
 
     {{ form_end(form) }}
+
+    {{ include('transaction/_categoryDropdown.html.twig', { 'controller': 'split-transaction-form' }) }}
 </div>

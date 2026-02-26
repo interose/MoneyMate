@@ -47,11 +47,13 @@
 
 <turbo-frame
     id="transaction-list"
-    class="aria-busy:opacity-50 aria-busy:blur-sm transition-all"
-    data-controller="transaction"
-    data-action="click@window->transaction#hide"
+    class="aria-busy:opacity-50 aria-busy:blur-sm transition-all dropdown-manager"
+    data-controller="ta-dropdown-manager"
+    data-ta-dropdown-manager-update-url-value="{{ path('app_transaction_set_category') }}"
 >
-    <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
+    <table
+        class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+    >
     <thead>
     <tr>
         <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700"></th>
@@ -105,7 +107,6 @@
     {% endfor %}
     </tbody>
 </table>
-
-    {% include 'transaction/_categoryDropdown.html.twig' %}
+    {{ include('transaction/_categoryDropdown.html.twig', { 'controller': 'ta-dropdown-manager' }) }}
 </turbo-frame>
 {% endblock %}

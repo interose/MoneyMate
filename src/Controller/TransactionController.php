@@ -55,7 +55,7 @@ class TransactionController extends AbstractController
             'year' => $year,
             'sort' => $sort,
             'sortDirection' => $sortDirection,
-            'categories' => $categoryRepository->getCategoriesForDropdown(),
+            'categoryGroups' => $categoryRepository->getCategoriesForDropdown(),
             'query' => $query,
         ]);
     }
@@ -64,14 +64,14 @@ class TransactionController extends AbstractController
     public function editCategory(TransactionRepository $transactionRepository, SplitTransactionRepository $splitTransactionRepository, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, Request $request): Response
     {
         $transaction = $transactionRepository->findOneById($request->request->getInt('transactionId'));
-        $catgory = $categoryRepository->findOneById($request->request->getInt('categoryId'));
+        $category = $categoryRepository->findOneById($request->request->getInt('categoryId'));
 
         $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
 
         if ($request->request->has('splitTransactionId') && 0 !== $request->request->getInt('splitTransactionId')) {
             $splitTransaction = $splitTransactionRepository->findOneById($request->request->getInt('splitTransactionId'));
 
-            $splitTransaction->setCategory($catgory);
+            $splitTransaction->setCategory($category);
             $entityManager->persist($transaction);
             $entityManager->flush();
 
@@ -82,7 +82,7 @@ class TransactionController extends AbstractController
                 'splitTransaction' => $splitTransaction,
             ]);
         } else {
-            $transaction->setCategory($catgory);
+            $transaction->setCategory($category);
             $entityManager->persist($transaction);
             $entityManager->flush();
 
@@ -95,7 +95,7 @@ class TransactionController extends AbstractController
     }
 
     #[Route('/transaction/{id}/update', name: 'app_transaction_update', methods: ['GET', 'POST'])]
-    public function saveSplit(Transaction $transaction, Request $request, EntityManagerInterface $entityManager): Response
+    public function saveSplit(Transaction $transaction, Request $request, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository): Response
     {
         if (!$transaction->hasSplitTransactions()) {
             $transaction->addSplitTransaction(new SplitTransaction());
@@ -113,7 +113,7 @@ class TransactionController extends AbstractController
 
             $this->addFlash('success', 'Successful updated!');
 
-            return $this->redirectToRoute('app_transaction_monthly', [
+            return $this->redirectToRoute('app_transaction_index', [
                 'year' => $transaction->getValutaDate()->format('Y'),
                 'month' => $transaction->getValutaDate()->format('n'),
             ], Response::HTTP_SEE_OTHER);

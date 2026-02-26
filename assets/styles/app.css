@@ -1,13 +1,6 @@
-/*@tailwind base;*/
-/*@tailwind components;*/
-/*@tailwind utilities;*/
-
-@import "tailwindcss";
-
-@custom-variant dark (&:where(.dark, .dark *));
-@custom-variant turbo-frame (turbo-frame[src] &);
-@custom-variant subaccounts-expanded (.selected &);
-@custom-variant active (.active &);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
     /* Adjust font size */
@@ -32,66 +25,6 @@ body {
     transform: rotate(45deg);
 }
 
-/* tom-select custom styling */
-/* Base Styles for Dark Mode */
-.ts-wrapper .ts-control,
-.ts-wrapper.single .ts-control,
-.ts-wrapper.single.input-active .ts-control,
-.full .ts-control,
-.ts-dropdown {
-    /*@apply bg-gray-50 dark:bg-gray-800 text-gray-900;*/
-    box-shadow: none !important;
-    background-image: none !important;
-    /*border: none !important;*/
-}
-.ts-wrapper .ts-control {
-    /*@apply border border-gray-300 rounded p-1;*/
-}
-.ts-wrapper {
-    min-height: 26px !important;
-    width: 100%;
-}
-
-.ts-control {
-    /*@apply flex;*/
-}
-/* Specific Style for the Input Field */
-.ts-wrapper .ts-control > input,
-.ts-wrapper.single .ts-control > input {
-    /*@apply bg-transparent text-gray-900;*/
-}
-.ts-wrapper .ts-dropdown .option {
-    /*@apply bg-gray-800 text-white;*/
-}
-/* Active and Hover States for Dropdown Items */
-.ts-wrapper .ts-dropdown .active,
-.ts-wrapper .ts-dropdown [data-selectable]:hover {
-    /*@apply bg-gray-700 text-white;*/
-}
-/* Disabled and Focus States */
-.ts-wrapper.disabled .ts-control,
-.ts-wrapper.focus .ts-control {
-    /*@apply bg-gray-700 text-gray-400 border-gray-500;*/
-}
-/* Multi-select Tags Style */
-.ts-wrapper.multi .ts-control > div {
-    /*@apply bg-gray-600 text-white;*/
-}
-/* Border Radius Adjustments */
-.ts-wrapper .ts-control,
-.ts-wrapper .ts-dropdown,
-.ts-wrapper .ts-control > div {
-
-}
-/* Dropdown Box Shadow */
-.ts-wrapper .ts-dropdown {
-    /*@apply shadow-md;*/
-}
-
-.ts-wrapper .clear-button {
-    display: none;
-}
-
 input[type="file"]::file-selector-button {
     -webkit-margin-start: -1rem;
     -webkit-margin-end: 1rem;
@@ -104,4 +37,19 @@ input[type="file"]::file-selector-button {
     margin-inline-end: 1rem;
     margin-inline-start: -1rem;
     padding: .625rem 1rem .625rem 2rem;
+}
+
+/* Custom Dropdown Styling */
+.dropdown-content {
+    position: fixed; /* Using fixed to avoid z-index/overflow issues in table cells */
+    z-index: 9999;
+    width: 300px;
+    max-height: 300px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.cat-item.bg-active {
+    background-color: #eff6ff; /* blue-50 */
+    color: #1d4ed8; /* blue-700 */
+    outline: none;
 }
