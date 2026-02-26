@@ -107,6 +107,6 @@
     {% endfor %}
     </tbody>
 </table>
-    {% include 'transaction/_categoryDropdown.html.twig' %}
+    {{ include('transaction/_categoryDropdown.html.twig', { 'controller': 'ta-dropdown-manager' }) }}
 </turbo-frame>
 {% endblock %}

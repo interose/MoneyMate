@@ -95,7 +95,7 @@ class TransactionController extends AbstractController
     }
 
     #[Route('/transaction/{id}/update', name: 'app_transaction_update', methods: ['GET', 'POST'])]
-    public function saveSplit(Transaction $transaction, Request $request, EntityManagerInterface $entityManager): Response
+    public function saveSplit(Transaction $transaction, Request $request, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository): Response
     {
         if (!$transaction->hasSplitTransactions()) {
             $transaction->addSplitTransaction(new SplitTransaction());

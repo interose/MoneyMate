@@ -4,6 +4,7 @@ namespace App\Twig\Components;
 
 use App\Entity\Transaction;
 use App\Form\TransactionType;
+use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
@@ -21,6 +22,13 @@ class SplitTransactionForm extends AbstractController
 
     #[LiveProp(fieldName: 'formData')]
     public ?Transaction $transaction;
+
+    public array $categoryGroups = [];
+
+    public function __construct(private CategoryRepository $categoryRepository)
+    {
+        $this->categoryGroups = $categoryRepository->getCategoriesForDropdown();
+    }
 
     protected function instantiateForm(): FormInterface
     {
