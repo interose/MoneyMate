@@ -1,4 +1,4 @@
-import './bootstrap.js';
+import './stimulus_bootstrap.js';
 import * as Turbo from '@hotwired/turbo';
 import 'flowbite/dist/flowbite.turbo.min.js';
 
