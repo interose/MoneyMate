@@ -13,7 +13,15 @@ This software uses the charting library from [highcharts](https://www.highcharts
 
 # Screenshots
 
-Todo
+<details>
+  <summary><b>View Screenshots</b> (Click to expand)</summary>
+
+![Main Dashboard](doc/screens/monthly_1.png)
+![Main Dashboard](doc/screens/monthly_2.png)
+![Main Dashboard](doc/screens/monthly_3.png)
+![Main Dashboard](doc/screens/split_transaction.png)
+
+</details>
 
 # Getting Started
 Copy the .env file to .env.local and configure your environment. In order to use the FinTs library you have to register your software. Please check [phpFinTS](https://github.com/nemiah/phpFinTS#getting-started) for further information.
