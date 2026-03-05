@@ -15,8 +15,8 @@
 
             {% include '_navigation.html.twig' %}
 
-            <div id="main-content" class="relative w-full h-full bg-gray-50 lg:ml-52 dark:bg-gray-900">
-                <main>{% block body %}{% endblock %}</main>
+            <div id="main-content" class="relative w-full h-full bg-gray-50 lg:ml-64 dark:bg-gray-900">
+                <main class="{% block main_css_class %}{% endblock %}">{% block body %}{% endblock %}</main>
             </div>
         </div>
 

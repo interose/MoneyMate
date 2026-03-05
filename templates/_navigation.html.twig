@@ -1,93 +1,161 @@
 {% macro linkCssClass(route, prefix) %}
     {% if route starts with prefix %}
-        class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 bg-gray-100 dark:bg-gray-700"
+        class="flex items-center p-2 text-sm transition duration-75 rounded-lg pl-10 group opacity-70"
     {% else %}
-        class="flex items-center p-2 text-sm text-gray-900 transition duration-75 rounded-lg pl-10 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+        class="flex items-center p-2 text-sm transition duration-75 rounded-lg pl-10 group opacity-70 hover:bg-slate-800 hover:opacity-100"
     {% endif %}
 {% endmacro %}
 
-<aside id="sidebar" class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-52 h-full font-normal duration-75 lg:flex transition-width" aria-label="Sidebar">
-    <div class="relative flex flex-col flex-1 min-h-0 pt-2 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-        <div class="flex flex-col flex-1 pt-2 pb-4 overflow-y-auto">
-            <div class="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                <ul class="pb-2 space-y-1">
-                    <li>
-                        <a href="{{ path('app_dashboard')}}" class="flex items-center p-2 text-sm text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700 {% if app.request.get('_route') == 'app_dashboard' %}bg-gray-100 dark:bg-gray-700{% endif %}">
-                            <i class="fa-solid fa-house text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></i>
-                            <span class="ml-2">Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('app_transaction_index')}}" class="flex items-center p-2 text-sm text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700 {% if app.request.get('_route') == 'app_transaction_index' %}bg-gray-100 dark:bg-gray-700{% endif %}">
-                            <i class="fa-solid fa-table-cells-large text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></i>
-                            <span class="ml-2">Monthly</span>
-                        </a>
-                    </li>
-                    {% if stock_enabled() %}
-                        <li>
-                            <a href="{{ path('app_stock_index')}}" class="flex items-center p-2 text-sm text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700 {% if app.request.get('_route') == 'app_stock_index' %}bg-gray-100 dark:bg-gray-700{% endif %}">
-                                <i class="fa-solid fa-arrow-trend-up text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></i>
-                                <span class="ml-2">Stock Champions</span>
-                            </a>
-                        </li>
-                    {% endif %}
-                    <li>
-                        <button type="button" class="flex items-center w-full p-2 text-sm text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" aria-controls="dropdown-settings" data-collapse-toggle="dropdown-settings">
-                            <i class="fa-solid fa-gears text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></i>
-                            <span class="flex-1 ml-2 text-left whitespace-nowrap">Settings</span>
-                            <i class="fa-solid fa-angle-down"></i>
-                        </button>
-                        <ul
-                            id="dropdown-settings"
-                            {% if app.request.get('_route') starts with 'app_settings_'  %}
-                                class="py-2 space-y-0"
-                            {% else %}
-                                class="hidden py-2 space-y-0"
-                            {% endif %}
-                        >
-                            <li>
-                                <a
-                                    href="{{ path('app_settings_categorygroup_index') }}"
-                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_categorygroup_') }}
-                                >
-                                    Category Groups</a>
-                            </li>
-                            <li>
-                                <a
-                                    href="{{ path('app_settings_category_index') }}"
-                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_category_') }}
-                                >
-                                    Categories
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="{{ path('app_settings_rule_index') }}"
-                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_rule_') }}
-                                >
-                                    Rules
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="{{ path('app_settings_account_index') }}"
-                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_account_') }}
-                                >
-                                    Accounts
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="{{ path('app_settings_global_index') }}"
-                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_global_') }}
-                                >
-                                    App Settings
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+<aside id="sidebar" class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full font-normal duration-75 lg:flex transition-width bg-[#0f172a] text-white" aria-label="Sidebar">
+
+    <div class="flex items-center gap-3 mb-10">
+        <div class="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-600/30">
+            <i class="fa-solid fa-vault text-xl"></i>
         </div>
+        <span class="text-xl font-extrabold tracking-tight">VaultFlow</span>
     </div>
+
+    <div class="p-6 text-sm">
+        <nav class="space-y-1">
+            <a href="{{ path('app_dashboard')}}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_dashboard' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-70 hover:opacity-100{% endif %}">
+                <i class="fa-solid fa-house w-5"></i> Dashboard
+            </a>
+            <a href="{{ path('app_transaction_index')}}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_transaction_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-70 hover:opacity-100{% endif %}">
+                <i class="fa-solid fa-calendar-days w-5"></i> Monthly
+            </a>
+            {% if stock_enabled() %}
+                <a href="{{ path('app_stock_index')}}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_stock_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-70 hover:opacity-100{% endif %}">
+                    <i class="fa-solid fa-arrow-trend-up w-5"></i> Stock Champions
+                </a>
+            {% endif %}
+
+            <div class="pt-8 pb-2 space-y-1">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mb-4">Settings</p>
+                <a href="{{ path('app_settings_categorygroup_index_unified') }}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_settings_categorygroup_index_unified' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-60 hover:opacity-100{% endif %}">
+                    <i class="fa-solid fa-layer-group w-5"></i> Categories
+                </a>
+                <a href="{{ path('app_settings_rule_index') }}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_settings_rule_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-60 hover:opacity-100{% endif %}">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5"></i> Rules
+                </a>
+                <a href="{{ path('app_settings_account_index') }}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_settings_account_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-60 hover:opacity-100{% endif %}">
+                    <i class="fa-solid fa-building-columns w-5"></i> Accounts
+                </a>
+                <a href="{{ path('app_settings_global_index') }}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_settings_global_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-60 hover:opacity-100{% endif %}">
+                    <i class="fa-solid fa-sliders w-5"></i> App Settings
+                </a>
+            </div>
+        </nav>
+    </div>
+
 </aside>
+
+
+
+
+{#    <div class="relative flex flex-col flex-1 min-h-0 pt-2 bg-[#0f172a] text-white">#}
+{#        <div class="flex flex-col flex-1 pt-2 pb-4 overflow-y-auto">#}
+{#            <div class="flex-1 px-3 space-y-1 divide-y divide-gray-200">#}
+{#                <ul class="pb-2 space-y-1">#}
+{#                    <li>#}
+{#                        <a href="{{ path('app_dashboard')}}" class="flex items-center p-2 text-sm rounded-lg {% if app.request.get('_route') == 'app_dashboard' %}bg-indigo-600{% else %}opacity-70 hover:bg-slate-800 hover:opacity-100{% endif %}">#}
+{#                            <i class="fa-solid fa-house transition duration-75"></i>#}
+{#                            <span class="ml-2">Dashboard</span>#}
+{#                        </a>#}
+{#                    </li>#}
+{#                    <li>#}
+{#                        <a href="{{ path('app_transaction_index')}}" class="flex items-center p-2 text-sm rounded-lg {% if app.request.get('_route') == 'app_transaction_index' %}bg-indigo-600{% else %}opacity-70 hover:bg-slate-800 hover:opacity-100{% endif %}">#}
+{#                            <i class="fa-solid fa-table-cells-large transition duration-75"></i>#}
+{#                            <span class="ml-2">Monthly</span>#}
+{#                        </a>#}
+{#                    </li>#}
+{#                    {% if stock_enabled() %}#}
+{#                        <li>#}
+{#                            <a href="{{ path('app_stock_index')}}" class="flex items-center p-2 text-sm rounded-lg group {% if app.request.get('_route') == 'app_stock_index' %}bg-indigo-600{% else %}opacity-70 hover:bg-slate-800 hover:opacity-100{% endif %}">#}
+{#                                <i class="fa-solid fa-arrow-trend-up transition duration-75"></i>#}
+{#                                <span class="ml-2">Stock Champions</span>#}
+{#                            </a>#}
+{#                        </li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
+
+{#                <div class="pt-8 pb-2">#}
+{#                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mb-4">Settings</p>#}
+{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
+{#                        <i class="fa-solid fa-layer-group w-5"></i> Category Groups#}
+{#                    </a>#}
+{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
+{#                        <i class="fa-solid fa-tags w-5"></i> Categories#}
+{#                    </a>#}
+{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
+{#                        <i class="fa-solid fa-wand-magic-sparkles w-5"></i> Rules#}
+{#                    </a>#}
+{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
+{#                        <i class="fa-solid fa-building-columns w-5"></i> Accounts#}
+{#                    </a>#}
+{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
+{#                        <i class="fa-solid fa-sliders w-5"></i> App Settings#}
+{#                    </a>#}
+{#                </div>#}
+
+
+{#                    #}
+{#                    <li>#}
+{#                        <button type="button" class="flex items-center w-full p-2 text-sm transition duration-75 rounded-lg group opacity-70" aria-controls="dropdown-settings" data-collapse-toggle="dropdown-settings">#}
+{#                            <i class="fa-solid fa-gears transition duration-75 "></i>#}
+{#                            <span class="flex-1 ml-2 text-left whitespace-nowrap">Settings</span>#}
+{#                            <i class="fa-solid fa-angle-down"></i>#}
+{#                        </button>#}
+{#                        <ul#}
+{#                            id="dropdown-settings"#}
+{#                            {% if app.request.get('_route') starts with 'app_settings_'  %}#}
+{#                                class="py-2 space-y-0"#}
+{#                            {% else %}#}
+{#                                class="hidden py-2 space-y-0"#}
+{#                            {% endif %}#}
+{#                        >#}
+{#                            <li>#}
+{#                                <a#}
+{#                                    href="{{ path('app_settings_categorygroup_index') }}"#}
+{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_categorygroup_') }}#}
+{#                                >#}
+{#                                    Category Groups</a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a#}
+{#                                    href="{{ path('app_settings_category_index') }}"#}
+{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_category_') }}#}
+{#                                >#}
+{#                                    Categories#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a#}
+{#                                    href="{{ path('app_settings_rule_index') }}"#}
+{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_rule_') }}#}
+{#                                >#}
+{#                                    Rules#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a#}
+{#                                    href="{{ path('app_settings_account_index') }}"#}
+{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_account_') }}#}
+{#                                >#}
+{#                                    Accounts#}
+{#                                </a>#}
+{#                            </li>#}
+{#                            <li>#}
+{#                                <a#}
+{#                                    href="{{ path('app_settings_global_index') }}"#}
+{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_global_') }}#}
+{#                                >#}
+{#                                    App Settings#}
+{#                                </a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </li>#}
+{#                </ul>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</aside>#}

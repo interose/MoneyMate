@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\CategoryGroup;
 use App\Form\CategoryType;
+use App\Repository\CategoryGroupRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -74,6 +76,18 @@ class SettingsCategoryController extends AbstractController
         return $this->render('settings_category/edit.html.twig', [
             'category' => $category,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/get-by-group', name: 'app_settings_categories_by_group', methods: ['GET'])]
+    public function getCategoriesByGroupId(Request $request, CategoryGroupRepository $repository)
+    {
+        /** @var CategoryGroup $group */
+        $group = $repository->findOneById($request->query->get('id'));
+
+        return $this->render('settings_category/categories_by_group.html.twig', [
+            'group' => $group,
+            'categories' => $group->getCategories(),
         ]);
     }
 }

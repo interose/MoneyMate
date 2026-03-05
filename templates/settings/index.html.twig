@@ -1,8 +1,14 @@
 {% extends 'base.html.twig' %}
 
+{% block main_css_class %}p-8{% endblock %}
+
 {% block body %}
-    <twig:Header title="Application Settings">
-    </twig:Header>
+    <header class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">App Settings</h1>
+            <p class="text-slate-500 font-medium">Configure your workspace preferences</p>
+        </div>
+    </header>
 
     <div class="grid grid-cols-8 gap-4 px-4 pt-6 dark:bg-gray-900">
         <twig:Card grid="col-span-8 xl:col-start-2 xl:col-end-8">

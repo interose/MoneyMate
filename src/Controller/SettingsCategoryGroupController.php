@@ -76,4 +76,14 @@ class SettingsCategoryGroupController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/unified', name: 'app_settings_categorygroup_index_unified', methods: ['GET'])]
+    public function indexUnified(
+        CategoryGroupRepository $groupRepository
+    ): Response
+    {
+        return $this->render('settings_category_group/index_unified.html.twig', [
+            'groups' => $groupRepository->findBy([], ['name' => 'ASC'])
+        ]);
+    }
 }
