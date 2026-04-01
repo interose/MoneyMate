@@ -4,21 +4,26 @@
         <meta charset="UTF-8">
         <title>{% block title %}{% endblock %}</title>
         <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon" />
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
         {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body class="bg-gray-50 dark:bg-gray-800">
-        <div class="flex bg-gray-50 dark:bg-gray-900">
+    <body class="flex font-sans bg-bg text-white text-[13.5px]">
 
-            {% include '_navigation.html.twig' %}
+        {% include '_navigation.html.twig' %}
 
-            <div id="main-content" class="relative w-full h-full bg-gray-50 lg:ml-64 dark:bg-gray-900">
-                <main class="{% block main_css_class %}{% endblock %}">{% block body %}{% endblock %}</main>
-            </div>
+        <div class="flex flex-col flex-1 overflow-hidden min-w-0">
+            {% block body %}{% endblock %}
         </div>
+
+{#        <div class="flex bg-gray-50 dark:bg-gray-900">#}
+{#            <div id="main-content" class="relative w-full h-full bg-gray-50 lg:ml-64 dark:bg-gray-900">#}
+{#                <main class="{% block main_css_class %}{% endblock %}">{% block body %}{% endblock %}</main>#}
+{#            </div>#}
+{#        </div>#}
 
         <twig:Modal>
             <turbo-frame

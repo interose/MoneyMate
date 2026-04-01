@@ -24,89 +24,59 @@
 {% endmacro %}
 
 {% block body %}
-<div class="flex flex-row bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-    {% include 'transaction/_filter.html.twig' %}
+<!-- Filter bar -->
+<div class="flex items-center gap-2 px-6 py-[11px] border-b border-white/[.07] flex-shrink-0 flex-wrap">
 
-    <div class="flex-1"></div>
+    <!-- Search -->
+    <div class="flex items-center gap-[7px] bg-elevated border border-white/[.07] rounded-lg px-3 py-[6px] w-[200px] focus-within:border-accent transition-colors">
+        <svg class="w-[13px] h-[13px] opacity-40 flex-shrink-0" viewBox="0 0 13 13" fill="none">
+            <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M9 9l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <input id="searchInput" type="text" placeholder="Suchen …" class="bg-transparent border-none outline-none text-white font-sans text-[13px] w-full placeholder:text-white/40" >
+    </div>
 
-    {% set mainAccountId = get_main_account_id() %}
-    {% if mainAccountId != 0 %}
-        <div class="p-2 flex items-center text-xs font-medium text-center text-gray-600">
-            {{ get_current_balance(mainAccountId)|format_currency('EUR') }}
-        </div>
-        <div class="p-2 flex items-center text-xs font-medium text-center text-gray-600">
-            <a href="{{ path('app_account_update_statements', {'id': mainAccountId}) }}" data-turbo-frame="mdl" class="p-1 px-2 me-1 text-xs font-medium text-center inline-flex items-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300">
-                <svg class="size-4 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"/>
-                </svg>
-                Update Transactions
-            </a>
-        </div>
-    {% endif %}
+    <span id="filterCount" class="ml-auto font-mono text-[12px] text-white/40 whitespace-nowrap">{{ transactions|length }} Entries</span>
 </div>
 
-<turbo-frame
-    id="transaction-list"
-    class="aria-busy:opacity-50 aria-busy:blur-sm transition-all dropdown-manager"
-    data-controller="ta-dropdown-manager"
-    data-ta-dropdown-manager-update-url-value="{{ path('app_transaction_set_category') }}"
->
-    <table
-        class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600"
+<!-- Scrollable table area -->
+<div class="scroll-area flex-1 overflow-y-auto px-6 pb-8">
+    <turbo-frame
+        id="transaction-list"
+        class="aria-busy:opacity-50 aria-busy:blur-sm transition-all dropdown-manager"
+        data-controller="ta-dropdown-manager"
+        data-ta-dropdown-manager-update-url-value="{{ path('app_transaction_set_category') }}"
     >
-    <thead>
-    <tr>
-        <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700"></th>
-        <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">
-            <a href="{{ path('app_transaction_index', {
-                ...app.request.query.all(),
-                sort: 'valutaDate',
-                sortDirection: sort == 'valutaDate' and sortDirection == 'asc' ? 'desc' : 'asc',
-            }) }}">
-                Valuta date {{ _self.sortArrow('valutaDate', sort, sortDirection) }}
-            </a>
-        </th>
-        <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">Recipient</th>
-        <th scope="col" class="sticky top-0 p-2 text-xs font-medium text-left text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">
-            <a href="{{ path('app_transaction_index', {
-                ...app.request.query.all(),
-                sort: 'category',
-                sortDirection: sort == 'category' and sortDirection == 'asc' ? 'desc' : 'asc',
-            }) }}">
-                Category {{ _self.sortArrow('category', sort, sortDirection) }}
-            </a>
-        </th>
-        <th scope="col" class="sticky top-0 p-2 pe-4 text-xs font-medium text-right text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700">Amount</th>
-    </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-    {% for transaction in transactions %}
-        {% if transaction.hasSplitTransactions %}
 
-            {% for splitTransaction in transaction.splitTransactions %}
-                <tr
-                    class="bg-blue-50 border-b dark:border-gray-700 hover:bg-yellow-100 dark:hover:bg-gray-600"
-                    id="split-transaction-list-item-{{ splitTransaction.id }}"
-                >
-                    {% include 'transaction/_row.html.twig' with { 'transaction': transaction, 'splitTransaction': splitTransaction } %}
-                </tr>
-            {% endfor %}
-
-        {% else %}
-            <tr
-                class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-yellow-100 dark:hover:bg-gray-600"
-                id="transaction-list-item-{{ transaction.id }}"
-            >
-                {% include 'transaction/_row.html.twig' with { 'transaction': transaction } %}
+    <table class="w-full border-collapse" style="table-layout:fixed">
+        <colgroup>
+            <col class="c-date">
+            <col class="c-receiver">
+            <col class="c-category">
+            <col class="c-amount">
+        </colgroup>
+        <thead class="bg-bg">
+            <tr class="border-b border-white/[.07]">
+                <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Datum</th>
+                <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Empfänger / Sender</th>
+                <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Kategorie</th>
+                <th class="py-3 px-3 text-right text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Betrag</th>
             </tr>
-        {% endif %}
-    {% else %}
-        <tr>
-            <td colspan="5" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">No records found</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-    {{ include('transaction/_categoryDropdown.html.twig', { 'controller': 'ta-dropdown-manager' }) }}
-</turbo-frame>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+            {% if transaction.hasSplitTransactions %}
+            {% else %}
+                <tr
+                    class="data-row border-b border-white/[.07] hover:bg-white/[.025] transition-colors"
+                    id="transaction-list-item-{{ transaction.id }}"
+                >
+                    {% include 'transaction/_row.html.twig' with { 'transaction': transaction } %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+    </turbo-frame>
+</div>
 {% endblock %}

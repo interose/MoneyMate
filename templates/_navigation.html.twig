@@ -1,161 +1,57 @@
 {% macro linkCssClass(route, prefix) %}
     {% if route starts with prefix %}
-        class="flex items-center p-2 text-sm transition duration-75 rounded-lg pl-10 group opacity-70"
+        class="nav-item nav-active relative flex items-center gap-[9px] px-[10px] py-2 rounded-lg cursor-pointer text-white text-[13px] font-medium bg-accent/[.14]"
     {% else %}
-        class="flex items-center p-2 text-sm transition duration-75 rounded-lg pl-10 group opacity-70 hover:bg-slate-800 hover:opacity-100"
+        class="nav-item relative flex items-center gap-[9px] px-[10px] py-2 rounded-lg cursor-pointer text-white/70 text-[13px] hover:bg-white/5 hover:text-white transition-colors"
     {% endif %}
 {% endmacro %}
 
-<aside id="sidebar" class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full font-normal duration-75 lg:flex transition-width bg-[#0f172a] text-white" aria-label="Sidebar">
-
-    <div class="flex items-center gap-3 mb-10">
-        <div class="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-600/30">
-            <i class="fa-solid fa-vault text-xl"></i>
-        </div>
-        <span class="text-xl font-extrabold tracking-tight">VaultFlow</span>
+<nav class="flex flex-col w-[220px] h-screen flex-shrink-0 bg-elevated border-r border-white/[.07]">
+    <!-- Logo -->
+    <div class="flex items-center gap-[10px] px-4 py-[18px]">
+        <img src="{{ asset('images/logo_neu.png') }}"/>
     </div>
 
-    <div class="p-6 text-sm">
-        <nav class="space-y-1">
-            <a href="{{ path('app_dashboard')}}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_dashboard' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-70 hover:opacity-100{% endif %}">
-                <i class="fa-solid fa-house w-5"></i> Dashboard
-            </a>
-            <a href="{{ path('app_transaction_index')}}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_transaction_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-70 hover:opacity-100{% endif %}">
-                <i class="fa-solid fa-calendar-days w-5"></i> Monthly
-            </a>
-            {% if stock_enabled() %}
-                <a href="{{ path('app_stock_index')}}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_stock_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-70 hover:opacity-100{% endif %}">
-                    <i class="fa-solid fa-arrow-trend-up w-5"></i> Stock Champions
-                </a>
-            {% endif %}
+    <!-- Nav sections -->
+    <div class="flex flex-col px-[10px] pt-3 pb-1 gap-[2px]">
+        <p class="text-[9.5px] font-semibold tracking-[.08em] uppercase text-white/40 px-2 mb-1">Overview</p>
 
-            <div class="pt-8 pb-2 space-y-1">
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mb-4">Settings</p>
-                <a href="{{ path('app_settings_categorygroup_index_unified') }}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_settings_categorygroup_index_unified' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-60 hover:opacity-100{% endif %}">
-                    <i class="fa-solid fa-layer-group w-5"></i> Categories
-                </a>
-                <a href="{{ path('app_settings_rule_index') }}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_settings_rule_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-60 hover:opacity-100{% endif %}">
-                    <i class="fa-solid fa-wand-magic-sparkles w-5"></i> Rules
-                </a>
-                <a href="{{ path('app_settings_account_index') }}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_settings_account_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-60 hover:opacity-100{% endif %}">
-                    <i class="fa-solid fa-building-columns w-5"></i> Accounts
-                </a>
-                <a href="{{ path('app_settings_global_index') }}" class="flex items-center gap-3 p-2 rounded-xl transition-all {% if app.request.get('_route') == 'app_settings_global_index' %}bg-indigo-600 font-semibold shadow-lg shadow-indigo-600/20{% else %}hover:bg-slate-800 opacity-60 hover:opacity-100{% endif %}">
-                    <i class="fa-solid fa-sliders w-5"></i> App Settings
-                </a>
-            </div>
-        </nav>
+        <a href="{{ path('app_dashboard')}}" {{ _self.linkCssClass(app.request.get('_route'), 'app_dashboard') }}>
+            <svg class="w-4 h-4 opacity-65 flex-shrink-0" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.3"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.3"/></svg>
+            Dashboard
+        </a>
+
+        <a href="{{ path('app_transaction_index')}}" {{ _self.linkCssClass(app.request.get('_route'), 'app_transaction_index') }}>
+            <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 16 16" fill="none"><path d="M2 5h12M2 8h12M2 11h7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Transactions
+{#            <span class="ml-auto text-[10px] font-mono bg-pink/20 text-pink px-[5px] py-px rounded-full">52</span>#}
+        </a>
+
+        {% if stock_enabled() %}
+            <a href="{{ path('app_stock_index')}}" {{ _self.linkCssClass(app.request.get('_route'), 'app_stock_index') }}>
+                <svg class="w-4 h-4 opacity-65 flex-shrink-0" viewBox="0 0 16 16" fill="none"><path d="M2 13l3-4 2.5 2L10 7l2 2.5L14 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 4h-3M13 4v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                Stock Champions
+            </a>
+        {% endif %}
     </div>
 
-</aside>
-
-
-
-
-{#    <div class="relative flex flex-col flex-1 min-h-0 pt-2 bg-[#0f172a] text-white">#}
-{#        <div class="flex flex-col flex-1 pt-2 pb-4 overflow-y-auto">#}
-{#            <div class="flex-1 px-3 space-y-1 divide-y divide-gray-200">#}
-{#                <ul class="pb-2 space-y-1">#}
-{#                    <li>#}
-{#                        <a href="{{ path('app_dashboard')}}" class="flex items-center p-2 text-sm rounded-lg {% if app.request.get('_route') == 'app_dashboard' %}bg-indigo-600{% else %}opacity-70 hover:bg-slate-800 hover:opacity-100{% endif %}">#}
-{#                            <i class="fa-solid fa-house transition duration-75"></i>#}
-{#                            <span class="ml-2">Dashboard</span>#}
-{#                        </a>#}
-{#                    </li>#}
-{#                    <li>#}
-{#                        <a href="{{ path('app_transaction_index')}}" class="flex items-center p-2 text-sm rounded-lg {% if app.request.get('_route') == 'app_transaction_index' %}bg-indigo-600{% else %}opacity-70 hover:bg-slate-800 hover:opacity-100{% endif %}">#}
-{#                            <i class="fa-solid fa-table-cells-large transition duration-75"></i>#}
-{#                            <span class="ml-2">Monthly</span>#}
-{#                        </a>#}
-{#                    </li>#}
-{#                    {% if stock_enabled() %}#}
-{#                        <li>#}
-{#                            <a href="{{ path('app_stock_index')}}" class="flex items-center p-2 text-sm rounded-lg group {% if app.request.get('_route') == 'app_stock_index' %}bg-indigo-600{% else %}opacity-70 hover:bg-slate-800 hover:opacity-100{% endif %}">#}
-{#                                <i class="fa-solid fa-arrow-trend-up transition duration-75"></i>#}
-{#                                <span class="ml-2">Stock Champions</span>#}
-{#                            </a>#}
-{#                        </li>#}
-{#                    {% endif %}#}
-{#                </ul>#}
-
-{#                <div class="pt-8 pb-2">#}
-{#                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] px-3 mb-4">Settings</p>#}
-{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
-{#                        <i class="fa-solid fa-layer-group w-5"></i> Category Groups#}
-{#                    </a>#}
-{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
-{#                        <i class="fa-solid fa-tags w-5"></i> Categories#}
-{#                    </a>#}
-{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
-{#                        <i class="fa-solid fa-wand-magic-sparkles w-5"></i> Rules#}
-{#                    </a>#}
-{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
-{#                        <i class="fa-solid fa-building-columns w-5"></i> Accounts#}
-{#                    </a>#}
-{#                    <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition-all opacity-60 hover:opacity-100">#}
-{#                        <i class="fa-solid fa-sliders w-5"></i> App Settings#}
-{#                    </a>#}
-{#                </div>#}
-
-
-{#                    #}
-{#                    <li>#}
-{#                        <button type="button" class="flex items-center w-full p-2 text-sm transition duration-75 rounded-lg group opacity-70" aria-controls="dropdown-settings" data-collapse-toggle="dropdown-settings">#}
-{#                            <i class="fa-solid fa-gears transition duration-75 "></i>#}
-{#                            <span class="flex-1 ml-2 text-left whitespace-nowrap">Settings</span>#}
-{#                            <i class="fa-solid fa-angle-down"></i>#}
-{#                        </button>#}
-{#                        <ul#}
-{#                            id="dropdown-settings"#}
-{#                            {% if app.request.get('_route') starts with 'app_settings_'  %}#}
-{#                                class="py-2 space-y-0"#}
-{#                            {% else %}#}
-{#                                class="hidden py-2 space-y-0"#}
-{#                            {% endif %}#}
-{#                        >#}
-{#                            <li>#}
-{#                                <a#}
-{#                                    href="{{ path('app_settings_categorygroup_index') }}"#}
-{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_categorygroup_') }}#}
-{#                                >#}
-{#                                    Category Groups</a>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <a#}
-{#                                    href="{{ path('app_settings_category_index') }}"#}
-{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_category_') }}#}
-{#                                >#}
-{#                                    Categories#}
-{#                                </a>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <a#}
-{#                                    href="{{ path('app_settings_rule_index') }}"#}
-{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_rule_') }}#}
-{#                                >#}
-{#                                    Rules#}
-{#                                </a>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <a#}
-{#                                    href="{{ path('app_settings_account_index') }}"#}
-{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_account_') }}#}
-{#                                >#}
-{#                                    Accounts#}
-{#                                </a>#}
-{#                            </li>#}
-{#                            <li>#}
-{#                                <a#}
-{#                                    href="{{ path('app_settings_global_index') }}"#}
-{#                                    {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_global_') }}#}
-{#                                >#}
-{#                                    App Settings#}
-{#                                </a>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                    </li>#}
-{#                </ul>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</aside>#}
+    <div class="flex flex-col px-[10px] pt-3 pb-1 gap-[2px]">
+        <p class="text-[9.5px] font-semibold tracking-[.08em] uppercase text-white/40 px-2 mb-1">Administration</p>
+        <a href="{{ path('app_settings_categorygroup_index_unified') }}" {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_categorygroup_index_unified') }}>
+            <svg class="w-4 h-4 opacity-65 flex-shrink-0" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 7h6M5 10h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Categories
+        </a>
+        <a href="{{ path('app_settings_rule_index') }}" {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_rule_index') }}>
+            <svg class="w-4 h-4 opacity-65 flex-shrink-0" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="12.5" cy="11.5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M12.5 10.5v1l.7.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Rules
+        </a>
+        <a href="{{ path('app_settings_account_index') }}" {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_account_index') }}>
+            <svg class="w-4 h-4 opacity-65 flex-shrink-0" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 7h13" stroke="currentColor" stroke-width="1.3"/><circle cx="4.5" cy="10.5" r="1" fill="currentColor"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor"/></svg>
+            Accounts
+        </a>
+        <a href="{{ path('app_settings_global_index') }}" {{ _self.linkCssClass(app.request.get('_route'), 'app_settings_global_index') }}>
+            <svg class="w-4 h-4 opacity-65 flex-shrink-0" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.22 3.22l1.41 1.41M11.37 11.37l1.41 1.41M3.22 12.78l1.41-1.41M11.37 4.63l1.41-1.41" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Settings
+        </a>
+    </div>
+</nav>

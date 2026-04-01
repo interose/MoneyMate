@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Things Tailwind can't do inline */
+html, body { height: 100%; overflow: hidden; }
+
 body {
     /* Adjust font size */
     font-size: 100%;
@@ -17,39 +20,93 @@ body {
     text-shadow: rgba(0, 0, 0, .01) 0 0 1px;
 }
 
-.tooltip-arrow {
+.grad       { background: linear-gradient(135deg, rgb(67,72,224), rgb(233,67,143)); }
+.grad-text  { background: linear-gradient(135deg, rgb(67,72,224), rgb(233,67,143));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* Active nav indicator bar */
+.nav-active::before {
+    content: '';
+    position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 55%;
+    border-radius: 0 2px 2px 0;
+    background: linear-gradient(135deg, rgb(67,72,224), rgb(233,67,143));
+}
+
+/* Sticky table header — Tailwind's sticky needs explicit bg */
+thead { position: sticky; top: 0; z-index: 20; }
+
+/* Tooltip */
+.tooltip {
     position: absolute;
-    width: 10px;
-    height: 10px;
-    background: inherit;
-    transform: rotate(45deg);
+    bottom: calc(100% + 7px);
+    left: 0;
+    width: 280px;
+    white-space: normal;
+    line-height: 1.5;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .14s, transform .14s;
+    z-index: 50;
+}
+.recv-wrap:hover .tooltip { opacity: 1; transform: translateY(0); }
+
+/* Row-action buttons fade in on hover */
+.data-row .row-actions { opacity: 0; transition: opacity .12s; }
+.data-row:hover .row-actions { opacity: 1; }
+
+/* Thin gradient top-line on sidebar */
+.grad-line { height: 2px; background: linear-gradient(135deg, rgb(67,72,224), rgb(233,67,143)); }
+
+/* Scrollbar */
+.scroll-area::-webkit-scrollbar { width: 4px; }
+.scroll-area::-webkit-scrollbar-track { background: transparent; }
+.scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+
+/* Active nav indicator bar */
+.nav-active::before {
+    content: '';
+    position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 55%;
+    border-radius: 0 2px 2px 0;
+    background: linear-gradient(135deg, rgb(67,72,224), rgb(233,67,143));
 }
 
-input[type="file"]::file-selector-button {
-    -webkit-margin-start: -1rem;
-    -webkit-margin-end: 1rem;
-    background: #1f2937;
-    border: 0;
-    color: #fff;
-    cursor: pointer;
-    font-size: .875rem;
-    font-weight: 500;
-    margin-inline-end: 1rem;
-    margin-inline-start: -1rem;
-    padding: .625rem 1rem .625rem 2rem;
-}
+/* col widths for 13" MBP viewport */
+col.c-date     { width: 90px; }
+col.c-receiver { width: auto; }
+col.c-category { width: 220px; }
+col.c-amount   { width: 130px; }
 
-/* Custom Dropdown Styling */
-.dropdown-content {
-    position: fixed; /* Using fixed to avoid z-index/overflow issues in table cells */
-    z-index: 9999;
-    width: 300px;
-    max-height: 300px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
 
-.cat-item.bg-active {
-    background-color: #eff6ff; /* blue-50 */
-    color: #1d4ed8; /* blue-700 */
-    outline: none;
-}
+
+
+/*input[type="file"]::file-selector-button {*/
+/*    -webkit-margin-start: -1rem;*/
+/*    -webkit-margin-end: 1rem;*/
+/*    background: #1f2937;*/
+/*    border: 0;*/
+/*    color: #fff;*/
+/*    cursor: pointer;*/
+/*    font-size: .875rem;*/
+/*    font-weight: 500;*/
+/*    margin-inline-end: 1rem;*/
+/*    margin-inline-start: -1rem;*/
+/*    padding: .625rem 1rem .625rem 2rem;*/
+/*}*/
+
+/*!* Custom Dropdown Styling *!*/
+/*.dropdown-content {*/
+/*    position: fixed; !* Using fixed to avoid z-index/overflow issues in table cells *!*/
+/*    z-index: 9999;*/
+/*    width: 300px;*/
+/*    max-height: 300px;*/
+/*    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);*/
+/*}*/
+
+/*.cat-item.bg-active {*/
+/*    background-color: #eff6ff; !* blue-50 *!*/
+/*    color: #1d4ed8; !* blue-700 *!*/
+/*    outline: none;*/
+/*}*/

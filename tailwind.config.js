@@ -10,7 +10,20 @@ module.exports = {
         "./src/Twig/Components/**/*.php",
     ],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                bg:        'rgb(15,22,41)',
+                elevated:  'rgb(22,32,58)',
+                card:      'rgb(28,40,70)',
+                accent:    'rgb(67,72,224)',
+                pink:      'rgb(233,67,143)',
+                green:     'rgb(52,211,153)',
+            },
+            fontFamily: {
+                sans: ['"DM Sans"', 'sans-serif'],
+                mono: ['"DM Mono"', 'monospace'],
+            },
+        },
     },
     plugins: [
         plugin(function({ addVariant }) {
