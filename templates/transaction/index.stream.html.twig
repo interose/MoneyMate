@@ -1,0 +1,13 @@
+<turbo-stream action="update" target="transaction-list">
+    <template>
+        {% include 'transaction/_table.html.twig' with {
+            transactions: transactions,
+            sort: sort,
+            sortDirection: sortDirection
+        } %}
+    </template>
+</turbo-stream>
+
+<turbo-stream action="update" target="transaction-count">
+    <template>{{ transactions|length }}</template>
+</turbo-stream>

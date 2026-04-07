@@ -26,50 +26,18 @@
 {% block body %}
 <!-- Filter bar -->
 <div class="flex items-center gap-2 px-4 py-[9px] border-b border-white/[.07] flex-shrink-0 flex-wrap">
-
     {% include 'transaction/_filter.html.twig' %}
-
-    <span id="filterCount" class="ml-auto font-mono text-[12px] text-white/40 whitespace-nowrap">{{ transactions|length }} Entries</span>
+    <span id="transaction-count" class="ml-auto font-mono text-[12px] text-white/40 whitespace-nowrap">{{ transactions|length }} Entries</span>
 </div>
 
 <!-- Scrollable table area -->
 <div class="scroll-area flex-1 overflow-y-auto px-6 pb-8">
     <turbo-frame
         id="transaction-list"
-        class="aria-busy:opacity-50 aria-busy:blur-sm transition-all dropdown-manager"
         data-controller="ta-dropdown-manager"
         data-ta-dropdown-manager-update-url-value="{{ path('app_transaction_set_category') }}"
     >
-        <table class="w-full border-collapse" style="table-layout:fixed">
-            <colgroup>
-                <col class="c-date">
-                <col class="c-receiver">
-                <col class="c-category">
-                <col class="c-amount">
-            </colgroup>
-            <thead class="bg-bg">
-                <tr class="border-b border-white/[.07]">
-                    <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Datum</th>
-                    <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Empfänger / Sender</th>
-                    <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Kategorie</th>
-                    <th class="py-3 px-3 text-right text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Betrag</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for transaction in transactions %}
-                {% if transaction.hasSplitTransactions %}
-                {% else %}
-                    <tr
-                        class="data-row border-b border-white/[.07] hover:bg-white/[.025] transition-colors"
-                        id="transaction-list-item-{{ transaction.id }}"
-                    >
-                        {% include 'transaction/_row.html.twig' with { 'transaction': transaction } %}
-                    </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-        </table>
-        {{ include('transaction/_categoryDropdown.html.twig', { 'controller': 'ta-dropdown-manager' }) }}
+        {% include 'transaction/_table.html.twig' %}
     </turbo-frame>
 </div>
 {% endblock %}

@@ -1,0 +1,30 @@
+<table class="w-full border-collapse" style="table-layout:fixed">
+    <colgroup>
+        <col class="c-date">
+        <col class="c-receiver">
+        <col class="c-category">
+        <col class="c-amount">
+    </colgroup>
+    <thead class="bg-bg">
+    <tr class="border-b border-white/[.07]">
+        <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Datum</th>
+        <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Empfänger / Sender</th>
+        <th class="py-3 px-3 text-left text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Kategorie</th>
+        <th class="py-3 px-3 text-right text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/40">Betrag</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for transaction in transactions %}
+        {% if transaction.hasSplitTransactions %}
+        {% else %}
+            <tr
+                class="data-row border-b border-white/[.07] hover:bg-white/[.025] transition-colors"
+                id="transaction-list-item-{{ transaction.id }}"
+            >
+                {% include 'transaction/_row.html.twig' with { 'transaction': transaction } %}
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+{{ include('transaction/_categoryDropdown.html.twig', { 'controller': 'ta-dropdown-manager' }) }}

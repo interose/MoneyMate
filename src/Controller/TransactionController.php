@@ -24,6 +24,7 @@ class TransactionController extends AbstractController
         TransactionRepository $repository,
         CategoryRepository $categoryRepository,
         SettingsManager $settingsManager,
+        Request $request,
         #[MapQueryParameter] ?int $month = null,
         #[MapQueryParameter] ?int $year = null,
         #[MapQueryParameter] string $sort = 'valutaDate',
@@ -49,7 +50,7 @@ class TransactionController extends AbstractController
             $this->addFlash('error_static', 'Please set a main account in the settings.');
         }
 
-        return $this->render('transaction/index.html.twig', [
+        $templateParams = [
             'transactions' => $transactions,
             'month' => $month,
             'year' => $year,
@@ -57,8 +58,16 @@ class TransactionController extends AbstractController
             'sortDirection' => $sortDirection,
             'categoryGroups' => $categoryRepository->getCategoriesForDropdown(),
             'query' => $query,
-        ]);
+        ];
+
+        if (TurboBundle::STREAM_FORMAT === $request->getPreferredFormat()) {
+            return $this->render('transaction/index.stream.html.twig', $templateParams);
+        }
+
+        return $this->render('transaction/index.html.twig', $templateParams);
     }
+
+
 
     #[Route('/transaction/set-category', name: 'app_transaction_set_category', methods: ['POST'])]
     public function editCategory(TransactionRepository $transactionRepository, SplitTransactionRepository $splitTransactionRepository, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, Request $request): Response
