@@ -8,7 +8,6 @@ export default class extends BaseDropdownController {
     }
 
     async selectCategory(event) {
-        console.log('async selectCategory')
         const button = event.currentTarget;
         const categoryId = button.dataset.categoryId;
         const transactionId = this.dropdownTarget.dataset.transactionId;

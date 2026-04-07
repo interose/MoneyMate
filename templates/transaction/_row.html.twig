@@ -2,16 +2,10 @@
     {{ transaction.valutaDate|date('d.m.') }}
 </td>
 <td class="py-[8px] px-3 text-white font-[450] text-ellipsis whitespace-nowrap">
-    {% if splitTransaction is defined %}
-        {% set popOverId = splitTransaction.id %}
-    {% else %}
-        {% set popOverId = transaction.id %}
-    {% endif%}
-
     <div class="recv-wrap relative inline-block max-w-full">
-        <span data-popover-target="popover-transaction-{{ popOverId }}" class="recv-name block overflow-hidden text-ellipsis whitespace-nowrap">{{ transaction.name }}</span>
+        <span data-popover-target="popover-transaction-{{ transaction.id }}" class="recv-name block overflow-hidden text-ellipsis whitespace-nowrap">{{ transaction.name }}</span>
         <div
-            data-popover id="popover-transaction-{{ popOverId }}"
+            data-popover id="popover-transaction-{{ transaction.id }}"
             role="tooltip"
             class="tooltip absolute z-50 invisible inline-block bg-card border border-white/[.15] rounded-lg px-3 py-2 text-[12px] text-white/70 shadow-[0_8px_28px_rgba(0,0,0,.45)]"
         >
@@ -24,36 +18,32 @@
 </td>
 
 <td class="py-[8px] px-3 overflow-hidden">
-    {% if splitTransaction is defined %}
-        {% set tr = splitTransaction %}
-    {% elseif transaction.category %}
-        {% set tr = transaction %}
-    {% endif %}
-
-    {% if tr is defined %}
-    <span style="{{ cat_styles(tr.category.categoryGroup?.color) }}" class="px-2 py-0.5 rounded-full text-xs font-medium">
-        {{ tr.category.categoryGroup
-        ? tr.category.categoryGroup.name ~ ':' ~ tr.category.name
-        : tr.category.name }}
+    {% if transaction.category %}
+    <span
+        style="{{ cat_styles(transaction.category.categoryGroup?.color) }}"
+        class="cat-pill inline-flex items-center gap-[5px] px-[9px] py-[2px] rounded-full text-[11.5px] font-medium cursor-pointer hover:brightness-125 transition-all"
+        data-action="click->ta-dropdown-manager#toggle"
+        data-transaction-id="{{ transaction.id }}"
+    >
+        {{ transaction.category.categoryGroup
+        ? transaction.category.categoryGroup.name ~ ':' ~ transaction.category.name
+        : transaction.category.name }}
+        <svg class="w-[9px] h-[9px] opacity-50" viewBox="0 0 10 10" fill="none">
+              <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
     </span>
+    {% else %}
+        <span
+            class="cat-pill block items-center gap-[5px] px-[9px] py-[2px] rounded-full text-[11.5px] font-medium cursor-pointer transition-all"
+            data-action="click->ta-dropdown-manager#toggle"
+            data-transaction-id="{{ transaction.id }}"
+        >&nbsp;
+        </span>
     {% endif %}
-
-{#    <svg class="w-3 h-3 ml-1 text-slate-400 hidden" data-ta-dropdown-target="arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>#}
 </td>
 
-{% if transaction.isCredit %}
-    {% set fontClass = 'text-green' %}
-    {% set sign = '+' %}
-{% else %}
-    {% set fontClass = 'text-white/70' %}
-    {% set sign = '-' %}
-{% endif %}
-<td class="py-[8px] px-3 text-right font-mono text-[13px] {{ fontClass}} overflow-hidden text-ellipsis whitespace-nowrap">
-{% if splitTransaction is defined %}
-{{ sign }}&nbsp;{{ splitTransaction.amountAsCurrency|format_currency('EUR', {}) }}</td>
-{% else %}
-{{ sign }}&nbsp;{{ transaction.amountAsCurrency|format_currency('EUR', {}) }}
-{% endif %}
+<td class="py-[8px] px-3 text-right font-mono text-[13px] overflow-hidden text-ellipsis whitespace-nowrap {{ transaction.isCredit ? 'text-green' : 'text-white/70' }}">
+    {{ transaction.isCredit ? '+' : '-' }}&nbsp;{{ transaction.amountAsCurrency|format_currency('EUR', {}) }}
 </td>
 
 

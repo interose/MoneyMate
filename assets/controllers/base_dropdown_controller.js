@@ -4,20 +4,23 @@ export default class BaseDropdownController extends Controller {
 
     currentActiveIndex = -1;
 
+    // -------------------------
+    // Lifecycle
+    // -------------------------
     connect() {
-        // Bind the hide method and add document-level click listener
         this.hideHandler = this.hide.bind(this)
 
         document.addEventListener("click", this.hideHandler)
     }
-
     disconnect() {
         // Clean up the listener when controller disconnects
         document.removeEventListener("click", this.hideHandler)
     }
 
+    // -------------------------
+    // Actions
+    // -------------------------
     toggle(event) {
-
         const button = event.currentTarget;
 
         // If clicking the same button, toggle closed
@@ -32,13 +35,12 @@ export default class BaseDropdownController extends Controller {
         // Reset state
         this.currentActiveIndex = -1;
         this.searchTarget.value = "";
-        this.filterCategories({ target: this.searchTarget }); // Reset filter
+        this.#filterCategories({ target: this.searchTarget }); // Reset filter
 
         // Positioning relative to the anchor button
         const rect = button.getBoundingClientRect();
         this.dropdownTarget.style.top = `${rect.bottom + window.scrollY}px`;
         this.dropdownTarget.style.left = `${rect.left + window.scrollX}px`;
-        this.dropdownTarget.style.width = `${rect.width}px`;
         this.dropdownTarget.classList.remove("hidden");
         this.dropdownTarget.dataset.transactionId = button.dataset.transactionId;
 
@@ -57,11 +59,11 @@ export default class BaseDropdownController extends Controller {
         if (event.key === 'ArrowDown') {
             event.preventDefault();
             this.currentActiveIndex = Math.min(this.currentActiveIndex + 1, visibleItems.length - 1);
-            this.updateHighlight(visibleItems);
+            this.#updateHighlight(visibleItems);
         } else if (event.key === 'ArrowUp') {
             event.preventDefault();
             this.currentActiveIndex = Math.max(this.currentActiveIndex - 1, 0);
-            this.updateHighlight(visibleItems);
+            this.#updateHighlight(visibleItems);
         } else if (event.key === 'Enter') {
             event.preventDefault();
             if (this.currentActiveIndex >= 0 && visibleItems[this.currentActiveIndex]) {
@@ -69,21 +71,9 @@ export default class BaseDropdownController extends Controller {
             }
         } else {
             this.currentActiveIndex = -1;
-            this.filterCategories(event);
+            this.#filterCategories(event);
         }
     }
-
-    updateHighlight(visibleItems) {
-        visibleItems.forEach((item, idx) => {
-            if (idx === this.currentActiveIndex) {
-                item.classList.add('bg-active');
-                item.scrollIntoView({ block: 'nearest' });
-            } else {
-                item.classList.remove('bg-active');
-            }
-        });
-    }
-
     handleEscape(event) {
         if (event.key === 'Escape' && !this.dropdownTarget.classList.contains('hidden')) {
             event.preventDefault();
@@ -91,18 +81,16 @@ export default class BaseDropdownController extends Controller {
 
             // Clear search input and close
             this.searchTarget.value = '';
-            this.filterCategories({ target: this.searchTarget }); // Reset filter
+            this.#filterCategories({ target: this.searchTarget }); // Reset filter
             this.close();
         }
     }
-
     close() {
         if (this.hasDropdownTarget) {
             this.dropdownTarget.classList.add("hidden")
             this.currentButton = null
         }
     }
-
     hide(event) {
         // Close if clicking outside
         if (this.hasDropdownTarget) {
@@ -113,13 +101,28 @@ export default class BaseDropdownController extends Controller {
         }
     }
 
-    filterCategories(event) {
+    // -------------------------
+    // Private
+    // -------------------------
+    #updateHighlight(visibleItems) {
+        visibleItems.forEach((item, idx) => {
+            if (idx === this.currentActiveIndex) {
+                item.classList.replace('text-white/70', 'text-white');
+                item.classList.replace('bg-transparent', 'bg-white/[.05]');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.replace('text-white', 'text-white/70');
+                item.classList.replace('bg-white/[.05]', 'bg-transparent');
+            }
+        });
+    }
+
+    #filterCategories(event) {
         const filter = event.target.value.toLowerCase();
 
         this.catItemTargets.forEach(item => {
             if (item.textContent.toLowerCase().includes(filter)) {
                 item.style.display = "";
-                // hasVisibleChild = true;
             } else {
                 item.style.display = "none";
                 item.classList.remove('bg-active');
