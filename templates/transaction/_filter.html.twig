@@ -1,23 +1,17 @@
 <div
     data-controller="ta-filter"
-    data-ta-filter-month-value="{{ month }}"
-    data-ta-filter-year-value="{{ year }}"
-    data-ta-filter-dropdown-month-value="{{ month }}"
-    data-ta-filter-dropdown-year-value="{{ year }}"
     data-action="keydown.meta+k@window->ta-filter#focusSearch keydown.ctrl+k@window->ta-filter#focusSearch"
-    class="p-2"
 >
     <form
         action="{{ path('app_transaction_index') }}"
         data-turbo-frame="transaction-list"
         data-ta-filter-target="form"
-        class="flex flex-row"
+        class="flex flex-row gap-3 items-center"
     >
-        <button data-action="click->ta-filter#prev" class="btn-monthpicker-navigate p-1 px-2 me-1 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">prev</button>
-
         {% include 'transaction/_monthPicker.html.twig' %}
 
-        <button data-action="click->ta-filter#next" class="btn-transaction-filter-navigate p-1 px-2 me-4 text-xs font-medium text-center text-gray-600 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300" type="button">next</button>
+        <!-- Separator -->
+        <div class="w-px h-5 bg-white/[.07] flex-shrink-0"></div>
 
         {% include 'transaction/_filterSearch.html.twig' %}
     </form>

@@ -17,6 +17,7 @@ export default class BaseDropdownController extends Controller {
     }
 
     toggle(event) {
+
         const button = event.currentTarget;
 
         // If clicking the same button, toggle closed
@@ -96,15 +97,19 @@ export default class BaseDropdownController extends Controller {
     }
 
     close() {
-        this.dropdownTarget.classList.add("hidden")
-        this.currentButton = null
+        if (this.hasDropdownTarget) {
+            this.dropdownTarget.classList.add("hidden")
+            this.currentButton = null
+        }
     }
 
     hide(event) {
         // Close if clicking outside
-        if (!this.dropdownTarget.contains(event.target) &&
-            !this.currentButton?.contains(event.target)) {
-            this.close()
+        if (this.hasDropdownTarget) {
+            if (!this.dropdownTarget.contains(event.target) &&
+                !this.currentButton?.contains(event.target)) {
+                this.close()
+            }
         }
     }
 

@@ -1,164 +1,146 @@
 import { Controller } from '@hotwired/stimulus';
 import debounce from 'debounce';
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
 export default class extends Controller {
 
-    static targets = ['output', 'mrOutputMonth', 'mrOutputYear', 'dropdown', 'monthOverviewCol', 'yearOverviewCol', 'form', 'searchQuery', 'searchQueryReset', 'searchQueryShortcut'];
+    static targets = [
+        'form',
+        'month', 'year', 'pickerLabel', 'pickerDropdown', 'pickerChevron', 'dropdownYearLabel', 'dropdownMonths',
+        'searchQuery'
+    ];
 
-    static values = {
-        month: Number,
-        year: Number,
-        dropdownMonth: Number,
-        dropdownYear: Number,
-    }
+    month = null;
+    year = null;
+    dropdownOpen = false;
+    dropdownYear = null;
 
-    #monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-    #dropdown = null;
-
+    // -------------------------
+    // Lifecycle
+    // -------------------------
     initialize() {
         this.debouncedSubmit = debounce(this.debouncedSubmit.bind(this), 500);
     }
 
     connect() {
-        this.#resetSearchQuery();
-        this.#initDropdown();
+        this.month = parseInt(this.monthTarget.value);
+        this.year = parseInt(this.yearTarget.value);
     }
 
-    prev() {
-        this.#resetSearchQuery();
-
-        if (1 == this.monthValue) {
-            this.monthValue = 12;
-            this.yearValue--;
-        } else {
-            this.monthValue--;
-        }
-
-        this.dropdownMonthValue = this.monthValue;
-        this.dropdownYearValue = this.yearValue;
+    // -------------------------
+    // Month Picker Actions
+    // -------------------------
+    prevMonth(e) {
+        this.#monthStep(-1);
+        this.#updatePickerLabel();
+        this.#updateHiddenFields();
     }
 
-    next() {
-        this.#resetSearchQuery();
-
-        if (12 == this.monthValue) {
-            this.monthValue = 1;
-            this.yearValue++;
-
-        } else {
-            this.monthValue++;
-        }
-
-        this.dropdownMonthValue = this.monthValue;
-        this.dropdownYearValue = this.yearValue;
+    nextMonth(e) {
+        this.#monthStep(1);
+        this.#updatePickerLabel();
+        this.#updateHiddenFields();
     }
 
-    selectMonth(el) {
-        this.dropdownMonthValue = el.target.dataset.value;
+    pickerPrevYear() {
+        this.dropdownYear -=1;
+        this.#renderDropdown();
     }
 
-    selectYear(el) {
-        this.dropdownYearValue = el.target.innerText;
+    pickerNextYear() {
+        this.dropdownYear +=1;
+        this.#renderDropdown();
     }
 
-    accept() {
-        this.monthValue = this.dropdownMonthValue;
-        this.yearValue = this.dropdownYearValue;
-
-        this.#dropdown.hide();
+    togglePickerDropdown() {
+        this.dropdownOpen ? this.#closePickerDropdown() : this.#openPickerDropdown();
     }
 
-    cancel() {
-        this.dropdownMonthValue = this.monthValue;
-        this.dropdownYearValue = this.yearValue;
+    dropdownSelectMonth(el) {
+        this.month = parseInt(el.target.dataset.value);
+        this.year = this.dropdownYear;
 
-        this.#dropdown.hide();
+        this.#updatePickerLabel();
+        this.#updateHiddenFields();
+        this.#closePickerDropdown();
     }
 
-    monthValueChanged() {
-        this.#updateInput();
-
-        this.formTarget.requestSubmit();
+    // -------------------------
+    // Search Actions
+    // -------------------------
+    focusSearch(event) {
+        event.preventDefault();
+        this.searchQueryTarget.focus();
     }
-    yearValueChanged() {
-        this.#updateInput();
-
-        this.formTarget.requestSubmit();
-    }
-    dropdownMonthValueChanged(value) {
-        this.#resetDropdownMonthCol();
-        this.#setDropdownMonthCol();
-    }
-    dropdownYearValueChanged(value) {
-        this.#resetDropdownYearCol();
-        this.#setDropdownYearCol();
-    }
-
-    debouncedSubmit() {
-        this.searchQueryResetTarget.classList.remove('hidden');
-        this.searchQueryShortcutTarget.classList.add('hidden');
-
-        this.formTarget.requestSubmit();
-    }
-
     clearSearchQuery() {
         this.#resetSearchQuery();
     }
 
-    focusSearch(event) {
-        event.preventDefault();
+    debouncedSubmit() {
+        // this.searchQueryResetTarget.classList.remove('hidden');
+        // this.searchQueryShortcutTarget.classList.add('hidden');
 
-        this.searchQueryTarget.focus();
+        this.formTarget.requestSubmit();
     }
 
-    #initDropdown() {
-        const options = {
-            placement: 'bottom',
-            triggerType: 'click',
-            offsetSkidding: 0,
-            offsetDistance: 10,
-            delay: 300,
-            ignoreClickOutsideClass: 'btn-monthpicker-navigate',
-        };
 
-        const instanceOptions = {
-            id: 'monthpicker-dropdown',
-            override: true
-        };
-
-        this.#dropdown = new Dropdown(this.dropdownTarget, this.outputTarget, options, instanceOptions);
+    // -------------------------
+    // Month Picker Private
+    // -------------------------
+    #monthStep(dir) {
+        this.month += dir;
+        if (this.month > 12) { this.month = 1;  this.year++; }
+        if (this.month < 1)  { this.month = 12; this.year--; }
     }
 
-    #updateInput() {
-        let monthName = this.#monthNames?.[this.monthValue - 1] ? this.#monthNames[this.monthValue - 1] : this.monthValue;
-
-        this.outputTarget.value = `${monthName}, ${this.yearValue}`;
-        this.mrOutputMonthTarget.value = this.monthValue;
-        this.mrOutputYearTarget.value = this.yearValue;
+    #updatePickerLabel() {
+        this.pickerLabelTarget.innerText = `${MONTHS[this.month - 1]} ${this.year}`;
     }
 
-    #setDropdownMonthCol() {
-        this.monthOverviewColTarget.querySelector(`div [data-value="${this.dropdownMonthValue}"]`).classList.add('bg-gray-100');
-    }
-    #resetDropdownMonthCol() {
-        const list = this.monthOverviewColTarget.querySelectorAll('.bg-gray-100');
-        for (const div of list) {
-            div.classList.remove('bg-gray-100');
-        }
-    }
-    #setDropdownYearCol() {
-        this.yearOverviewColTarget.querySelector(`div [data-value="${this.dropdownYearValue}"]`).classList.add('bg-gray-100');
-    }
-    #resetDropdownYearCol() {
-        const list = this.yearOverviewColTarget.querySelectorAll('.bg-gray-100');
-        for (const div of list) {
-            div.classList.remove('bg-gray-100');
-        }
+    #updateHiddenFields() {
+        this.monthTarget.value = this.month;
+        this.yearTarget.value = this.year;
     }
 
+    #openPickerDropdown() {
+        this.dropdownOpen  = true;
+        this.dropdownYear = this.year
+
+        this.#renderDropdown();
+
+        this.pickerDropdownTarget.classList.remove('hidden');
+        this.pickerChevronTarget.style.transform = 'rotate(180deg)';
+    }
+
+    #closePickerDropdown() {
+        this.dropdownOpen  = false;
+
+        this.pickerDropdownTarget.classList.add('hidden');
+        this.pickerChevronTarget.style.transform = '';
+    }
+
+    #renderDropdown() {
+        this.dropdownYearLabelTarget.innerText = this.dropdownYear;
+
+        this.dropdownMonthsTarget
+            .querySelectorAll('button')
+            .forEach(btn => {
+                const isActive  = (this.dropdownYear === this.year && btn.dataset.value == this.month);
+                if (isActive) {
+                    btn.classList.replace('text-white/25', 'text-white');
+                } else {
+                    btn.classList.remove('text-white')
+                    btn.classList.add('text-white/25')
+                }
+            });
+    }
+
+    // -------------------------
+    // Search Private
+    // -------------------------
     #resetSearchQuery() {
         this.searchQueryTarget.value = "";
-
         this.searchQueryResetTarget.classList.add('hidden');
         this.searchQueryShortcutTarget.classList.remove('hidden');
     }

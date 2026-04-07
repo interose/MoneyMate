@@ -31,7 +31,7 @@ class TransactionController extends AbstractController
         #[MapQueryParameter] ?string $query = null,
     ): Response {
         if (null === $month) {
-            $month = date('m');
+            $month = date('n');
         }
 
         if (null === $year) {
