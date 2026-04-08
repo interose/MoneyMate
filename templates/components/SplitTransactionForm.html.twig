@@ -5,59 +5,107 @@
 
     {{ form_start(form) }}
 
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th scope="col" class="px-3 py-2 pl-0">Description</th>
-                <th scope="col" class="px-3 py-2">Category</th>
-                <th scope="col" class="px-3 py-2">Amount</th>
-                <th scope="col" class="px-3 py-2 pr-0"></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for splitTransaction in form.splitTransactions %}
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td class="px-3 py-2 pl-0">
-                    {{ form_row(splitTransaction.description, {
-                        label: false,
-                        attr: {
-                            class: 'block w-full p-1 text-gray-900 border border-gray-300 rounded focus:outline-none bg-gray-50 text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white'
-                        }
-                    }) }}
-                </td>
-                <td class="px-3 py-2 w-60 relative">
-                    {{ form_row(splitTransaction.category, {
-                        label: false
-                    }) }}
-                    <button
-                        type="button"
-                        class="w-full flex justify-between items-center text-left border border-slate-200 bg-white text-slate-600 text-xs rounded px-3 py-1 hover:border-blue-300 transition-all"
-                        data-action="click->split-transaction-form#toggle"
-                        data-row-index="{{ loop.index0 }}"
-                    >
-                        <span id="form-category-label">Uncategorized</span>
-                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                    </button>
-                </td>
-                <td class="px-3 py-2 w-28">
-                    {{ form_row(splitTransaction.amount, {
-                        label: false,
-                        attr: {
-                            class: 'block w-full p-1 text-gray-900 border border-r-0 border-gray-300 rounded-l focus:outline-none bg-gray-50 text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white',
-                        }
-                    }) }}
-                </td>
-                <td class="px-3 py-2 pr-0 w-9">
-                    {{ form_row(splitTransaction.vars.button_delete, {label: 'X', attr: {class: 'focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium p-1 px-2 text-xs rounded dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'}}) }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Table header -->
+    <div class="px-[22px] pt-4">
+        <table class="w-full text-sm text-left rtl:text-right">
+            <thead class="text-[10.5px] font-semibold tracking-[.07em] uppercase text-white/30">
+                <tr>
+                    <th scope="col" class="px-3 py-0 pl-0">Description</th>
+                    <th scope="col" class="px-3 py-0">Category</th>
+                    <th scope="col" class="px-3 py-0">Amount</th>
+                    <th scope="col" class="px-3 py-0 pr-0"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for splitTransaction in form.splitTransactions %}
+                <tr class="">
+                    <td class="px-3 py-1 pl-0">
+                        {{ form_row(splitTransaction.description, {
+                            label: false,
+                            attr: {
+                                class: 'bg-elevated border border-white/[.07] rounded-lg px-3 py-[7px] text-[13px] text-white font-sans outline-none focus:border-accent transition-colors w-full placeholder:text-white/25',
+                                placeholder: 'Description ...'
+                            }
+                        }) }}
+                    </td>
+                    <td class="px-3 py-1 w-60 relative">
+                        {{ form_row(splitTransaction.category, {
+                            label: false
+                        }) }}
+                        <button
+                            type="button"
+                            class="split-cat-btn w-full flex items-center justify-between gap-2 bg-elevated border border-white/[.07] rounded-lg px-3 py-[7px] text-[13px] text-white/40 hover:border-white/[.15] hover:text-white transition-colors cursor-pointer"
+                            data-action="click->split-transaction-form#toggle"
+                            data-row-index="{{ loop.index0 }}"
+                        >
+                            <span id="form-category-label">Uncategorized</span>
+                            <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        </button>
+                    </td>
+                    <td class="px-3 py-1 w-28">
+                        <div class="flex items-center bg-elevated border border-white/[.07] rounded-lg overflow-hidden focus-within:border-accent transition-colors">
+                            {{ form_widget(splitTransaction.amount, {
+                                money_pattern: '{{ widget }}',
+                                attr: {
+                                    class: 'flex-1 min-w-0 bg-transparent px-3 py-[7px] text-[13px] text-white font-mono outline-none w-full text-right'
+                                }
+                            }) }}
 
-    <div class="flex mt-4">
-        <div class="grow flex justify-start">{{ form_widget(form.splitTransactions.vars.button_add, {label: '+ Add Item', attr: {class: 'text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded text-xs px-4 py-1 text-center inline-flex items-center'}}) }}</div>
-        <div class="grow flex justify-end"><button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded text-xs px-4 py-1 text-center inline-flex items-center" formnovalidate>Save</button></div>
+                            <span class="pr-3 text-[12px] text-white/30 flex-shrink-0">€</span>
+                        </div>
+                    </td>
+                    <td class="px-3 py-1 pr-0 w-9">
+                        {{ form_row(splitTransaction.vars.button_delete, {
+                            label: '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 3.5h8M5 3.5V2.5h3v1M5.5 5.5v4M7.5 5.5v4M3 3.5l.5 7h6l.5-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>',
+                            label_html: true,
+                            attr: {
+                                class: 'flex items-center justify-center w-7 h-7 rounded-lg text-white/25 hover:text-pink hover:bg-pink/10 transition-colors cursor-pointer border-0 bg-transparent flex-shrink-0'
+                            }
+                        }) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Add row + remaining -->
+        <div class="flex items-center justify-between mt-3 pb-4">
+            {{ form_widget(form.splitTransactions.vars.button_add, {
+                label: '<svg class="w-[14px] h-[14px]" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>Add row',
+                label_html: true,
+                attr: {
+                    class: 'inline-flex items-center gap-[6px] text-[12.5px] font-medium text-accent hover:text-white transition-colors cursor-pointer border-0 bg-transparent'
+                }
+            }) }}
+
+            <div
+                class="flex items-center gap-2 font-mono text-[12px]"
+                data-controller="transaction-amount"
+                data-action="split-transaction-form:render:finished@window->transaction-amount#renderFinished"
+            >
+                <span class="text-white/30">Remaining</span>
+                <span data-transaction-amount-target="differenceAmount" class="font-mono text-[12px] text-white/70">
+                    {{ transaction.getAmountDifferenceAsCurrency|format_currency('EUR', {}) }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end gap-2 px-[22px] py-4 border-t border-white/[.07]">
+        <button
+            data-action="mdl#close"
+            class="inline-flex items-center px-[14px] py-[7px] rounded-lg text-[13px] font-medium text-white/70 bg-elevated border border-white/[.07] hover:border-white/[.15] hover:text-white transition-colors cursor-pointer border-0"
+        >
+            Cancel
+        </button>
+        <button
+            type="submit"
+            class="grad inline-flex items-center px-[14px] py-[7px] rounded-lg text-[13px] font-medium text-white shadow-[0_3px_12px_rgba(67,72,224,.3)] hover:opacity-90 transition-opacity cursor-pointer border-0"
+            formnovalidate
+        >
+            Save
+        </button>
     </div>
 
     {{ form_end(form) }}
