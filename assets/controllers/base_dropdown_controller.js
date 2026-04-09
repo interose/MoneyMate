@@ -43,6 +43,8 @@ export default class BaseDropdownController extends Controller {
         this.dropdownTarget.style.left = `${rect.left + window.scrollX}px`;
         this.dropdownTarget.classList.remove("hidden");
         this.dropdownTarget.dataset.transactionId = button.dataset.transactionId;
+        this.dropdownTarget.dataset.splitTransactionId = button.dataset.splitTransactionId;
+        this.dropdownTarget.dataset.splitFirst = button.dataset.splitFirst;
 
         setTimeout(() => {
             this.searchTarget.focus();

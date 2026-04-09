@@ -1,0 +1,65 @@
+<td class="py-[8px] px-3 font-mono text-[12px] text-white/40 overflow-hidden text-ellipsis whitespace-nowrap">
+    {% if first %}
+        <a
+            href="{{ path('app_transaction_update', {'id': transaction.id}) }}"
+            class=""
+            data-turbo-frame="mdl"
+        >
+            {{ transaction.valutaDate|date('d.m.') }}
+        </a>
+    {% endif %}
+</td>
+<td class="py-[8px] px-3 text-white/70 text-[12.5px] font-normal text-ellipsis whitespace-nowrap">
+    <div class="flex items-center gap-[7px] min-w-0 relative">
+        <span class="flex-shrink-0 w-[5px] h-[5px] rounded-full bg-accent/50"></span>
+        <div class="recv-wrap relative inline-block max-w-full min-w-0">
+            <span data-popover-target="popover-splittransaction-{{ splitTransaction.id }}" class="block overflow-hidden text-ellipsis whitespace-nowrap">{{ transaction.name }}</span>
+            <div
+                data-popover id="popover-splittransaction-{{ splitTransaction.id }}"
+                role="tooltip"
+                class="tooltip absolute z-50 invisible inline-block bg-card border border-white/[.15] rounded-lg px-3 py-2 text-[12px] text-white/70 shadow-[0_8px_28px_rgba(0,0,0,.45)]"
+            >
+                <div class="px-3 py-2 text-wrap text-ellipsis overflow-hidden ...">
+                    <p>{{ splitTransaction.description }}</p>
+                </div>
+                <div data-popper-arrow></div>
+            </div>
+        </div>
+        {% if first %}
+        <span class="flex-shrink-0 text-[10px] font-semibold tracking-[.04em] uppercase text-white/30 border border-white/[.1] px-[6px] py-[1px] rounded-full">devided</span>
+        {% endif %}
+    </div>
+</td>
+
+<td class="py-[8px] px-3 overflow-hidden">
+    {% if splitTransaction.category %}
+        <span
+            style="{{ cat_styles(splitTransaction.category.categoryGroup?.color) }}"
+            class="cat-pill inline-flex items-center gap-[5px] px-[9px] py-[2px] rounded-full text-[11.5px] font-medium cursor-pointer hover:brightness-125 transition-all"
+            data-action="click->ta-dropdown-manager#toggle"
+            data-transaction-id="{{ transaction.id }}"
+            data-split-transaction-id="{{ splitTransaction.id }}"
+            data-split-first="{{ first }}"
+        >
+        {{ splitTransaction.category.categoryGroup
+        ? splitTransaction.category.categoryGroup.name ~ ':' ~ splitTransaction.category.name
+        : splitTransaction.category.name }}
+        <svg class="w-[9px] h-[9px] opacity-50" viewBox="0 0 10 10" fill="none">
+              <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </span>
+    {% else %}
+        <span
+            class="cat-pill block items-center gap-[5px] px-[9px] py-[2px] rounded-full text-[11.5px] font-medium cursor-pointer transition-all"
+            data-action="click->ta-dropdown-manager#toggle"
+            data-transaction-id="{{ splitTransaction.id }}"
+        >&nbsp;
+        </span>
+    {% endif %}
+</td>
+
+<td class="py-[8px] px-3 text-right font-mono text-[13px] overflow-hidden text-ellipsis whitespace-nowrap {{ transaction.isCredit ? 'text-green' : 'text-white/70' }}">
+    {{ transaction.isCredit ? '+' : '-' }}&nbsp;{{ splitTransaction.amountAsCurrency|format_currency('EUR', {}) }}
+</td>
+
+

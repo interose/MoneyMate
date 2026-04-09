@@ -74,6 +74,7 @@ class TransactionController extends AbstractController
     {
         $transaction = $transactionRepository->findOneById($request->request->getInt('transactionId'));
         $category = $categoryRepository->findOneById($request->request->getInt('categoryId'));
+        $splitFirst = $request->request->getBoolean('splitFirst', false);
 
         $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
 
@@ -89,6 +90,7 @@ class TransactionController extends AbstractController
             return $this->render('transaction/row.stream.html.twig', [
                 'transaction' => $transaction,
                 'splitTransaction' => $splitTransaction,
+                'splitFirst' => $splitFirst,
             ]);
         } else {
             $transaction->setCategory($category);

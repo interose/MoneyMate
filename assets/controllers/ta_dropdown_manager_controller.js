@@ -11,6 +11,8 @@ export default class extends BaseDropdownController {
         const button = event.currentTarget;
         const categoryId = button.dataset.categoryId;
         const transactionId = this.dropdownTarget.dataset.transactionId;
+        const splitTransactionId = this.dropdownTarget.dataset.splitTransactionId ?? 0;
+        const splitFirst = this.dropdownTarget.dataset.splitFirst ?? false;
 
         const form = document.createElement('form');
         form.method = 'POST';
@@ -19,7 +21,8 @@ export default class extends BaseDropdownController {
         const fields = {
             transactionId: transactionId,
             categoryId: categoryId,
-            splitTransactionId: 0,
+            splitTransactionId: splitTransactionId,
+            splitFirst: splitFirst
         };
 
         for (const [key, value] of Object.entries(fields)) {

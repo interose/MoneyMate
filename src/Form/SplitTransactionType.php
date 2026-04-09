@@ -14,7 +14,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -37,9 +36,6 @@ class SplitTransactionType extends AbstractType
                 'mapped' => false
             ])
             ->add('amount', MoneyType::class, [
-                'getter' => function (SplitTransaction $splitTransaction, FormInterface $form): string {
-                    return $splitTransaction->getAmountAsCurrency();
-                },
                 'currency' => 'EUR',
                 'html5' => false,
                 'divisor' => 100,

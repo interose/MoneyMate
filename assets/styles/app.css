@@ -79,6 +79,12 @@ col.c-receiver { width: auto; }
 col.c-category { width: 220px; }
 col.c-amount   { width: 130px; }
 
+/* Row-action buttons fade in on hover */
+.data-row .row-actions { opacity: 0; transition: opacity .12s; }
+.data-row:hover .row-actions { opacity: 1; }
+
+
+
 
 
 

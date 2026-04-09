@@ -16,6 +16,17 @@
     <tbody>
     {% for transaction in transactions %}
         {% if transaction.hasSplitTransactions %}
+            {% for splitTransaction in transaction.splitTransactions %}
+                <tr id="split-transaction-list-item-{{ splitTransaction.id }}"
+                {% if loop.last %}
+                    class="data-row border-b border-white/[.07] bg-white/[.018] hover:bg-white/[.035] transition-colors"
+                {% else %}
+                    class="data-row border-b border-dashed border-white/[.06] bg-white/[.018] hover:bg-white/[.035] transition-colors"
+                {% endif %}
+                >
+                    {% include 'transaction/_rowSplitTransaction.html.twig' with { 'transaction': transaction, 'splitTransaction': splitTransaction, 'first': loop.first } %}
+                </tr>
+            {% endfor %}
         {% else %}
             <tr
                 class="data-row border-b border-white/[.07] hover:bg-white/[.025] transition-colors"
