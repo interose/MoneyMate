@@ -1,0 +1,9 @@
+<turbo-stream action="update" target="category-list-item-{{ category.id }}">
+    <template>
+        {% include 'settings_category/_row.html.twig' with { 'category': category } %}
+    </template>
+</turbo-stream>
+
+<turbo-stream action="update" target="mdl"></turbo-stream>
+
+{% include '_flashes.html.twig' %}

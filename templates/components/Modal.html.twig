@@ -7,13 +7,14 @@
 <div
     {{ attributes.defaults({
         'data-controller': 'mdl',
-        'data-action': 'turbo:before-cache@window->mdl#close',
+        'data-action': 'turbo:before-cache@window->mdl#close turbo:click@window->mdl#prepareModal',
     }) }}
+    style="--modal-width: 600px;"
 >
     {% block trigger %}{% endblock %}
 
     <dialog
-        class="bg-card border border-white/[.15] rounded-2xl w-[600px] max-w-[95vw] overflow-hidden transition-transform duration-200 p-0 text-white"
+        class="bg-card border border-white/[.15] rounded-2xl w-[var(--modal-width)] max-w-[95vw] overflow-hidden transition-transform duration-200 p-0 text-white"
         data-mdl-target="dialog"
         data-action="close->mdl#close click->mdl#clickOutside"
     >

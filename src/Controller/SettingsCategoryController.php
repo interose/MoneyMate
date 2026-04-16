@@ -9,36 +9,36 @@ use App\Repository\CategoryGroupRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\UX\Turbo\TurboBundle;
 
 #[Route('/settings/category')]
 class SettingsCategoryController extends AbstractController
 {
-    #[Route('/', name: 'app_settings_category_index', methods: ['GET'])]
-    public function index(
-        CategoryRepository $repository,
-        #[MapQueryParameter] string $sort = 'group',
-        #[MapQueryParameter] string $sortDirection = 'asc',
-    ): Response {
-        $validSorts = ['group', 'name', 'treeIgnore', 'dashboardIgnore'];
-        $sort = in_array($sort, $validSorts) ? $sort : 'group';
+    #[Route('/index', name: 'app_settings_categories_by_group', methods: ['GET'])]
+    public function getCategoriesByGroupId(Request $request, CategoryGroupRepository $repository): Response
+    {
+        /** @var CategoryGroup $group */
+        $group = $repository->findOneById($request->query->get('id'));
 
         return $this->render('settings_category/index.html.twig', [
-            'categories' => $repository->findBySearch($sort, $sortDirection),
-            'sort' => $sort,
-            'sortDirection' => $sortDirection,
+            'group' => $group,
+            'categories' => $group->getCategories(),
         ]);
     }
 
-    #[Route('/new', name: 'app_settings_category_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{id}', name: 'app_settings_category_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, CategoryGroup $group, EntityManagerInterface $entityManager): Response
     {
         $category = new Category();
+        $category->setCategoryGroup($group);
+
         $form = $this->createForm(CategoryType::class, $category, [
-            'action' => $this->generateUrl('app_settings_category_new'),
+            'action' => $this->generateUrl('app_settings_category_new', ['id' => $group->getId()]),
         ]);
         $form->handleRequest($request);
 
@@ -48,7 +48,10 @@ class SettingsCategoryController extends AbstractController
 
             $this->addFlash('success', 'Category created');
 
-            return $this->redirectToRoute('app_settings_category_index', [], Response::HTTP_SEE_OTHER);
+            $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
+            return $this->render('settings_category/rowAppend.stream.html.twig', [
+                'category' => $category
+            ]);
         }
 
         return $this->render('settings_category/new.html.twig', [
@@ -70,7 +73,10 @@ class SettingsCategoryController extends AbstractController
 
             $this->addFlash('success', 'Category updated');
 
-            return $this->redirectToRoute('app_settings_category_index', [], Response::HTTP_SEE_OTHER);
+            $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
+            return $this->render('settings_category/rowUpdate.stream.html.twig', [#
+                'category' => $category
+            ]);
         }
 
         return $this->render('settings_category/edit.html.twig', [
@@ -79,15 +85,31 @@ class SettingsCategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/get-by-group', name: 'app_settings_categories_by_group', methods: ['GET'])]
-    public function getCategoriesByGroupId(Request $request, CategoryGroupRepository $repository)
+    #[Route('/{id}', name: 'app_settings_category_delete', methods: ['POST'])]
+    public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
-        /** @var CategoryGroup $group */
-        $group = $repository->findOneById($request->query->get('id'));
+        $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
 
-        return $this->render('settings_category/categories_by_group.html.twig', [
-            'group' => $group,
-            'categories' => $group->getCategories(),
-        ]);
+        $isValidToken = $this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->getString('_token'));
+
+        if ($isValidToken) {
+            if ($category->getTransactions()->count() > 0) {
+                $this->addFlash('error', 'Category is already used! Could not delete it!');
+            } else {
+                $id = $category->getId();
+                $entityManager->remove($category);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Category deleted!');
+
+                return $this->render('settings_category/rowDelete.stream.html.twig', [
+                    'id' => $id
+                ]);
+            }
+        } else {
+            $this->addFlash('danger', 'Invalid security token.');
+        }
+
+        return $this->render('_flashes.html.twig');
     }
 }

@@ -1,0 +1,43 @@
+<div id="groupEditBar" class="flex items-center gap-3 px-6 py-4 border-b border-white/[.07] flex-shrink-0">
+    <form
+        method="post"
+        action="{{ path('app_settings_categorygroup_update', { 'id': group.id }) }}"
+        data-turbo-frame="_top"
+        class="flex items-center gap-3 w-full"
+    >
+        <!-- color swatch -->
+        <div class="relative flex-shrink-0">
+            <input
+                name="groupcolor"
+                type="color"
+                value="{{ group.color }}"
+                class="w-8 h-8 rounded-lg cursor-pointer border border-white/[.12]" title="Groupcolor"
+            >
+        </div>
+        <!-- name input -->
+        <input
+            name="groupname"
+            type="text"
+            value="{{ group.name }}"
+            class="flex-1 bg-transparent border-b border-white/[.1] focus:border-accent outline-none text-[15px] font-semibold text-white placeholder:text-white/20 pb-[2px] transition-colors"
+        >
+
+        <!-- save / delete -->
+        <button
+            type="submit"
+            class="inline-flex items-center gap-[5px] px-3 py-[6px] rounded-lg text-[12px] font-medium text-white/70 bg-elevated border border-white/[.07] hover:border-white/[.15] hover:text-white transition-colors cursor-pointer border-0 bg-elevated"
+        >
+            <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Save
+        </button>
+
+        <input type="hidden" name="_token" value="{{ csrf_token('group-edit' ~ group.id) }}">
+
+        <button
+            formaction="{{ path('app_settings_categorygroup_delete', {id: group.id}) }}"
+            class="flex items-center justify-center w-[30px] h-[30px] rounded-lg text-white/25 hover:text-pink hover:bg-pink/10 transition-colors cursor-pointer border border-white/[.07] hover:border-pink/30 bg-transparent"
+        >
+            <svg class="w-[13px] h-[13px]" viewBox="0 0 13 13" fill="none"><path d="M2.5 3.5h8M5 3.5V2.5h3v1M5.5 5.5v4M7.5 5.5v4M3 3.5l.5 7h6l.5-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+    </form>
+</div>

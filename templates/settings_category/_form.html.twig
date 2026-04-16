@@ -1,17 +1,46 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div class="flex flex-col gap-4 px-[22px] py-5">
+        {{ form_row(form.name) }}
 
-    {% if app.request.headers.get('turbo-frame') is not empty and app.request.headers.get('turbo-frame') == 'form-drawer' %}
-        <div class="bottom-0 left-0 flex justify-start w-full pb-4 space-x-4 md:px-4 md:absolute">
-            <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
-                <i class="fa-solid fa-floppy-disk me-2.5"></i>{{ button_label|default('Save') }}
-            </button>
+        {% if app.request.query.get('groupId') %}
+            {{ form_widget(form.categoryGroup, {'attr': {'style': 'display:none'}}) }}
+        {% else %}
+            {{ form_row(form.categoryGroup) }}
+        {% endif %}
+
+        <div class="flex flex-col gap-3">
+            <label class="text-[11.5px] font-medium text-white/40">Options</label>
+
+            <!-- TreeIgnore toggle -->
+            <div class="flex items-center justify-between px-3 py-[10px] bg-elevated rounded-lg border border-white/[.07]">
+                <div class="flex flex-col gap-[2px]">
+                    <span class="text-[13px] text-white/80">Tree Ignore</span>
+                    <span class="text-[11.5px] text-white/35">Hide category in tree view</span>
+                </div>
+
+                <label class="toggle">
+                    {{ form_widget(form.treeIgnore) }}
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <!-- DashboardIgnore toggle -->
+            <div class="flex items-center justify-between px-3 py-[10px] bg-elevated rounded-lg border border-white/[.07]">
+                <div class="flex flex-col gap-[2px]">
+                    <span class="text-[13px] text-white/80">Dashboard Ignore</span>
+                    <span class="text-[11.5px] text-white/35">Do not display category in dashboard</span>
+                </div>
+                <label class="toggle">
+                    {{ form_widget(form.dashboardIgnore) }}
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
         </div>
-    {% else %}
-        <div class="flex justify-end">
-            <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
-                <i class="fa-solid fa-floppy-disk me-2.5"></i>{{ button_label|default('Save') }}
-            </button>
-        </div>
-    {% endif %}
+    </div>
+
+    <div class="flex justify-end gap-2 px-[22px] py-4 border-t border-white/[.07]">
+        <button class="grad inline-flex items-center px-[14px] py-[7px] rounded-lg text-[13px] font-medium text-white shadow-[0_3px_12px_rgba(67,72,224,.3)] hover:opacity-90 transition-opacity cursor-pointer border-0">
+            {{ button_label|default('Save') }}
+        </button>
+    </div>
 {{ form_end(form) }}

@@ -1,102 +1,45 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <twig:Header title="Categories">
-        <div class="sm:flex">
-            <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
-                <a
-                    class="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-[#112D4E] rounded-lg hover:bg-[#112D4E]/90 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700"
-                    href="{{ path('app_settings_category_new') }}"
-                    data-turbo-frame="mdl"
-                >
-                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z" clip-rule="evenodd"/>
-                    </svg>
-                    Add Category
-                </a>
-            </div>
-        </div>
-    </twig:Header>
+<turbo-frame id="category-panel">
+    <!-- Detail panel -->
+    <div
+        data-category-manager-target="detailPanel"
+        class="flex flex-col flex-1 overflow-hidden"
+    >
+        <!-- Group edit bar -->
+        {% include 'settings_category_group/_editBar.html.twig' with { 'group': group } %}
 
-    <twig:Content>
-        <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
-            <thead class="bg-gray-100 dark:bg-gray-700">
-            <tr>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">#</th>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                    <a href="{{ path('app_settings_category_index', {
-                        ...app.request.query.all(),
-                        sort: 'group',
-                        sortDirection: sort == 'group' and sortDirection == 'asc' ? 'desc' : 'asc',
-                    }) }}">
-                        Group {{ _self.sortArrow('group', sort, sortDirection) }}
-                    </a>
-                </th>
-                <th scope="col" class="p-3 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                    <a href="{{ path('app_settings_category_index', {
-                        ...app.request.query.all(),
-                        sort: 'name',
-                        sortDirection: sort == 'name' and sortDirection == 'asc' ? 'desc' : 'asc',
-                    }) }}">
-                        Name {{ _self.sortArrow('name', sort, sortDirection) }}
-                    </a>
-                </th>
-                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
-                    <a href="{{ path('app_settings_category_index', {
-                        ...app.request.query.all(),
-                        sort: 'treeIgnore',
-                        sortDirection: sort == 'treeIgnore' and sortDirection == 'asc' ? 'desc' : 'asc',
-                    }) }}">
-                        Tree Ignore {{ _self.sortArrow('treeIgnore', sort, sortDirection) }}
-                    </a>
-                </th>
-                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">
-                    <a href="{{ path('app_settings_category_index', {
-                        ...app.request.query.all(),
-                        sort: 'dashboardIgnore',
-                        sortDirection: sort == 'dashboardIgnore' and sortDirection == 'asc' ? 'desc' : 'asc',
-                    }) }}">
-                        Dashboard Ignore {{ _self.sortArrow('dashboardIgnore', sort, sortDirection) }}
-                    </a>
-                </th>
-                <th scope="col" class="p-3 text-xs font-medium text-center text-gray-500 uppercase dark:text-gray-400">Actions</th>
-            </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+        <!-- Categories subheader -->
+        <div class="flex items-center justify-between px-6 py-3 border-b border-white/[.07] flex-shrink-0">
+            <span class="text-[11px] font-semibold tracking-[.07em] uppercase text-white/40">Categories</span>
+            <a
+                href="{{ path('app_settings_category_new', {'id': group.id}) }}"
+                class="inline-flex items-center gap-[5px] text-[12px] font-medium text-accent hover:text-white transition-colors cursor-pointer border-0 bg-transparent"
+                data-turbo-frame="mdl"
+                data-modal-width="400px"
+            >
+                <svg class="w-[13px] h-[13px]" viewBox="0 0 13 13" fill="none"><path d="M6.5 2v9M2 6.5h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                Add category
+            </a>
+        </div>
+
+        <!-- Categories list -->
+        <div class="scroll-area flex-1 overflow-y-auto" id="categoryList">
+
             {% for category in categories %}
-                <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ category.id }}</td>
-                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">
-                        {% if category.categoryGroup %}{{ category.categoryGroup.name }}{% endif %}
-                    </td>
-                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400">{{ category.name }}</td>
-                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 text-center">
-                        {% if category.treeIgnore == 1 %}
-                        <svg class="w-6 h-6 text-gray-800 dark:text-white block mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
-                        </svg>
-                        {% endif %}
-                    </td>
-                    <td class="p-3 text-sm font-normal text-gray-500 whitespace-nowrap dark:text-gray-400 text-center">
-                        {% if category.dashboardIgnore == 1 %}
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white block mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
-                            </svg>
-                        {% endif %}
-                    </td>
-                    <td class="p-3 space-x-2 text-gray-500 whitespace-nowrap text-center">
-                        <a
-                            href="{{ path('app_settings_category_edit', {'id': category.id}) }}"
-                            data-turbo-frame="mdl"
-                        ><i class="fa-solid fa-pen"></i></a>
-                    </td>
-                </tr>
+                <div
+                    class="group flex items-center gap-4 px-6 py-[11px] border-b border-white/[.05] hover:bg-white/[.025] transition-colors"
+                    id="category-list-item-{{ category.id }}"
+                >
+                    {% include 'settings_category/_row.html.twig' with { 'category': category } %}
+                </div>
             {% else %}
-                <tr>
-                    <td colspan="6" class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">No records found</td>
-                </tr>
+                <div class="flex flex-col items-center justify-center h-32 gap-2">
+                    <p class="text-[12.5px] text-white/25">No categories yet</p>
+                </div>
             {% endfor %}
-            </tbody>
-        </table>
-    </twig:Content>
+        </div>
+    </div>
+</turbo-frame>
 {% endblock %}

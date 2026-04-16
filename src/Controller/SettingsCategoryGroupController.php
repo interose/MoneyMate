@@ -2,32 +2,34 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\CategoryGroup;
 use App\Form\CategoryGroupType;
 use App\Repository\CategoryGroupRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\UX\Turbo\TurboBundle;
 
 #[Route('/settings/category-group')]
 class SettingsCategoryGroupController extends AbstractController
 {
     #[Route('/', name: 'app_settings_categorygroup_index', methods: ['GET'])]
-    public function index(
-        CategoryGroupRepository $repository,
-        #[MapQueryParameter] string $sort = 'name',
-        #[MapQueryParameter] string $sortDirection = 'asc',
+    public function indexUnified(
+        CategoryGroupRepository $groupRepository,
+        CategoryRepository $categoryRepository,
     ): Response {
-        $validSorts = ['name'];
-        $sort = in_array($sort, $validSorts) ? $sort : 'name';
+        $groups = $groupRepository->findBy([], ['name' => 'ASC']);
+        $countUngrouped = $categoryRepository->count(['categoryGroup' => null]);
 
         return $this->render('settings_category_group/index.html.twig', [
-            'categoryGroups' => $repository->findBySearch($sort, $sortDirection),
-            'sort' => $sort,
-            'sortDirection' => $sortDirection,
+            'groups' => $groups,
+            'countUngrouped' => $countUngrouped
         ]);
     }
 
@@ -55,35 +57,49 @@ class SettingsCategoryGroupController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_settings_categorygroup_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, CategoryGroup $categoryGroup, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/update', name: 'app_settings_categorygroup_update', methods: ['POST'])]
+    public function update(Request $request, CategoryGroup $group, EntityManagerInterface $em): Response
     {
-        $form = $this->createForm(CategoryGroupType::class, $categoryGroup, [
-            'action' => $this->generateUrl('app_settings_categorygroup_edit', ['id' => $categoryGroup->getId()]),
-        ]);
-        $form->handleRequest($request);
+        $name = $request->request->get('groupname');
+        $color = $request->request->get('groupcolor');
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+        $group->setName($name);
+        $group->setColor($color);
+        $em->flush();
 
-            $this->addFlash('success', 'Category Group updated');
+        $this->addFlash('success', 'Category Group updated');
 
-            return $this->redirectToRoute('app_settings_categorygroup_index', [], Response::HTTP_SEE_OTHER);
+        if ($request->getPreferredFormat() === TurboBundle::STREAM_FORMAT) {
+            return $this->render('settings_category_group/editBar.stream.twig', [
+                'group' => $group
+            ], new Response('', 200, ['Content-Type' => 'text/vnd.turbo-stream.html']));
         }
 
-        return $this->render('settings_category_group/edit.html.twig', [
-            'categoryGroup' => $categoryGroup,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_settings_categorygroup_index');
     }
 
-    #[Route('/unified', name: 'app_settings_categorygroup_index_unified', methods: ['GET'])]
-    public function indexUnified(
-        CategoryGroupRepository $groupRepository
-    ): Response
+    #[Route('/{id}', name: 'app_settings_categorygroup_delete', methods: ['POST'])]
+    public function delete(Request $request, CategoryGroup $group, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('settings_category_group/index_unified.html.twig', [
-            'groups' => $groupRepository->findBy([], ['name' => 'ASC'])
-        ]);
+        $isValidToken = $this->isCsrfTokenValid('group-edit'.$group->getId(), $request->getPayload()->getString('_token'));
+
+        if ($isValidToken) {
+            if ($group->getCategories()->count() > 0) {
+                $this->addFlash('error', 'Category Group is not empty!');
+            } else {
+                $entityManager->remove($group);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Category Group deleted!');
+
+                return $this->redirectToRoute('app_settings_categorygroup_index');
+            }
+        } else {
+            $this->addFlash('danger', 'Invalid security token.');
+        }
+
+        return $this->render('_flashes.html.twig', [],
+            new Response('', 200, ['Content-Type' => 'text/vnd.turbo-stream.html'])
+        );
     }
 }

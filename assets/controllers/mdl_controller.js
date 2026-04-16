@@ -63,6 +63,15 @@ export default class extends Controller {
         this.dynamicContentTarget.innerHTML = this.loadingContentTarget.innerHTML;
     }
 
+    prepareModal(event) {
+        // only proceed if this click is targeting OUR modal's frame
+        const link = event.target;
+        if (link.dataset.turboFrame === 'mdl') {
+            const width = link.dataset.modalWidth || '600px';
+            this.element.style.setProperty('--modal-width', width);
+        }
+    }
+
     #isClickInElement(event, element) {
         const rect = element.getBoundingClientRect();
         return (

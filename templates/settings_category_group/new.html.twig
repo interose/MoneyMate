@@ -6,12 +6,12 @@
     <div class="grid grid-cols-6 gap-4 px-4 pt-6 dark:bg-gray-900">
         <twig:Card title="Add Category Group" grid="col-start-2 col-end-5">
             <turbo-frame id="mdl">
-
                 {% if app.request.headers.get('turbo-frame') is not empty %}
-                    <twig:ModalHeader><i class="fa-solid fa-tag me-2.5"></i>Add Category Group</twig:ModalHeader>
+                    <twig:ModalHeader>New Category Group</twig:ModalHeader>
                 {% endif %}
 
                 {{ include('settings_category_group/_form.html.twig') }}
+
             </turbo-frame>
         </twig:Card>
     </div>

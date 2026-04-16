@@ -1,61 +1,78 @@
-{% use '@TalesFromADevFlowbite/form/default.html.twig' %}
-
-{% block class_input_error -%}
-    bg-white border-red-800 text-red-800 placeholder-red-800 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 dark:placeholder-red-400 focus:z-10 focus:ring-red-500 focus:border-red-800 dark:focus:ring-red-500 dark:focus:border-red-500
-{%- endblock class_input_error %}
-
-{% block class_text_error -%}
-    {%- if help is empty -%}
-        mb-4 mt-2 text-xs text-red-800 dark:text-red-400
-    {%- else -%}
-        mt-2 text-xs text-red-800 dark:text-red-400
-    {%- endif -%}
-{%- endblock class_text_error %}
-
-{% block class_label_error -%}
-    absolute text-sm text-red-800 dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
-{%- endblock class_label_error %}
-
-{% block class_input_text -%}
-    block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-700 peer
-{%- endblock class_input_text %}
-
-{% block class_label -%}
-    absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1
-{%- endblock class_label %}
-
-{% block class_help_text -%}
-    mt-2 text-xs text-gray-500 dark:text-gray-400
-{%- endblock class_help_text %}
+{% use 'form_div_layout.html.twig' %}
 
 {%- block form_row -%}
-    {%- if errors|length > 0 or help is not empty -%}
-        {%- set row_attr = row_attr|merge({'class': (row_attr.class|default(''))~' '~'relative'|trim}) -%}
-    {% else %}
-        {%- set row_attr = row_attr|merge({'class': (row_attr.class|default('mb-3'))~' '~'relative'|trim}) -%}
-    {%- endif -%}
-    {%- set widget_attr = {} -%}
-    {%- if help is not empty -%}
-        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
-    {%- endif -%}
-    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
-        {{- form_widget(form, widget_attr) -}}
-        {{- form_label(form) -}}
-    </div>
-    {{- form_errors(form) -}}
-    {{- form_help(form) -}}
+    {%- set row_attr = row_attr|merge({class: row_attr.class|default(row_class|default('flex flex-col gap-[5px]') ~ (errors|length ? ' ' ~ ' field-error') )}) -%}
+
+    {{- parent() -}}
 {%- endblock form_row -%}
 
-{% block form_help -%}
-    {%- if help is not empty -%}
-        {%- set help_attr_class = (block('class_help_text') ~ ' '~ help_attr.class|default('inline-flex items-center mb-4'))|trim -%}
+{%- block widget_attributes -%}
+    {%- set attr = attr|merge({class: attr.class|default(widget_class|default('bg-elevated border border-white/[.07] rounded-lg px-3 py-[9px] text-[13px] text-white font-sans outline-none focus:border-accent transition-colors w-full')) ~ (disabled ? ' ' ~ widget_disabled_class|default('border-gray-300 text-gray-500'))}) -%}
+    {{- parent() -}}
+{%- endblock widget_attributes -%}
 
-        {%- set help_attr = help_attr|merge({'class': help_attr_class}) -%}
-        <p id="{{ id }}_help"{% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
-            <svg class="size-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.008-3.018a1.502 1.502 0 0 1 2.522 1.159v.024a1.44 1.44 0 0 1-1.493 1.418 1 1 0 0 0-1.037.999V14a1 1 0 1 0 2 0v-.539a3.44 3.44 0 0 0 2.529-3.256 3.502 3.502 0 0 0-7-.255 1 1 0 0 0 2 .076c.014-.398.187-.774.48-1.044Zm.982 7.026a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2h-.01Z" clip-rule="evenodd"/>
-            </svg>
-            {{- block('form_help_content') -}}
-        </p>
+{%- block form_label -%}
+    {%- set label_attr = label_attr|merge({class: label_attr.class|default(label_class|default('text-[11.5px] font-medium text-white/40'))}) -%}
+    {{- parent() -}}
+{%- endblock form_label -%}
+
+{%- block form_help -%}
+    {%- set help_attr = help_attr|merge({class: help_attr.class|default(help_class|default('mt-1 text-gray-600'))}) -%}
+    {{- parent() -}}
+{%- endblock form_help -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <span class="error-msg">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1.2"></circle><path d="M5.5 3.5v2.5M5.5 7.5v.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
+            {%- for error in errors -%}{{ error.message }}{% if not loop.last %} {% endif %}{%- endfor -%}
+        </span>
     {%- endif -%}
-{%- endblock form_help %}
+{%- endblock form_errors -%}
+
+{%- block choice_widget_expanded -%}
+    {%- set attr = attr|merge({class: attr.class|default('mt-2')}) -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            <div class="flex items-center">
+                {{- form_widget(child) -}}
+                {{- form_label(child, null, {translation_domain: choice_translation_domain}) -}}
+            </div>
+        {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+{%- block checkbox_row -%}
+    {%- set row_attr = row_attr|merge({class: row_attr.class|default(row_class|default('mb-6'))}) -%}
+    {%- set widget_attr = {} -%}
+    {%- if help -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
+    {%- endif -%}
+    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_errors(form) -}}
+        <div class="inline-flex items-center">
+            {{- form_widget(form, widget_attr) -}}
+            {{- form_label(form) -}}
+        </div>
+        {{- form_help(form) -}}
+    </div>
+{%- endblock checkbox_row -%}
+
+{%- block checkbox_widget -%}
+    {%- set widget_class = widget_class|default('mr-2') -%}
+    {{- parent() -}}
+{%- endblock checkbox_widget -%}
+
+{%- block radio_widget -%}
+    {%- set widget_class = widget_class|default('mr-2') -%}
+    {{- parent() -}}
+{%- endblock radio_widget -%}
+
+{%- block form_row_render -%}
+    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_label(form) -}}
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_errors(form) -}}
+        {{- form_help(form) -}}
+    </div>
+{%- endblock form_row_render -%}

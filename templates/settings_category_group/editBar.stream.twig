@@ -1,0 +1,16 @@
+<turbo-stream action="replace" target="groupEditBar">
+    <template>
+        {% include 'settings_category_group/_editBar.html.twig' with {'group': group} %}
+    </template>
+</turbo-stream>
+
+
+<turbo-stream action="update" target="group-list-item-{{ group.id }}">
+    <template>
+        <div class="w-3 h-3 rounded-full flex-shrink-0" style="background:{{ group.color }};box-shadow:0 0 0 2px {{ group.color }}33"></div>
+        <span class="group-name flex-1 text-[13px] text-white/70 truncate">{{ group.name }}</span>
+        <span class="font-mono text-[11px] text-white/25 flex-shrink-0">{{ group.categories|length }}</span>
+    </template>
+</turbo-stream>
+
+{% include '_flashes.html.twig' %}

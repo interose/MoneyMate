@@ -1,0 +1,14 @@
+<turbo-stream action="append" target="categoryList">
+    <template>
+        <div
+            class="group flex items-center gap-4 px-6 py-[11px] border-b border-white/[.05] hover:bg-white/[.025] transition-colors"
+            id="category-list-item-{{ category.id }}"
+        >
+            {% include 'settings_category/_row.html.twig' with { 'category': category } %}
+        </div>
+    </template>
+</turbo-stream>
+
+<turbo-stream action="update" target="mdl"></turbo-stream>
+
+{% include '_flashes.html.twig' %}
