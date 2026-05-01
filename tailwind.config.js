@@ -9,6 +9,27 @@ module.exports = {
         "./templates/**/*.html.twig",
         "./src/Twig/Components/**/*.php",
     ],
+    safelist: [
+        'bg-green/10',
+        'text-green',
+        'bg-teal-400/10',
+        'text-teal-400',
+        'bg-white/[.07]',
+        'text-white/50',
+        'bg-violet-400/10',
+        'text-violet-400',
+        'bg-pink/10',
+        'text-pink/70',
+        'bg-accent/10',
+        'text-accent/80',
+        'bg-accent',
+        'bg-orange-400/10',
+        'text-orange-400',
+        'bg-orange-400',
+        'bg-pink/10',
+        'text-pink',
+        'bg-pink',
+    ],
     theme: {
         extend: {
             colors: {
@@ -22,6 +43,9 @@ module.exports = {
             fontFamily: {
                 sans: ['"DM Sans"', 'sans-serif'],
                 mono: ['"DM Mono"', 'monospace'],
+            },
+            aria: {
+                busy: 'busy="true"',
             },
         },
     },

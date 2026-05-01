@@ -8,6 +8,37 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: StockChampionRepository::class)]
 class StockChampion
 {
+    public const COMMENT_COLOR_PILL = [
+        'Kaufen' => 'bg-green/10 text-green',
+        'Nachkauf' => 'bg-teal-400/10 text-teal-400',
+        'Halten' => 'bg-white/[.07] text-white/50',
+        'Halten ATH' => 'bg-violet-400/10 text-violet-400',
+        'Keine Käufe' => 'bg-pink/10 text-pink/70',
+    ];
+
+    public const TREND_PILL = [
+        'Aufwärtstrend' => [
+            'pill' => 'bg-green/10 text-green',
+            'icon' => '▲',
+            'dot' => 'bg-green',
+        ],
+        'Kaufsignal' => [
+            'pill' => 'bg-accent/10 text-accent/80',
+            'icon' => '●',
+            'dot' => 'bg-accent',
+        ],
+        'Trend-Bruch' => [
+            'pill' => 'bg-orange-400/10 text-orange-400',
+            'icon' => '◆',
+            'dot' => 'bg-orange-400',
+        ],
+        'Abwärtstrend' => [
+            'pill' => 'bg-pink/10 text-pink',
+            'icon' => '▼',
+            'dot' => 'bg-pink',
+        ],
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -171,6 +202,21 @@ class StockChampion
         return $this;
     }
 
+    public function getTrendPill(): string
+    {
+        return self::TREND_PILL[$this->trend]['pill'] ?? 'bg-white/10 text-white/80';
+    }
+
+    public function getTrendIcon(): string
+    {
+        return self::TREND_PILL[$this->trend]['icon'] ?? '';
+    }
+
+    public function getTrendDot(): string
+    {
+        return self::TREND_PILL[$this->trend]['dot'] ?? 'bg-white';
+    }
+
     public function getComment(): ?string
     {
         return $this->comment;
@@ -181,5 +227,10 @@ class StockChampion
         $this->comment = $comment;
 
         return $this;
+    }
+
+    public function getCommentPillColor(): string
+    {
+        return self::COMMENT_COLOR_PILL[$this->comment] ?? 'bg-white/[.07] text-white/50';
     }
 }
