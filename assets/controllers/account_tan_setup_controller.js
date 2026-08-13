@@ -23,7 +23,7 @@ export default class extends Controller {
         const tanMediaSelect = this.tanMediaSelectTarget;
 
         if (selectedTanMode.dataset.needsTanMedium === "false") {
-            tanMediaSelect.options[0].innerText = 'Selected TAN Mode needs no TAN Medium';
+            tanMediaSelect.options[0].innerText = 'The selected TAN mode does not require a TAN medium.';
         } else {
             const loader = this.loaderTarget;
             loader.classList.remove('hidden');

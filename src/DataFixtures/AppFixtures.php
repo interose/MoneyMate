@@ -9,6 +9,7 @@ use App\Entity\Setting;
 use App\Entity\SubAccount;
 use App\Entity\Transaction;
 use App\Lib\Manager\SettingsManager;
+use App\Service\EncryptionService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -18,11 +19,13 @@ class AppFixtures extends Fixture
 {
     private ObjectManager $manager;
     private Generator $faker;
+    private EncryptionService $encryption;
 
     public function load(ObjectManager $manager): void
     {
         $this->manager = $manager;
         $this->faker = Factory::create();
+        $this->encryption = new EncryptionService('test123');
 
         $this->createBase();
 
@@ -44,6 +47,8 @@ class AppFixtures extends Fixture
         $account->setBic($this->faker->swiftBicNumber);
         $account->setBankCode($this->faker->swiftBicNumber);
         $account->setUrl($this->faker->url);
+        $account->setUsername($this->faker->userName, $this->encryption);
+        $account->setPassword($this->faker->password, $this->encryption);
         $this->manager->persist($account);
         $this->manager->flush();
 

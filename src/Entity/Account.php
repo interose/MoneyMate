@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AccountRepository;
+use App\Service\EncryptionService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -18,46 +19,28 @@ class Account
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['step1'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['step1'])]
-    #[Assert\Bic(groups: ['step1'])]
     private ?string $bic = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['step1'])]
     private ?string $bankCode = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(groups: ['step1'])]
-    #[Assert\Url(groups: ['step1'])]
     private ?string $url = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $tanMediaName = null;
 
-    #[ORM\Column(nullable: true)]
-    #[Assert\NotBlank(groups: ['step3'])]
-    #[Assert\Positive(groups: ['step3'], message: 'Please choose a valid number.')]
-    private ?int $tanMechanism = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tanMechanism = null;
 
-    #[ORM\Column(type: Types::BINARY, nullable: true)]
-    #[Assert\NotBlank(groups: ['step2'])]
+    #[ORM\Column(length: 255)]
     private $username;
 
-    #[ORM\Column(type: Types::BINARY, nullable: true)]
-    #[Assert\NotBlank(groups: ['step2'])]
+    #[ORM\Column(length: 255)]
     private $password;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Image(groups: ['step5'], maxSize: '1048K', maxWidth: 1024, maxHeight: 1024)]
-    private ?string $logo = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(groups: ['step4'])]
-    private ?string $backgroundColor = null;
 
     /**
      * @var Collection<int, SubAccount>
@@ -65,27 +48,9 @@ class Account
     #[ORM\OneToMany(targetEntity: SubAccount::class, mappedBy: 'account', orphanRemoval: true)]
     private Collection $subAccounts;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(groups: ['step4'])]
-    private ?string $foregroundColor = null;
-
     public function __construct()
     {
         $this->subAccounts = new ArrayCollection();
-    }
-
-    public function isFinal(): bool
-    {
-        return
-            strlen($this->name) > 0
-            && strlen($this->bic) > 0
-            && strlen($this->bankCode) > 0
-            && strlen($this->url) > 0
-            && strlen($this->tanMediaName) > 0
-            && $this->tanMechanism > 0
-            && !is_null($this->username)
-            && !is_null($this->password)
-        ;
     }
 
     public function getId(): ?int
@@ -141,74 +106,50 @@ class Account
         return $this;
     }
 
-    public function getTanMediaName(): ?string
+    public function getTanMediaName(EncryptionService $crypto): ?string
     {
-        return $this->tanMediaName;
+        return $crypto->decrypt($this->tanMediaName);
     }
 
-    public function setTanMediaName(?string $tanMediaName = null): static
+    public function setTanMediaName(string $plainTanMediaName, EncryptionService $crypto): static
     {
-        $this->tanMediaName = $tanMediaName;
+        $this->tanMediaName = $crypto->encrypt($plainTanMediaName);
 
         return $this;
     }
 
-    public function getTanMechanism(): ?int
+    public function getTanMechanism(EncryptionService $crypto): ?string
     {
-        return $this->tanMechanism;
+        return $crypto->decrypt($this->tanMechanism);
     }
 
-    public function setTanMechanism(?int $tanMechanism): static
+    public function setTanMechanism(string $plainTanMechanism, EncryptionService $crypto): static
     {
-        $this->tanMechanism = $tanMechanism;
+        $this->tanMechanism = $crypto->encrypt($plainTanMechanism);
 
         return $this;
     }
 
-    public function getUsername()
+    public function getUsername(EncryptionService $crypto): ?string
     {
-        return $this->username;
+        return $crypto->decrypt($this->username);
     }
 
-    public function setUsername($username): static
+    public function setUsername(string $plainUsername, EncryptionService $crypto): static
     {
-        $this->username = $username;
+        $this->username = $crypto->encrypt($plainUsername);
 
         return $this;
     }
 
-    public function getPassword()
+    public function getPassword(EncryptionService $crypto): ?string
     {
-        return $this->password;
+        return $crypto->decrypt($this->password);
     }
 
-    public function setPassword($password): static
+    public function setPassword(string $plainPassword, EncryptionService $crypto): static
     {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getLogo(): ?string
-    {
-        return $this->logo;
-    }
-
-    public function setLogo(?string $logo): static
-    {
-        $this->logo = $logo;
-
-        return $this;
-    }
-
-    public function getBackgroundColor(): ?string
-    {
-        return $this->backgroundColor;
-    }
-
-    public function setBackgroundColor(?string $backgroundColor): static
-    {
-        $this->backgroundColor = $backgroundColor;
+        $this->password = $crypto->encrypt($plainPassword);
 
         return $this;
     }
@@ -239,18 +180,6 @@ class Account
                 $subAccount->setAccount(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getForegroundColor(): ?string
-    {
-        return $this->foregroundColor;
-    }
-
-    public function setForegroundColor(?string $foregroundColor): static
-    {
-        $this->foregroundColor = $foregroundColor;
 
         return $this;
     }
