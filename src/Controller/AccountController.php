@@ -13,6 +13,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/account')]
 class AccountController extends AbstractController
 {
+    #[Route('/{id}/update-statements', name: 'app_account_update_statements')]
+    public function updateAccountStatements(): Response
+    {
+        return $this->redirectToRoute('app_transaction_index', [], Response::HTTP_SEE_OTHER);
+    }
 //    #[Route('/{id}/update-statements', name: 'app_account_update_statements')]
 //    public function updateAccountStatements(
 //        SubAccount $subAccount,
