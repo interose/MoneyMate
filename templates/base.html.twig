@@ -1,23 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="dark">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}{% endblock %}</title>
         <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon" />
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
         {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body class="flex font-sans bg-bg text-white text-[13.5px]">
-
+    <body class="flex min-h-screen text-sm">
         {% include '_navigation.html.twig' %}
 
-        <div class="flex flex-col flex-1 overflow-hidden min-w-0">
+        <!-- Main -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            {% block pageheader %}{% endblock %}
+
             {% block body %}{% endblock %}
         </div>
+
+{#        <div class="flex flex-col flex-1 overflow-hidden min-w-0">#}
+{#            {% block body %}{% endblock %}#}
+{#        </div>#}
 
 {#        <div class="flex bg-gray-50 dark:bg-gray-900">#}
 {#            <div id="main-content" class="relative w-full h-full bg-gray-50 lg:ml-64 dark:bg-gray-900">#}
@@ -25,41 +31,41 @@
 {#            </div>#}
 {#        </div>#}
 
-        <twig:Modal>
-            <turbo-frame
-                id="mdl"
-                data-mdl-target="dynamicContent"
-                data-action="turbo:before-fetch-request->mdl#showLoading"
-                class="aria-busy:opacity-50 transition-opacity"
-                data-turbo-form-redirect="true"
-            >
-                <turbo-stream action="append" target="flash-container">
-                    <template>{{ include('_flashes.html.twig') }}</template>
-                </turbo-stream>
-                {% for stream in app.flashes('stream') %}
-                    {{ stream|raw }}
-                {% endfor %}
-            </turbo-frame>
+{#        <twig:Modal>#}
+{#            <turbo-frame#}
+{#                id="mdl"#}
+{#                data-mdl-target="dynamicContent"#}
+{#                data-action="turbo:before-fetch-request->mdl#showLoading"#}
+{#                class="aria-busy:opacity-50 transition-opacity"#}
+{#                data-turbo-form-redirect="true"#}
+{#            >#}
+{#                <turbo-stream action="append" target="flash-container">#}
+{#                    <template>{{ include('_flashes.html.twig') }}</template>#}
+{#                </turbo-stream>#}
+{#                {% for stream in app.flashes('stream') %}#}
+{#                    {{ stream|raw }}#}
+{#                {% endfor %}#}
+{#            </turbo-frame>#}
 
-            <twig:block name="loading_template">
-                <div class="bg-space-pattern bg-cover rounded-lg p-8">
-                    <div class="space-y-2">
-                        <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
-                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
-                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
-                        <div class="h-4"></div>
-                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
-                        <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
-                        <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
-                        <div class="h-4"></div>
-                        <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
-                    </div>
-                </div>
-            </twig:block>
-        </twig:Modal>
+{#            <twig:block name="loading_template">#}
+{#                <div class="bg-space-pattern bg-cover rounded-lg p-8">#}
+{#                    <div class="space-y-2">#}
+{#                        <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>#}
+{#                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>#}
+{#                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>#}
+{#                        <div class="h-4"></div>#}
+{#                        <div class="h-4 bg-gray-700 rounded animate-pulse"></div>#}
+{#                        <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>#}
+{#                        <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>#}
+{#                        <div class="h-4"></div>#}
+{#                        <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </twig:block>#}
+{#        </twig:Modal>#}
 
-        <div id="flash-container">
-            {% include '_flashes.html.twig' %}
-        </div>
+{#        <div id="flash-container">#}
+{#            {% include '_flashes.html.twig' %}#}
+{#        </div>#}
     </body>
 </html>

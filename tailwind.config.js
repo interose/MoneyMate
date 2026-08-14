@@ -33,16 +33,21 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                bg:        'rgb(15,22,41)',
-                elevated:  'rgb(22,32,58)',
-                card:      'rgb(28,40,70)',
-                accent:    'rgb(67,72,224)',
-                pink:      'rgb(233,67,143)',
-                green:     'rgb(52,211,153)',
+                bg:          'var(--bg)',
+                surface:     'var(--surface)',
+                raised:      'var(--raised)',
+                border:      'var(--border)',
+                'border-hi': 'var(--border-hi)',
+                tx:          'var(--tx)',
+                muted:       'var(--muted)',
+                accent:      '#5b8af5',
+                green:       '#3ecf8e',
+                amber:       '#f5a623',
+                red:         '#f55b5b',
             },
             fontFamily: {
                 sans: ['"DM Sans"', 'sans-serif'],
-                mono: ['"DM Mono"', 'monospace'],
+                mono: ['"IBM Plex Mono"', 'monospace'],
             },
             aria: {
                 busy: 'busy="true"',
