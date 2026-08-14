@@ -16,6 +16,13 @@ prepare-db:
 load-test-data:
 	$(PHP) bin/console doctrine:fixtures:load
 
+.PHONY: reset-db
+reset-db:
+	$(PHP) bin/console doctrine:database:drop --force
+	$(PHP) bin/console doctrine:database:create
+	$(PHP) bin/console doctrine:migrations:migrate --no-interaction
+	$(PHP) bin/console doctrine:fixtures:load --no-interaction
+
 .PHONY: run
 run:
 	$(SYMFONY) server:start -d
