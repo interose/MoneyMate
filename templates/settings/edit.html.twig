@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'form/app_theme.html.twig' %}
+
+{% block pageheader %}
+    <div class="flex items-center justify-between px-8 pt-7 pb-5 shrink-0" style="border-bottom:1px solid var(--border)">
+        <div>
+            <div class="text-[20px] font-semibold tracking-tight">Settings</div>
+            <div class="text-[12px] mt-0.5 text-muted">Manage accounts, links, and third-party providers</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <!-- Horizontal tab bar -->
+    <div class="flex items-end gap-1 px-8 shrink-0" style="border-bottom:1px solid var(--border)">
+        <a href="{{ path('app_settings_index') }}" class="tab-btn active">App-Settings</a>
+        <a href="{{ path('app_settings_accounts_index') }}" class="tab-btn">Accounts</a>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-8 py-7">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <div class="font-semibold text-[15px]">Edit App Settings</div>
+                <div class="text-[12px] text-muted mt-0.5">Update default accounts and third-party credentials</div>
+            </div>
+        </div>
+
+        <div class="max-w-2xl">
+
+            <!-- Card -->
+            <div class="rounded-xl p-7 transition-colors" style="background:var(--surface);border:1px solid var(--border)">
+
+                {{ form_start(form) }}
+                <div class="flex flex-col gap-5">
+
+                    <!-- Divider -->
+                    <div class="flex items-center gap-3 my-1">
+                        <div class="flex-1 h-px" style="background:var(--border)"></div>
+                        <span class="font-mono text-[10px] uppercase tracking-[1px] text-muted">Account Links</span>
+                        <div class="flex-1 h-px" style="background:var(--border)"></div>
+                    </div>
+
+                    <!-- Row: Main Account + Stock Account -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>{{ form_row(form.mainAccount) }}</div>
+                        <div>{{ form_row(form.stockAccount) }}</div>
+                    </div>
+
+                    <!-- Stock account enabled toggle -->
+                    <div class="flex items-center justify-between px-4 py-3 rounded-lg" style="background:var(--raised);border:1px solid var(--border)">
+                        <div>
+                            <div class="text-[13px] font-medium" style="color:var(--tx)">Enable stock account import</div>
+                            <div class="text-[11px] text-muted mt-0.5">Automatically import Stock Champions dividend data</div>
+                        </div>
+                        {{ form_widget(form.boerseAccountEnabled) }}
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="flex items-center gap-3 my-1">
+                        <div class="flex-1 h-px" style="background:var(--border)"></div>
+                        <span class="font-mono text-[10px] uppercase tracking-[1px] text-muted">Stock Publisher · Stock Champions</span>
+                        <div class="flex-1 h-px" style="background:var(--border)"></div>
+                    </div>
+
+                    <!-- Row: Publisher User + Password -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>{{ form_row(form.boersePublisherUser) }}</div>
+                        <div>{{ form_row(form.boersePublisherPw) }}</div>
+                    </div>
+
+                    <div>{{ form_row(form.boerseDividendUrl) }}</div>
+
+                </div><!-- /fields -->
+
+                <!-- Footer actions -->
+                <div class="flex items-center justify-between mt-8 pt-6" style="border-top:1px solid var(--border)">
+                    <a href="{{ path('app_settings_index') }}"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-medium cursor-pointer transition-all hover:-translate-y-px text-muted"
+                        style="background:transparent;border:1px solid var(--border)"
+                        onmouseenter="this.style.borderColor='var(--border-hi)';this.style.color='var(--tx)'"
+                        onmouseleave="this.style.borderColor='var(--border)';this.style.color='var(--muted)'"
+                    >
+                        Cancel
+                    </a>
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent text-white text-[13px] font-medium cursor-pointer border-none transition-all hover:-translate-y-px hover:bg-[#7aa0f7] hover:shadow-[0_4px_14px_rgba(91,138,245,.3)]"
+                    >
+                        Save changes
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </div><!-- /card -->
+
+        </div>
+    </div>
+{% endblock %}

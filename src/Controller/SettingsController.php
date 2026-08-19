@@ -30,22 +30,22 @@ class SettingsController extends AbstractController
         ]);
     }
 
-//    #[Route('/edit', name: 'app_settings_global_edit', methods: ['GET', 'POST'])]
-//    public function edit(Request $request, SettingsManager $settingsManager): Response
-//    {
-//        $form = $this->createForm(SettingsType::class, $settingsManager->all());
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $settingsManager->setMany($form->getData());
-//
-//            $this->addFlash('success', 'Settings updated!');
-//
-//            return $this->redirectToRoute('app_settings_global_index', [], Response::HTTP_SEE_OTHER);
-//        }
-//
-//        return $this->render('settings/edit.html.twig', [
-//            'form' => $form,
-//        ]);
-//    }
+    #[Route('/edit', name: 'app_settings_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, SettingsManager $settingsManager): Response
+    {
+        $form = $this->createForm(SettingsType::class, $settingsManager->all());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $settingsManager->setMany($form->getData());
+
+            $this->addFlash('success', 'Settings updated!');
+
+            return $this->redirectToRoute('app_settings_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('settings/edit.html.twig', [
+            'form' => $form,
+        ]);
+    }
 }

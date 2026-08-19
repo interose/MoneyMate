@@ -10,10 +10,20 @@ use Doctrine\ORM\EntityManagerInterface;
 class SettingsManager
 {
     public const SETTING_MAIN_ACCOUNT = 'mainAccount';
+    public const SETTING_STOCK_ACCOUNT = 'stockAccount';
     public const SETTING_STOCK_ACCOUNT_ENABLED = 'boerseAccountEnabled';
     public const SETTING_STOCK_PUBLISHER_USER = 'boersePublisherUser';
     public const SETTING_STOCK_PUBLISHER_PW = 'boersePublisherPw';
     public const SETTING_STOCK_DIVIDEND_URL = 'boerseDividendUrl';
+
+    private const KNOWN_SETTINGS = [
+        self::SETTING_MAIN_ACCOUNT,
+        self::SETTING_STOCK_ACCOUNT,
+        self::SETTING_STOCK_ACCOUNT_ENABLED,
+        self::SETTING_STOCK_PUBLISHER_USER,
+        self::SETTING_STOCK_PUBLISHER_PW,
+        self::SETTING_STOCK_DIVIDEND_URL,
+    ];
 
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -74,6 +84,7 @@ class SettingsManager
 
             switch ($name) {
                 case self::SETTING_MAIN_ACCOUNT:
+                case self::SETTING_STOCK_ACCOUNT:
                     $value = (string) $value->getId();
                     break;
             }
@@ -104,13 +115,18 @@ class SettingsManager
 
     private function getSettingsFromRepository(): array
     {
-        $settings = [];
+        // Always return every known setting, even if it has no row in the database yet,
+        // so consumers (templates, forms) can rely on the key being present rather than
+        // having to distinguish "not set" from "not loaded".
+        $settings = array_fill_keys(self::KNOWN_SETTINGS, null);
+        $settings[self::SETTING_STOCK_ACCOUNT_ENABLED] = false;
 
         foreach ($this->repository->findAll() as $setting) {
             $name = $setting->getName();
 
             switch ($name) {
                 case self::SETTING_MAIN_ACCOUNT:
+                case self::SETTING_STOCK_ACCOUNT:
                     $value = $this->entityManager->getRepository(SubAccount::class)->findOneBy(['id' => $setting->getValue()]);
                     break;
 

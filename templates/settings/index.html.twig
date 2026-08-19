@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between px-8 pt-7 pb-5 shrink-0" style="border-bottom:1px solid var(--border)">
         <div>
             <div class="text-[20px] font-semibold tracking-tight">Settings</div>
-            <div class="text-[12px] mt-0.5 text-muted">Konten, Verknüpfungen und Drittanbieter konfigurieren</div>
+            <div class="text-[12px] mt-0.5 text-muted">Manage accounts, links, and third-party providers</div>
         </div>
     </div>
 {% endblock %}
@@ -20,8 +20,11 @@
         <div class="flex items-center justify-between mb-5">
             <div>
                 <div class="font-semibold text-[15px]">App Settings</div>
-                <div class="text-[12px] text-muted mt-0.5">TODO: Subheadline</div>
+                <div class="text-[12px] text-muted mt-0.5">Default accounts and third-party integrations used across the app</div>
             </div>
+            <a href="{{ path('app_settings_edit') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-accent text-white text-[13px] font-medium cursor-pointer border-none transition-all hover:-translate-y-px hover:bg-[#7aa0f7] hover:shadow-[0_4px_14px_rgba(91,138,245,.3)]">
+                ✎ Edit
+            </a>
         </div>
 
         <div class="max-w-2xl flex flex-col gap-6">
@@ -33,8 +36,8 @@
                 <div class="flex items-center gap-3 px-5 py-4" style="background:var(--surface);border-bottom:1px solid var(--border)">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style="background:rgba(91,138,245,.12);color:#5b8af5">⇄</div>
                     <div>
-                        <div class="font-semibold text-[13px]">Kontoverknüpfungen</div>
-                        <div class="text-[11px] text-muted">Legen Sie fest, welches Konto welche Rolle übernimmt</div>
+                        <div class="font-semibold text-[13px]">Account Links</div>
+                        <div class="text-[11px] text-muted">Choose which account is used for which role</div>
                     </div>
                 </div>
 
@@ -43,16 +46,18 @@
                     <div class="flex items-center gap-3">
                         <div class="w-7 h-7 rounded-md flex items-center justify-center text-[13px] shrink-0" style="background:rgba(62,207,142,.12);color:#3ecf8e">★</div>
                         <div>
-                            <div class="text-[13px] font-medium">Hauptkonto</div>
-                            <div class="text-[11px] text-muted mt-0.5">Primäres Konto für Ausgabenauswertungen und Dashboard</div>
+                            <div class="text-[13px] font-medium">Main Account</div>
+                            <div class="text-[11px] text-muted mt-0.5">Primary account for expense analysis and the dashboard</div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="text-right">
-                            <div class="text-[13px] font-medium" id="display-main-account">Deutsche Bank</div>
-                            <div class="text-[11px] text-muted font-mono" id="display-main-blz">DE89 7005 0000 1234 5678 90</div>
-                        </div>
-                        <button class="setting-edit-btn w-7 h-7 rounded-lg flex items-center justify-center text-[12px] cursor-pointer transition-all text-muted hover:text-accent hover:border-accent hover:bg-[rgba(91,138,245,.12)]" style="border:1px solid var(--border);background:transparent" onclick="openSettingModal('main-account')" title="Bearbeiten">✎</button>
+                    <div class="text-right">
+                        {% if settings.mainAccount %}
+                            <div class="text-[13px] font-medium" id="display-main-account">{{ settings.mainAccount.account.name }}</div>
+                            <div class="text-[11px] text-muted font-mono" id="display-main-blz">{{ settings.mainAccount.iban }}</div>
+                        {% else %}
+                            <div class="text-[13px] font-medium text-muted" id="display-main-account">Not configured</div>
+                            <a href="{{ path('app_settings_edit') }}" class="text-[11px] text-accent">Set up →</a>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -61,29 +66,31 @@
                     <div class="flex items-center gap-3">
                         <div class="w-7 h-7 rounded-md flex items-center justify-center text-[13px] shrink-0" style="background:rgba(181,124,245,.12);color:#b57cf5">◈</div>
                         <div>
-                            <div class="text-[13px] font-medium">Depotkonto</div>
-                            <div class="text-[11px] text-muted mt-0.5">Konto für Wertpapiergeschäfte und Dividenden</div>
+                            <div class="text-[13px] font-medium">Securities Account</div>
+                            <div class="text-[11px] text-muted mt-0.5">Account for securities trading and dividends</div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="text-right">
-                            <div class="text-[13px] font-medium" id="display-stock-account">Comdirect</div>
-                            <div class="text-[11px] text-muted font-mono" id="display-stock-blz">DE75 2004 1133 0123 4567 00</div>
-                        </div>
-                        <button class="setting-edit-btn w-7 h-7 rounded-lg flex items-center justify-center text-[12px] cursor-pointer transition-all text-muted hover:text-accent hover:border-accent hover:bg-[rgba(91,138,245,.12)]" style="border:1px solid var(--border);background:transparent" onclick="openSettingModal('stock-account')" title="Bearbeiten">✎</button>
+                    <div class="text-right">
+                        {% if settings.stockAccount %}
+                            <div class="text-[13px] font-medium" id="display-stock-account">{{ settings.stockAccount.account.name }}</div>
+                            <div class="text-[11px] text-muted font-mono" id="display-stock-blz">{{ settings.stockAccount.iban }}</div>
+                        {% else %}
+                            <div class="text-[13px] font-medium text-muted" id="display-stock-account">Not configured</div>
+                            <a href="{{ path('app_settings_edit') }}" class="text-[11px] text-accent">Set up →</a>
+                        {% endif %}
                     </div>
                 </div>
 
             </div>
 
-            <!-- ── Section: Börsenverlag ── -->
+            <!-- ── Section: Stock Publisher ── -->
             <div class="rounded-xl overflow-hidden" style="border:1px solid var(--border)">
 
                 <div class="flex items-center gap-3 px-5 py-4" style="background:var(--surface);border-bottom:1px solid var(--border)">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style="background:rgba(245,166,35,.12);color:#f5a623">📈</div>
                     <div>
-                        <div class="font-semibold text-[13px]">Börsenverlag · Stock Champions</div>
-                        <div class="text-[11px] text-muted">Zugangsdaten für den automatischen Import der Stock-Champions-Daten</div>
+                        <div class="font-semibold text-[13px]">Stock Publisher · Stock Champions</div>
+                        <div class="text-[11px] text-muted">Credentials for the automatic import of Stock Champions data</div>
                     </div>
                 </div>
 
@@ -92,14 +99,11 @@
                     <div class="flex items-center gap-3">
                         <span class="text-muted text-[13px]">👤</span>
                         <div>
-                            <div class="text-[13px] font-medium">Benutzername</div>
-                            <div class="text-[11px] text-muted mt-0.5">Login-Name für boersenverlag.de</div>
+                            <div class="text-[13px] font-medium">Username</div>
+                            <div class="text-[11px] text-muted mt-0.5">Login name for boersenverlag.de</div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-[13px] font-mono text-muted" id="display-bv-user">m.weber@example.de</span>
-                        <button class="setting-edit-btn w-7 h-7 rounded-lg flex items-center justify-center text-[12px] cursor-pointer transition-all text-muted hover:text-accent hover:border-accent hover:bg-[rgba(91,138,245,.12)]" style="border:1px solid var(--border);background:transparent" onclick="openSettingModal('bv-credentials')" title="Bearbeiten">✎</button>
-                    </div>
+                    <span class="text-[13px] font-mono text-muted" id="display-bv-user">m.weber@example.de</span>
                 </div>
 
                 <!-- Password -->
@@ -107,16 +111,13 @@
                     <div class="flex items-center gap-3">
                         <span class="text-muted text-[13px]">🔑</span>
                         <div>
-                            <div class="text-[13px] font-medium">Passwort</div>
+                            <div class="text-[13px] font-medium">Password</div>
                             <div class="flex items-center gap-1.5 text-[11px] text-muted mt-0.5">
-                                <span class="text-accent text-[10px]">🔒</span> Verschlüsselt gespeichert
+                                <span class="text-accent text-[10px]">🔒</span> Stored encrypted
                             </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-[13px] font-mono text-muted tracking-widest">••••••••</span>
-                        <button class="setting-edit-btn w-7 h-7 rounded-lg flex items-center justify-center text-[12px] cursor-pointer transition-all text-muted hover:text-accent hover:border-accent hover:bg-[rgba(91,138,245,.12)]" style="border:1px solid var(--border);background:transparent" onclick="openSettingModal('bv-credentials')" title="Bearbeiten">✎</button>
-                    </div>
+                    <span class="text-[13px] font-mono text-muted tracking-widest">••••••••</span>
                 </div>
             </div>
         </div>

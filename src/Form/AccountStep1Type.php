@@ -25,7 +25,7 @@ class AccountStep1Type extends AbstractType
                 'attr' => [
                     'placeholder' => 'e.g. ING-DiBa AG ',
                 ],
-                'label' => 'Bankname',
+                'label' => 'Bank name',
                 'constraints' => [
                     new NotBlank(),
                 ],

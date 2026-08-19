@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between px-8 pt-7 pb-5 shrink-0" style="border-bottom:1px solid var(--border)">
         <div>
             <div class="text-[20px] font-semibold tracking-tight">Settings</div>
-            <div class="text-[12px] mt-0.5 text-muted">Konten, Verknüpfungen und Drittanbieter konfigurieren</div>
+            <div class="text-[12px] mt-0.5 text-muted">Manage accounts, links, and third-party providers</div>
         </div>
     </div>
 {% endblock %}
@@ -32,7 +32,7 @@
                 <thead>
                 <tr style="background:var(--surface)">
                     <th class="text-left font-mono text-[10px] tracking-[1px] uppercase text-muted px-5 py-3 font-medium" style="border-bottom:2px solid var(--border)" colspan="2">Account / Subaccount</th>
-                    <th class="text-left font-mono text-[10px] tracking-[1px] uppercase text-muted px-5 py-3 font-medium" style="border-bottom:2px solid var(--border)">FinTS URL / Account-Number</th>
+                    <th class="text-left font-mono text-[10px] tracking-[1px] uppercase text-muted px-5 py-3 font-medium" style="border-bottom:2px solid var(--border)">FinTS URL / Account Number</th>
                     <th class="text-left font-mono text-[10px] tracking-[1px] uppercase text-muted px-5 py-3 font-medium" style="border-bottom:2px solid var(--border)">Status</th>
                     <th class="px-5 py-3" style="border-bottom:2px solid var(--border);background:var(--surface)"></th>
                 </tr>
@@ -49,7 +49,7 @@
                                         <div class="flex gap-1"></div>
                                     </div>
                                     <div class="flex gap-3 mt-0.5">
-                                        <span class="font-mono text-[10px] text-muted">BLZ {{ account.bankCode }}</span>
+                                        <span class="font-mono text-[10px] text-muted">Bank code {{ account.bankCode }}</span>
                                         <span class="font-mono text-[10px] text-muted">BIC {{ account.bic }}</span>
                                     </div>
                                 </div>
@@ -58,7 +58,7 @@
                         <td class="px-5 py-3">
                             <span class="font-mono text-[10px] text-muted truncate block max-w-[180px]" title="{{ account.url }}">{{ account.url }}</span>
                         </td>
-                        <td class="px-5 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] font-medium" style="background:rgba(62,207,142,.12);color:#3ecf8e">● aktiv</span></td>
+                        <td class="px-5 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] font-medium" style="background:rgba(62,207,142,.12);color:#3ecf8e">● active</span></td>
                         <td class="px-5 py-3">
                             <div class="flex gap-1.5 justify-end">
                             </div>
@@ -89,8 +89,8 @@
                 <tr style="background:var(--surface);border-top:2px solid var(--border)">
                     <td colspan="4" class="px-6 py-12 text-center text-slate-400">
                         <div class="flex flex-col items-center justify-center">
-                            <p class="font-medium">No accounts available</p>
-                            <p class="text-xs text-slate-400 mt-1">Please use the wizard to add your first account.</p>
+                            <p class="font-medium">No accounts yet</p>
+                            <p class="text-xs text-slate-400 mt-1">Use the "Add Account" button above to connect your first account.</p>
                         </div>
                     </td>
                 </tr>

@@ -1,53 +1,74 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'form/app_theme.html.twig' %}
+
+{% block pageheader %}
+    <div class="flex items-center justify-between px-8 pt-7 pb-5 shrink-0" style="border-bottom:1px solid var(--border)">
+        <div>
+            <div class="text-[20px] font-semibold tracking-tight">Settings</div>
+            <div class="text-[12px] mt-0.5 text-muted">Configure bank access and synchronization</div>
+        </div>
+    </div>
+{% endblock %}
 
 {% block body %}
-    <twig:Header title="Add Account"></twig:Header>
+    <!-- Horizontal tab bar -->
+    <div class="flex items-end gap-1 px-8 shrink-0" style="border-bottom:1px solid var(--border)">
+        <a href="{{ path('app_settings_index') }}" class="tab-btn">App-Settings</a>
+        <a href="{{ path('app_settings_accounts_index') }}" class="tab-btn active">Accounts</a>
+    </div>
 
-    <div class="grid grid-cols-8 gap-4 px-4 pt-6 dark:bg-gray-900">
-        <twig:Card grid="col-span-8 xl:col-start-2 xl:col-end-8">
-            <div class="border-b border-cream-border dark:border-dark-border pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h3 class="text-xl font-bold text-primary-dark dark:text-primary-light">Bankverbindung einrichten</h3>
-                    <p class="text-xs text-text-muted leading-relaxed mt-1">Geben Sie hier Ihre Schnittstellendaten ein, um den elektronischen Abruf von Kontobewegungen zu aktivieren.</p>
-                </div>
-                <span class="bg-accent/10 text-accent font-bold px-3 py-1 rounded-full text-xs font-mono shrink-0">Schritt 2 von 3</span>
-            </div>
+    <div class="flex-1 overflow-y-auto px-8 py-8">
+        <div class="max-w-2xl">
 
-            <!-- Step Progress Indicator -->
-            <div class="w-full bg-cream-surface dark:bg-dark-border h-2 rounded-full overflow-hidden">
-                <div class="bg-primary h-full transition-all duration-300 ease-out" style="width: 66%;"></div>
-            </div>
+            <!-- Card -->
+            <div class="rounded-xl p-7 transition-colors" style="background:var(--surface);border:1px solid var(--border)">
 
-            <div
-                data-controller="account-tan-setup"
-                data-account-tan-setup-url-value="{{ path('app_account_fetch_tanmedia', {'id': account.id}) }}"
-            >
-
-                {{ form_start(form, {'attr': {'data-account-tan-setup-target': 'form'}}) }}
-
-                <h4 class="text-xs font-bold uppercase tracking-wider text-accent border-b border-cream-border/50 dark:border-dark-border pb-1">Schritt 2: Sicherheits- und TAN-Verfahren</h4>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>{{ form_row(form.tanMechanism, {'attr': {'data-account-tan-setup-target': 'tanModeSelect', 'data-action': 'account-tan-setup#fetchTanMedia'}}) }}</div>
-                    <div>{{ form_row(form.tanMediaName, {'attr': {'data-account-tan-setup-target': 'tanMediaSelect'}}) }}</div>
+                <div class="pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4" style="border-bottom:1px solid var(--border)">
+                    <div>
+                        <h3 class="text-[17px] font-bold" style="color:var(--tx)">Set up bank connection</h3>
+                        <p class="text-[12px] text-muted leading-relaxed mt-1">
+                            Choose the security procedure you want to use for automatic retrieval of account transactions.
+                        </p>
+                    </div>
+                    <span class="bg-accent/10 text-accent font-bold px-3 py-1 rounded-full text-[11px] font-mono shrink-0 self-start md:self-auto">
+                        Step 2 of 3
+                    </span>
                 </div>
 
-                <div class="flex justify-between">
-                    <a
-                        class="text-gray-900 bg-gray-100 hover:bg-gray-200 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center"
-                        href="{{ path('app_settings_account_step1', {'id': account.id}) }}"
-                    >
-                        back
-                    </a>
-                    <button class="text-white bg-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
-                        <i class="fa-solid fa-floppy-disk me-2.5"></i>Next
-                    </button>
+                <!-- Progress bar -->
+                <div class="w-full h-1.5 rounded-full overflow-hidden mt-5 mb-7" style="background:var(--progress)">
+                    <div class="bg-accent h-full rounded-full transition-all duration-300 ease-out" style="width:66%"></div>
                 </div>
 
-                {{ form_end(form) }}
+                <div
+                    data-controller="account-tan-setup"
+                    data-account-tan-setup-url-value="{{ path('app_account_fetch_tanmedia', {'id': account.id}) }}"
+                >
+                    {{ form_start(form, {'attr': {'data-account-tan-setup-target': 'form'}}) }}
+                    <div class="flex flex-col gap-5">
 
-            </div>
+                        <!-- Row: TAN Mode + TAN Media -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>{{ form_row(form.tanMechanism, {'attr': {'data-account-tan-setup-target': 'tanModeSelect', 'data-action': 'account-tan-setup#fetchTanMedia'}}) }}</div>
+                            <div>{{ form_row(form.tanMediaName, {'attr': {'data-account-tan-setup-target': 'tanMediaSelect'}}) }}</div>
+                        </div>
 
-        </twig:Card>
+                    </div><!-- /fields -->
+
+                    <!-- Footer actions -->
+                    <div class="flex items-center justify-end mt-8 pt-6" style="border-top:1px solid var(--border)">
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent text-white text-[13px] font-medium cursor-pointer border-none transition-all hover:-translate-y-px hover:bg-[#7aa0f7] hover:shadow-[0_4px_14px_rgba(91,138,245,.3)]"
+                        >
+                            Save &amp; continue →
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+
+            </div><!-- /card -->
+
+        </div>
     </div>
 {% endblock %}

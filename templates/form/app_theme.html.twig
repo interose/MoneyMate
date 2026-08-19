@@ -1,0 +1,45 @@
+{% use 'form_div_layout.html.twig' %}
+
+{#- Shared form theme for the redesigned app UI (mono/uppercase labels, .field-input
+   widgets, muted help text, accent-colored checkboxes). Used by the account wizard
+   and the settings edit form. Kept local/opt-in so the rest of the app's forms
+   (still on the legacy dark-only theme in form/layout.html.twig) are unaffected. -#}
+
+{%- block form_row -%}
+    {%- set row_attr = row_attr|merge({class: row_attr.class|default('flex flex-col gap-1.5' ~ (errors|length ? ' field-error' : ''))}) -%}
+    {{- parent() -}}
+{%- endblock form_row -%}
+
+{%- block form_label -%}
+    {%- set label_attr = label_attr|merge({class: label_attr.class|default('font-mono text-[10px] uppercase tracking-[.8px] text-muted font-medium')}) -%}
+    {{- parent() -}}
+{%- endblock form_label -%}
+
+{%- block form_label_content -%}
+    {{- parent() -}}
+    {%- if required %} <span class="text-accent">*</span>{% endif -%}
+{%- endblock form_label_content -%}
+
+{%- block widget_attributes -%}
+    {%- set attr = attr|merge({class: (attr.class|default(widget_class|default('field-input'))) ~ (disabled ? ' opacity-50 cursor-not-allowed' : '')}) -%}
+    {{- parent() -}}
+{%- endblock widget_attributes -%}
+
+{%- block checkbox_widget -%}
+    {%- set widget_class = 'accent-accent w-4 h-4 rounded cursor-pointer' -%}
+    {{- parent() -}}
+{%- endblock checkbox_widget -%}
+
+{%- block form_help -%}
+    {%- set help_attr = help_attr|merge({class: help_attr.class|default('text-[11px] text-muted')}) -%}
+    {{- parent() -}}
+{%- endblock form_help -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <div class="flex items-center gap-1.5 text-[11px] leading-snug text-red">
+            <span class="shrink-0">✕</span>
+            <span>{%- for error in errors -%}{{ error.message }}{% if not loop.last %} {% endif %}{%- endfor -%}</span>
+        </div>
+    {%- endif -%}
+{%- endblock form_errors -%}

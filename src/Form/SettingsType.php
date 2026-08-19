@@ -38,18 +38,36 @@ class SettingsType extends AbstractType
                     new NotBlank(),
                 ],
             ])
+            ->add(SettingsManager::SETTING_STOCK_ACCOUNT, EntityType::class, [
+                'label' => 'Stock Account',
+                'required' => true,
+                'class' => SubAccount::class,
+                'placeholder' => 'Please select an account',
+                'choice_label' => function (SubAccount $subAccount) {
+                    return $subAccount->getAccount()->getName().' - '.$subAccount->getAccountNumber();
+                },
+                'query_builder' => function ($er) {
+                    return $er->createQueryBuilder('a')
+                        ->where('a.enabled = true');
+                },
+                'empty_data' => [],
+                'constraints' => [
+                    new NotBlank(),
+                ],
+            ])
             ->add(SettingsManager::SETTING_STOCK_ACCOUNT_ENABLED, CheckboxType::class)
             ->add(SettingsManager::SETTING_STOCK_PUBLISHER_USER, TextType::class, [
                 'label' => 'User',
-                'required' => 'false',
+                'required' => false,
             ])
             ->add(SettingsManager::SETTING_STOCK_PUBLISHER_PW, PasswordType::class, [
                 'label' => 'Password',
-                'required' => 'false',
+                'required' => false,
+                'always_empty' => false,
             ])
             ->add(SettingsManager::SETTING_STOCK_DIVIDEND_URL, UrlType::class, [
                 'label' => 'Champion CSV URL',
-                'required' => 'false',
+                'required' => false,
             ])
         ;
     }
