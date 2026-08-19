@@ -50,6 +50,13 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 99px; }
 
+/* Tab nav */
+.tab-btn { position: relative; padding: 10px 18px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--muted); border: none; background: transparent; transition: color .15s; white-space: nowrap; }
+.tab-btn::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: transparent; border-radius: 99px; transition: background .15s; }
+.tab-btn:hover { color: var(--tx); }
+.tab-btn.active { color: #5b8af5; }
+.tab-btn.active::after { background: #5b8af5; }
+
 /* ── Field base ── */
 .field-input {
     width: 100%;

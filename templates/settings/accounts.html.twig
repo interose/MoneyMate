@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block pageheader %}
+    <div class="flex items-center justify-between px-8 pt-7 pb-5 shrink-0" style="border-bottom:1px solid var(--border)">
+        <div>
+            <div class="text-[20px] font-semibold tracking-tight">Settings</div>
+            <div class="text-[12px] mt-0.5 text-muted">Konten, Verknüpfungen und Drittanbieter konfigurieren</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <!-- Horizontal tab bar -->
+    <div class="flex items-end gap-1 px-8 shrink-0" style="border-bottom:1px solid var(--border)">
+        <a href="{{ path('app_settings_index') }}" class="tab-btn">App-Settings</a>
+        <a href="{{ path('app_settings_accounts_index') }}" class="tab-btn active">Accounts</a>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-8 py-7">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <div class="font-semibold text-[15px]">Accounts</div>
+                <div class="text-[12px] text-muted mt-0.5">All stored bank access details at a glance</div>
+            </div>
+            <a href="{{ path('app_settings_account_step1') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-accent text-white text-[13px] font-medium cursor-pointer border-none transition-all hover:-translate-y-px hover:bg-[#7aa0f7] hover:shadow-[0_4px_14px_rgba(91,138,245,.3)]">
+                ＋ Add Account
+            </a>
+        </div>
+
+        <div class="rounded-xl overflow-hidden" style="border:1px solid var(--border)">
+            <table class="w-full border-collapse">
+                <thead>
+                <tr style="background:var(--surface)">
+                    <th class="text-left font-mono text-[10px] tracking-[1px] uppercase text-muted px-5 py-3 font-medium" style="border-bottom:2px solid var(--border)" colspan="2">Account / Subaccount</th>
+                    <th class="text-left font-mono text-[10px] tracking-[1px] uppercase text-muted px-5 py-3 font-medium" style="border-bottom:2px solid var(--border)">FinTS URL / Account-Number</th>
+                    <th class="text-left font-mono text-[10px] tracking-[1px] uppercase text-muted px-5 py-3 font-medium" style="border-bottom:2px solid var(--border)">Status</th>
+                    <th class="px-5 py-3" style="border-bottom:2px solid var(--border);background:var(--surface)"></th>
+                </tr>
+                </thead>
+                <tbody id="accounts-tbody">
+                {% for account in accounts %}
+                    <tr style="background:var(--surface);border-top:2px solid var(--border)">
+                        <td class="px-5 py-3" colspan="2">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-mono font-bold shrink-0" style="background:rgba(91,138,245,.12);color:#5b8af5">D</div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[13px] font-semibold">{{ account.name }}</span>
+                                        <div class="flex gap-1"></div>
+                                    </div>
+                                    <div class="flex gap-3 mt-0.5">
+                                        <span class="font-mono text-[10px] text-muted">BLZ {{ account.bankCode }}</span>
+                                        <span class="font-mono text-[10px] text-muted">BIC {{ account.bic }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-3">
+                            <span class="font-mono text-[10px] text-muted truncate block max-w-[180px]" title="{{ account.url }}">{{ account.url }}</span>
+                        </td>
+                        <td class="px-5 py-3"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] font-medium" style="background:rgba(62,207,142,.12);color:#3ecf8e">● aktiv</span></td>
+                        <td class="px-5 py-3">
+                            <div class="flex gap-1.5 justify-end">
+                            </div>
+                        </td>
+                    </tr>
+                    {% for subaccount in account.subAccounts %}
+                        <tr style="background:var(--bg)">
+                            <td class="pl-[52px] pr-3 py-2.5 w-8">
+                                <div class="flex items-center gap-1.5 text-muted" style="font-size:11px">
+                                    <span style="color:var(--border-hi)">├</span>
+                                    <span class="font-mono text-[10px] text-muted">Subaccount</span>
+                                </div>
+                            </td>
+                            <td class="px-3 py-2.5">
+                                <span class="font-mono text-[12px]">{{ subaccount.iban }}</span>
+                            </td>
+                            <td class="px-5 py-2.5">
+                                <span class="font-mono text-[11px] text-muted">Account Number {{ subaccount.accountNumber }}</span>
+                            </td>
+                            <td class="py-2.5"></td>
+                            <td class="px-5 py-2.5">
+                                <div class="flex gap-1.5 justify-end">
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                <tr style="background:var(--surface);border-top:2px solid var(--border)">
+                    <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                        <div class="flex flex-col items-center justify-center">
+                            <p class="font-medium">No accounts available</p>
+                            <p class="text-xs text-slate-400 mt-1">Please use the wizard to add your first account.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

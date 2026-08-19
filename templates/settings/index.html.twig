@@ -1,70 +1,124 @@
 {% extends 'base.html.twig' %}
 
-{% block main_css_class %}p-8{% endblock %}
+{% block pageheader %}
+    <div class="flex items-center justify-between px-8 pt-7 pb-5 shrink-0" style="border-bottom:1px solid var(--border)">
+        <div>
+            <div class="text-[20px] font-semibold tracking-tight">Settings</div>
+            <div class="text-[12px] mt-0.5 text-muted">Konten, Verknüpfungen und Drittanbieter konfigurieren</div>
+        </div>
+    </div>
+{% endblock %}
 
 {% block body %}
-    <header class="flex justify-between items-center mb-8">
-        <div>
-            <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">App Settings</h1>
-            <p class="text-slate-500 font-medium">Configure your workspace preferences</p>
+    <!-- Horizontal tab bar -->
+    <div class="flex items-end gap-1 px-8 shrink-0" style="border-bottom:1px solid var(--border)">
+        <a href="{{ path('app_settings_index') }}" class="tab-btn active">App-Settings</a>
+        <a href="{{ path('app_settings_accounts_index') }}" class="tab-btn">Accounts</a>
+    </div>
+
+    <div id="view-appsettings" class="flex-1 overflow-y-auto px-8 py-7">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <div class="font-semibold text-[15px]">App Settings</div>
+                <div class="text-[12px] text-muted mt-0.5">TODO: Subheadline</div>
+            </div>
         </div>
-    </header>
 
-    <div class="grid grid-cols-8 gap-4 px-4 pt-6 dark:bg-gray-900">
-        <twig:Card grid="col-span-8 xl:col-start-2 xl:col-end-8">
-            <div class="mb-8 border-b">
-                <h3 class="mb-4 font-medium leading-tight">Generic Application Settings</h3>
-                <div class="mb-8">
-                    <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Main Account</p>
-                    <p class=" px-2">{% if settings.mainAccount is defined and settings.mainAccount is not null %}{{ settings.mainAccount.description ?? '<i>no description</i>'}} - ({{ settings.mainAccount.accountNumber }}){% endif %}</p>
-                </div>
-            </div>
+        <div class="max-w-2xl flex flex-col gap-6">
 
-            <div class="mb-8">
-                <h3 class="mb-4 font-medium leading-tight">Account "Boersenverlag"</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 inline-flex items-center mb-4">
-                    <svg class="size-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.008-3.018a1.502 1.502 0 0 1 2.522 1.159v.024a1.44 1.44 0 0 1-1.493 1.418 1 1 0 0 0-1.037.999V14a1 1 0 1 0 2 0v-.539a3.44 3.44 0 0 0 2.529-3.256 3.502 3.502 0 0 0-7-.255 1 1 0 0 0 2 .076c.014-.398.187-.774.48-1.044Zm.982 7.026a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2h-.01Z" clip-rule="evenodd"></path>
-                    </svg>
-                    Currently, only the import of the Champions list is supported. To use this service, a valid account with <a class="underline underline-offset-4" href="https://www.boersenverlag.de/" target="_blank">"Börsenverlag"</a> is required.
-                </p>
-                <div class="grid grid-cols-3 gap-4">
-                    <div>
-                        <div class="mb-3">
-                            <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Enabled</p>
-                            <p class=" px-2">{% if settings.boerseAccountEnabled is defined and settings.boerseAccountEnabled == true %}<i class="fa-solid fa-circle-check text-green-700"></i>{% else %}<i class="fa-solid fa-circle-xmark text-red-800"></i>{% endif %}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="mb-3">
-                            <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">User</p>
-                            <p class=" px-2">{% if settings.boersePublisherUser is defined and settings.boersePublisherUser is not empty  %}{{ settings.boersePublisherUser }}{% else %}<i>not set</i>{% endif %}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="mb-3">
-                            <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Password</p>
-                            <p class=" px-2">{% if settings.boersePublisherPw is defined and settings.boersePublisherPw is not empty  %}<i class="fa-solid fa-ellipsis"></i>{% else %}<i>not set</i>{% endif %}</p>
-                        </div>
-                    </div>
+            <!-- ── Section: Account links ── -->
+            <div class="rounded-xl overflow-hidden" style="border:1px solid var(--border)">
 
-                    <div class="col-span-3">
-                        <div class="mb-3">
-                            <p class="text-sm text-gray-400 dark:text-gray-400 bg-white dark:bg-gray-900 px-2">Champion CSV URL</p>
-                            <p class=" px-2">{% if settings.boerseDividendUrl is defined and settings.boerseDividendUrl is not empty  %}{{ settings.boerseDividendUrl }}{% else %}<i>not set</i>{% endif %}</p>
-                        </div>
+                <!-- Section header -->
+                <div class="flex items-center gap-3 px-5 py-4" style="background:var(--surface);border-bottom:1px solid var(--border)">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style="background:rgba(91,138,245,.12);color:#5b8af5">⇄</div>
+                    <div>
+                        <div class="font-semibold text-[13px]">Kontoverknüpfungen</div>
+                        <div class="text-[11px] text-muted">Legen Sie fest, welches Konto welche Rolle übernimmt</div>
                     </div>
                 </div>
 
+                <!-- Main account -->
+                <div class="setting-row flex items-center justify-between px-5 py-4 cursor-default" style="border-bottom:1px solid var(--border)">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-md flex items-center justify-center text-[13px] shrink-0" style="background:rgba(62,207,142,.12);color:#3ecf8e">★</div>
+                        <div>
+                            <div class="text-[13px] font-medium">Hauptkonto</div>
+                            <div class="text-[11px] text-muted mt-0.5">Primäres Konto für Ausgabenauswertungen und Dashboard</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right">
+                            <div class="text-[13px] font-medium" id="display-main-account">Deutsche Bank</div>
+                            <div class="text-[11px] text-muted font-mono" id="display-main-blz">DE89 7005 0000 1234 5678 90</div>
+                        </div>
+                        <button class="setting-edit-btn w-7 h-7 rounded-lg flex items-center justify-center text-[12px] cursor-pointer transition-all text-muted hover:text-accent hover:border-accent hover:bg-[rgba(91,138,245,.12)]" style="border:1px solid var(--border);background:transparent" onclick="openSettingModal('main-account')" title="Bearbeiten">✎</button>
+                    </div>
+                </div>
+
+                <!-- Stock account -->
+                <div class="setting-row flex items-center justify-between px-5 py-4 cursor-default">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-md flex items-center justify-center text-[13px] shrink-0" style="background:rgba(181,124,245,.12);color:#b57cf5">◈</div>
+                        <div>
+                            <div class="text-[13px] font-medium">Depotkonto</div>
+                            <div class="text-[11px] text-muted mt-0.5">Konto für Wertpapiergeschäfte und Dividenden</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right">
+                            <div class="text-[13px] font-medium" id="display-stock-account">Comdirect</div>
+                            <div class="text-[11px] text-muted font-mono" id="display-stock-blz">DE75 2004 1133 0123 4567 00</div>
+                        </div>
+                        <button class="setting-edit-btn w-7 h-7 rounded-lg flex items-center justify-center text-[12px] cursor-pointer transition-all text-muted hover:text-accent hover:border-accent hover:bg-[rgba(91,138,245,.12)]" style="border:1px solid var(--border);background:transparent" onclick="openSettingModal('stock-account')" title="Bearbeiten">✎</button>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="flex justify-end">
-                <a
-                    href="{{ path('app_settings_global_edit') }}"
-                    class="text-white bg-[#112D4E]  hover:bg-[#112D4E]/90 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none font-medium rounded-lg text-sm px-5 py-2 text-center mt-4 inline-flex items-center">
-                    <i class="fa-solid fa-pen me-2.5"></i>Edit
-                </a>
+            <!-- ── Section: Börsenverlag ── -->
+            <div class="rounded-xl overflow-hidden" style="border:1px solid var(--border)">
+
+                <div class="flex items-center gap-3 px-5 py-4" style="background:var(--surface);border-bottom:1px solid var(--border)">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style="background:rgba(245,166,35,.12);color:#f5a623">📈</div>
+                    <div>
+                        <div class="font-semibold text-[13px]">Börsenverlag · Stock Champions</div>
+                        <div class="text-[11px] text-muted">Zugangsdaten für den automatischen Import der Stock-Champions-Daten</div>
+                    </div>
+                </div>
+
+                <!-- Username -->
+                <div class="setting-row flex items-center justify-between px-5 py-4 cursor-default" style="border-bottom:1px solid var(--border)">
+                    <div class="flex items-center gap-3">
+                        <span class="text-muted text-[13px]">👤</span>
+                        <div>
+                            <div class="text-[13px] font-medium">Benutzername</div>
+                            <div class="text-[11px] text-muted mt-0.5">Login-Name für boersenverlag.de</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[13px] font-mono text-muted" id="display-bv-user">m.weber@example.de</span>
+                        <button class="setting-edit-btn w-7 h-7 rounded-lg flex items-center justify-center text-[12px] cursor-pointer transition-all text-muted hover:text-accent hover:border-accent hover:bg-[rgba(91,138,245,.12)]" style="border:1px solid var(--border);background:transparent" onclick="openSettingModal('bv-credentials')" title="Bearbeiten">✎</button>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="setting-row flex items-center justify-between px-5 py-4 cursor-default">
+                    <div class="flex items-center gap-3">
+                        <span class="text-muted text-[13px]">🔑</span>
+                        <div>
+                            <div class="text-[13px] font-medium">Passwort</div>
+                            <div class="flex items-center gap-1.5 text-[11px] text-muted mt-0.5">
+                                <span class="text-accent text-[10px]">🔒</span> Verschlüsselt gespeichert
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[13px] font-mono text-muted tracking-widest">••••••••</span>
+                        <button class="setting-edit-btn w-7 h-7 rounded-lg flex items-center justify-center text-[12px] cursor-pointer transition-all text-muted hover:text-accent hover:border-accent hover:bg-[rgba(91,138,245,.12)]" style="border:1px solid var(--border);background:transparent" onclick="openSettingModal('bv-credentials')" title="Bearbeiten">✎</button>
+                    </div>
+                </div>
             </div>
-        </twig:Card>
+        </div>
     </div>
 {% endblock %}
