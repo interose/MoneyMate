@@ -1,6 +1,15 @@
 PHP ?= php
 COMPOSER ?= composer
 SYMFONY ?= SYMFONY
+PHP_CS_FIXER ?= /opt/homebrew/bin/php-cs-fixer
+
+.PHONY: cs-check
+cs-check:
+	$(PHP_CS_FIXER) fix --dry-run --diff
+
+.PHONY: cs-fix
+cs-fix:
+	$(PHP_CS_FIXER) fix
 
 .PHONY: install
 install:
